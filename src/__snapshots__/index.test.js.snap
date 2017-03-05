@@ -1,0 +1,44 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`matches snapshot 1`] = `
+<div
+  className="cntr"
+>
+  <CounterSegment
+    digits={
+      Array [
+        "0",
+        "0",
+      ]
+    }
+    label="days"
+  />
+  <CounterSegment
+    digits={
+      Array [
+        "0",
+        "0",
+      ]
+    }
+    label="hours"
+  />
+  <CounterSegment
+    digits={
+      Array [
+        "0",
+        "0",
+      ]
+    }
+    label="minutes"
+  />
+  <CounterSegment
+    digits={
+      Array [
+        "0",
+        "0",
+      ]
+    }
+    label="seconds"
+  />
+</div>
+`;
