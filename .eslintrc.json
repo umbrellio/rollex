@@ -3,5 +3,8 @@
   "extends": ["standard", "standard-react"],
   "env": {
     "jest": true
+  },
+  "rules": {
+    "no-redeclare": 0
   }
 }

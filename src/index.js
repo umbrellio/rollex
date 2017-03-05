@@ -13,8 +13,9 @@ function countDigits (timeDiff) {
 
 class Counter extends React.Component {
   static propTypes = {
-    from: number.isRequired,
-    to: number.isRequired,
+    from: number,
+    to: number,
+    seconds: number,
     interval: number,
     minDigits: number,
     easing: string
@@ -26,8 +27,27 @@ class Counter extends React.Component {
   }
 
   constructor (props) {
+    if (props.seconds !== undefined) {
+      if (props.to !== undefined || props.from !== undefined) {
+        throw new Error('cannot use "to" and "from" with "seconds"')
+      } else if (props.seconds < 0) {
+        throw new Error('"seconds" must be greater than or equal to zero')
+      }
+      var timeDiff = props.seconds * 1000
+    } else if (props.to === undefined || props.from === undefined) {
+      throw new Error('provide either "seconds" or "to" and "from"')
+    } else if (props.to < props.from) {
+      throw new Error('"to" must be bigger than "from"')
+    } else {
+      var timeDiff = props.to - props.from
+    }
+
+    if (props.minDigits !== undefined && props.minDigits < 1) {
+      throw new Error('"minDigits" must be positive')
+    }
+
     super(props)
-    const timeDiff = this.props.to - this.props.from
+
     this.state = {
       timeDiff,
       digits: countDigits(timeDiff)
