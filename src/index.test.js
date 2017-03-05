@@ -21,27 +21,21 @@ describe('initialization', function () {
     expect(
       () => shallow(<Counter from={0} />)
     ).toThrowError('provide either "seconds" or "to" and "from"')
-
     expect(
       () => shallow(<Counter to={0} />)
     ).toThrowError('provide either "seconds" or "to" and "from"')
-
     expect(
       () => shallow(<Counter from={0} seconds={2} />)
     ).toThrowError('cannot use "to" and "from" with "seconds"')
-
     expect(
       () => shallow(<Counter to={0} seconds={2} />)
     ).toThrowError('cannot use "to" and "from" with "seconds"')
-
     expect(
       () => shallow(<Counter from={1} to={0} />)
     ).toThrowError('"to" must be bigger than "from"')
-
     expect(
       () => shallow(<Counter seconds={-1} />)
     ).toThrowError('"seconds" must be greater than or equal to zero')
-
     expect(
       () => shallow(<Counter seconds={0} minDigits={0} />)
     ).toThrowError('"minDigits" must be positive')
@@ -122,42 +116,47 @@ describe('state and props', function () {
 })
 
 describe('counting', function () {
-  it('starts to count when mounted', function () {
+  var component
+
+  beforeEach(function () {
     jest.useFakeTimers()
-    const component = mount(<Counter from={0} to={10000} />)
+    component = mount(<Counter from={0} to={10000} />)
     expect(component.state().digits.seconds).toBe(10)
     expect(setInterval.mock.calls.length).toBe(1)
+  })
 
+  it('starts to count when mounted', function () {
     jest.runTimersToTime(5000)
     expect(component.state().timeDiff).toBe(5000)
     expect(component.state().digits.seconds).toBe(5)
   })
 
   it('works with "seconds" prop', function () {
-    jest.useFakeTimers()
-    const component = mount(<Counter seconds={10} />)
+    component = mount(<Counter seconds={10} />)
     expect(component.state().digits.seconds).toBe(10)
     jest.runTimersToTime(5000)
     expect(component.state().timeDiff).toBe(5000)
     expect(component.state().digits.seconds).toBe(5)
   })
 
-  it('stops to count when stopped', function () {
-    jest.useFakeTimers()
-    const component = mount(<Counter from={0} to={10000} />)
+  it('does not count when "frozen" is true', function () {
+    component = mount(<Counter seconds={10} frozen />)
+    jest.runTimersToTime(5000)
+    expect(component.state().timeDiff).toBe(10000)
+    expect(component.state().digits.seconds).toBe(10)
+  })
 
+  it('stops to count when stopped', function () {
     jest.runTimersToTime(5000)
     expect(component.state().digits.seconds).toBe(5)
 
     component.instance().stop()
+
     jest.runTimersToTime(10000)
     expect(component.state().digits.seconds).toBe(5)
   })
 
   it('stops to count when reached zero', function () {
-    jest.useFakeTimers()
-    const component = mount(<Counter from={0} to={10000} />)
-
     jest.runTimersToTime(10000)
     expect(component.state().timeDiff).toBe(0)
     expect(component.state().digits.seconds).toBe(0)
