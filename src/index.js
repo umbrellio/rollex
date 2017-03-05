@@ -9,8 +9,9 @@ export default class Counter extends React.Component {
     seconds: number,
     interval: number,
     minDigits: number,
+    maxDigits: number,
     frozen: bool,
-    easing: string
+    easing: string // currently unused
   }
 
   static defaultProps = {
@@ -26,7 +27,7 @@ export default class Counter extends React.Component {
     const timeDiff = (seconds === undefined) ? (to - from) : (seconds * 1000)
     this.state = {
       timeDiff,
-      digits: countDigits(timeDiff)
+      digits: calculateDigits(timeDiff)
     }
   }
 
@@ -54,7 +55,7 @@ export default class Counter extends React.Component {
 
     this.setState({
       timeDiff: newTimeDiff,
-      digits: countDigits(newTimeDiff)
+      digits: calculateDigits(newTimeDiff)
     })
   }
 
@@ -62,23 +63,32 @@ export default class Counter extends React.Component {
     const digits = this.state.digits
     return (
       <div className='cntr'>
-        <CounterSegment label='days' digits={this.format(digits.days)} />
-        <CounterSegment label='hours' digits={this.format(digits.hours)} />
-        <CounterSegment label='minutes' digits={this.format(digits.minutes)} />
-        <CounterSegment label='seconds' digits={this.format(digits.seconds)} />
+        <CounterSegment label='days' digits={this.formatDigits(digits.days)} />
+        <CounterSegment label='hours' digits={this.formatDigits(digits.hours)} />
+        <CounterSegment label='minutes' digits={this.formatDigits(digits.minutes)} />
+        <CounterSegment label='seconds' digits={this.formatDigits(digits.seconds)} />
       </div>
     )
   }
 
-  format (number) {
+  formatDigits (number) {
+    var { minDigits, maxDigits } = this.props
+    if (minDigits > maxDigits) minDigits = maxDigits
+
+    if (maxDigits && maxDigits > 0 && number > Math.pow(10, maxDigits)) {
+      var nineArray = []
+      for (let i = 0; i < maxDigits; i++) nineArray.push('9')
+      return nineArray
+    }
+
+    number = number.toString()
     var zeroArray = []
-    for (let i = 0; i < this.props.minDigits; i++) zeroArray.push(0)
-    const zeroString = zeroArray.join('')
-    return (zeroString + number.toString()).slice(-this.props.minDigits).split('')
+    for (let i = 0; i < minDigits - number.length; i++) zeroArray.push(0)
+    return (zeroArray.join('') + number).split('')
   }
 }
 
-function countDigits (timeDiff) {
+function calculateDigits (timeDiff) {
   return {
     days: Math.floor(timeDiff / 1000 / 60 / 60 / 24),
     hours: new Date(timeDiff).getUTCHours(),

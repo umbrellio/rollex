@@ -61,6 +61,12 @@ describe('initialization', function () {
 })
 
 describe('rendering', function () {
+  const to =
+    (1000 * 60 * 60 * 24 * 200) +
+    (1000 * 60 * 60 * 6) +
+    (1000 * 60 * 35) +
+    (1000 * 54)
+
   it('matches snapshot', function () {
     const component = shallow(<Counter from={0} to={1} />)
     const tree = shallowToJson(component)
@@ -70,6 +76,42 @@ describe('rendering', function () {
   it('should render a CounterSegment for each segment', function () {
     const component = shallow(<Counter from={0} to={1} />)
     expect(component.find(CounterSegment).length).toEqual(4)
+  })
+
+  it('shound pass digits correctly', function () {
+    var component = shallow(<Counter from={0} to={to} />)
+    expect(component.find(CounterSegment).at(0).props().digits).toEqual(['2', '0', '0'])
+    expect(component.find(CounterSegment).at(1).props().digits).toEqual(['0', '6'])
+    expect(component.find(CounterSegment).at(2).props().digits).toEqual(['3', '5'])
+    expect(component.find(CounterSegment).at(3).props().digits).toEqual(['5', '4'])
+  })
+
+  test('minDigits', function () {
+    var component = shallow(<Counter from={0} to={to} minDigits={1} />)
+    expect(component.find(CounterSegment).at(0).props().digits).toEqual(['2', '0', '0'])
+    expect(component.find(CounterSegment).at(1).props().digits).toEqual(['6'])
+    expect(component.find(CounterSegment).at(2).props().digits).toEqual(['3', '5'])
+    expect(component.find(CounterSegment).at(3).props().digits).toEqual(['5', '4'])
+
+    var component = shallow(<Counter from={0} to={to} minDigits={3} />)
+    expect(component.find(CounterSegment).at(0).props().digits).toEqual(['2', '0', '0'])
+    expect(component.find(CounterSegment).at(1).props().digits).toEqual(['0', '0', '6'])
+    expect(component.find(CounterSegment).at(2).props().digits).toEqual(['0', '3', '5'])
+    expect(component.find(CounterSegment).at(3).props().digits).toEqual(['0', '5', '4'])
+  })
+
+  test('maxDigits', function () {
+    var component = shallow(<Counter from={0} to={to} maxDigits={1} />)
+    expect(component.find(CounterSegment).at(0).props().digits).toEqual(['9'])
+    expect(component.find(CounterSegment).at(1).props().digits).toEqual(['6'])
+    expect(component.find(CounterSegment).at(2).props().digits).toEqual(['9'])
+    expect(component.find(CounterSegment).at(3).props().digits).toEqual(['9'])
+
+    var component = shallow(<Counter from={0} to={to} maxDigits={2} />)
+    expect(component.find(CounterSegment).at(0).props().digits).toEqual(['9', '9'])
+    expect(component.find(CounterSegment).at(1).props().digits).toEqual(['0', '6'])
+    expect(component.find(CounterSegment).at(2).props().digits).toEqual(['3', '5'])
+    expect(component.find(CounterSegment).at(3).props().digits).toEqual(['5', '4'])
   })
 })
 
@@ -104,12 +146,15 @@ describe('state and props', function () {
   })
 
   it('allows to set props', function () {
-    const component = mount(<Counter from={10} to={20} interval={897} minDigits={3} easing='myEasing' />)
+    const component = mount(
+      <Counter from={10} to={20} interval={897} minDigits={3} maxDigits={4} easing='myEasing' />
+    )
     expect(component.props()).toEqual({
       from: 10,
       to: 20,
       interval: 897,
       minDigits: 3,
+      maxDigits: 4,
       easing: 'myEasing'
     })
   })
