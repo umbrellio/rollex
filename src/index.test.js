@@ -5,19 +5,19 @@ import Counter from './'
 import CounterSegment from './CounterSegment'
 
 describe('initialization', function () {
-  it('should throw an error when no time options are provided', function () {
+  it('throws an error when no time options are provided', function () {
     expect(
       () => shallow(<Counter />)
     ).toThrowError('provide either "seconds" or "to" and "from"')
   })
 
-  it('should throw an error when "to", "from" and "seconds" are provided', function () {
+  it('throws an error when "to", "from" and "seconds" are provided', function () {
     expect(
       () => shallow(<Counter from={0} to={1} seconds={2} />)
     ).toThrowError('cannot use "to" and "from" with "seconds"')
   })
 
-  it('should throw an error when time options are provided incorrectly', function () {
+  it('throws an error when time options are provided incorrectly', function () {
     expect(
       () => shallow(<Counter from={0} />)
     ).toThrowError('provide either "seconds" or "to" and "from"')
@@ -39,23 +39,32 @@ describe('initialization', function () {
     expect(
       () => shallow(<Counter seconds={0} minDigits={0} />)
     ).toThrowError('"minDigits" must be positive')
+    expect(
+      () => shallow(<Counter seconds={0} minPeriod='sobaka' />)
+    ).toThrowError('"minPeriod" must be one of: day, hour, minute, second')
+    expect(
+      () => shallow(<Counter seconds={0} maxPeriod='sobaka' />)
+    ).toThrowError('"maxPeriod" must be one of: day, hour, minute, second')
   })
 
-  it('should initialize correctly when "to" and "from" are correct', function () {
+  it('initializes when options are correct', function () {
     expect(
       () => shallow(<Counter from={0} to={1} />)
     ).not.toThrow()
-  })
-
-  it('should initialize correctly when "seconds" option is correct', function () {
     expect(
       () => shallow(<Counter seconds={2} />)
     ).not.toThrow()
-  })
-
-  it('should initialize correctly when "minDigits" option is correct', function () {
     expect(
       () => shallow(<Counter seconds={2} minDigits={1} />)
+    ).not.toThrow()
+    expect(
+      () => shallow(<Counter seconds={2} maxDigits={3} />)
+    ).not.toThrow()
+    expect(
+      () => shallow(<Counter seconds={2} minPeriod='minute' />)
+    ).not.toThrow()
+    expect(
+      () => shallow(<Counter seconds={2} maxPeriod='hour' />)
     ).not.toThrow()
   })
 })
@@ -73,45 +82,78 @@ describe('rendering', function () {
     expect(tree).toMatchSnapshot()
   })
 
-  it('should render a CounterSegment for each segment', function () {
+  it('renders a CounterSegment for each segment', function () {
     const component = shallow(<Counter from={0} to={1} />)
     expect(component.find(CounterSegment).length).toEqual(4)
   })
 
-  it('shound pass digits correctly', function () {
-    var component = shallow(<Counter from={0} to={to} />)
-    expect(component.find(CounterSegment).at(0).props().digits).toEqual(['2', '0', '0'])
-    expect(component.find(CounterSegment).at(1).props().digits).toEqual(['0', '6'])
-    expect(component.find(CounterSegment).at(2).props().digits).toEqual(['3', '5'])
-    expect(component.find(CounterSegment).at(3).props().digits).toEqual(['5', '4'])
+  it('passes digits correctly', function () {
+    const component = shallow(<Counter from={0} to={to} />)
+    const counterSegments = component.find(CounterSegment)
+    expect(counterSegments.at(0).props().digits).toEqual(['2', '0', '0'])
+    expect(counterSegments.at(1).props().digits).toEqual(['0', '6'])
+    expect(counterSegments.at(2).props().digits).toEqual(['3', '5'])
+    expect(counterSegments.at(3).props().digits).toEqual(['5', '4'])
   })
 
   test('minDigits', function () {
     var component = shallow(<Counter from={0} to={to} minDigits={1} />)
-    expect(component.find(CounterSegment).at(0).props().digits).toEqual(['2', '0', '0'])
-    expect(component.find(CounterSegment).at(1).props().digits).toEqual(['6'])
-    expect(component.find(CounterSegment).at(2).props().digits).toEqual(['3', '5'])
-    expect(component.find(CounterSegment).at(3).props().digits).toEqual(['5', '4'])
+    var counterSegments = component.find(CounterSegment)
+    expect(counterSegments.at(0).props().digits).toEqual(['2', '0', '0'])
+    expect(counterSegments.at(1).props().digits).toEqual(['6'])
+    expect(counterSegments.at(2).props().digits).toEqual(['3', '5'])
+    expect(counterSegments.at(3).props().digits).toEqual(['5', '4'])
 
-    var component = shallow(<Counter from={0} to={to} minDigits={3} />)
-    expect(component.find(CounterSegment).at(0).props().digits).toEqual(['2', '0', '0'])
-    expect(component.find(CounterSegment).at(1).props().digits).toEqual(['0', '0', '6'])
-    expect(component.find(CounterSegment).at(2).props().digits).toEqual(['0', '3', '5'])
-    expect(component.find(CounterSegment).at(3).props().digits).toEqual(['0', '5', '4'])
+    component = shallow(<Counter from={0} to={to} minDigits={3} />)
+    counterSegments = component.find(CounterSegment)
+    expect(counterSegments.at(0).props().digits).toEqual(['2', '0', '0'])
+    expect(counterSegments.at(1).props().digits).toEqual(['0', '0', '6'])
+    expect(counterSegments.at(2).props().digits).toEqual(['0', '3', '5'])
+    expect(counterSegments.at(3).props().digits).toEqual(['0', '5', '4'])
   })
 
   test('maxDigits', function () {
     var component = shallow(<Counter from={0} to={to} maxDigits={1} />)
-    expect(component.find(CounterSegment).at(0).props().digits).toEqual(['9'])
-    expect(component.find(CounterSegment).at(1).props().digits).toEqual(['6'])
-    expect(component.find(CounterSegment).at(2).props().digits).toEqual(['9'])
-    expect(component.find(CounterSegment).at(3).props().digits).toEqual(['9'])
+    var counterSegments = component.find(CounterSegment)
+    expect(counterSegments.at(0).props().digits).toEqual(['9'])
+    expect(counterSegments.at(1).props().digits).toEqual(['6'])
+    expect(counterSegments.at(2).props().digits).toEqual(['9'])
+    expect(counterSegments.at(3).props().digits).toEqual(['9'])
 
-    var component = shallow(<Counter from={0} to={to} maxDigits={2} />)
-    expect(component.find(CounterSegment).at(0).props().digits).toEqual(['9', '9'])
-    expect(component.find(CounterSegment).at(1).props().digits).toEqual(['0', '6'])
-    expect(component.find(CounterSegment).at(2).props().digits).toEqual(['3', '5'])
-    expect(component.find(CounterSegment).at(3).props().digits).toEqual(['5', '4'])
+    component = shallow(<Counter from={0} to={to} maxDigits={2} />)
+    counterSegments = component.find(CounterSegment)
+    expect(counterSegments.at(0).props().digits).toEqual(['9', '9'])
+    expect(counterSegments.at(1).props().digits).toEqual(['0', '6'])
+    expect(counterSegments.at(2).props().digits).toEqual(['3', '5'])
+    expect(counterSegments.at(3).props().digits).toEqual(['5', '4'])
+  })
+
+  test('minPeriod', function () {
+    const component = shallow(<Counter from={0} to={to} minPeriod='minute' />)
+    const counterSegments = component.find(CounterSegment)
+    expect(counterSegments.length).toBe(3)
+    expect(counterSegments.at(2).props().label).toBe('minutes')
+    expect(counterSegments.at(2).props().digits).toEqual(['3', '5'])
+  })
+
+  test('maxPeriod', function () {
+    var component = shallow(<Counter from={0} to={to} maxPeriod='hour' />)
+    var counterSegments = component.find(CounterSegment)
+    expect(counterSegments.length).toBe(3)
+    expect(counterSegments.at(0).props().label).toBe('hours')
+    expect(counterSegments.at(0).props().digits).toEqual(['4', '8', '0', '6'])
+
+    var component = shallow(<Counter from={0} to={to} maxPeriod='minute' />)
+    var counterSegments = component.find(CounterSegment)
+    expect(counterSegments.length).toBe(2)
+    expect(counterSegments.at(0).props().label).toBe('minutes')
+    expect(counterSegments.at(0).props().digits).toEqual(['2', '8', '8', '3', '9', '5'])
+
+    var component = shallow(<Counter from={0} to={to} maxPeriod='second' />)
+    var counterSegments = component.find(CounterSegment)
+    expect(counterSegments.length).toBe(1)
+    expect(counterSegments.at(0).props().label).toBe('seconds')
+    expect(counterSegments.at(0).props().digits).toEqual(['1', '7', '3', '0', '3', '7', '5', '4'])
   })
 })
 
@@ -141,13 +183,18 @@ describe('state and props', function () {
       from: 0,
       to: 1,
       interval: 1000,
-      minDigits: 2
+      minDigits: 2,
+      minPeriod: 'second',
+      maxPeriod: 'day'
     })
   })
 
   it('allows to set props', function () {
     const component = mount(
-      <Counter from={10} to={20} interval={897} minDigits={3} maxDigits={4} easing='myEasing' />
+      <Counter from={10} to={20} interval={897}
+        minDigits={3} maxDigits={4}
+        minPeriod='minute' maxPeriod='hour'
+        easing='myEasing' />
     )
     expect(component.props()).toEqual({
       from: 10,
@@ -155,6 +202,8 @@ describe('state and props', function () {
       interval: 897,
       minDigits: 3,
       maxDigits: 4,
+      minPeriod: 'minute',
+      maxPeriod: 'hour',
       easing: 'myEasing'
     })
   })

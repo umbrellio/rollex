@@ -9,7 +9,7 @@ it('matches snapshot', function () {
   expect(tree).toMatchSnapshot()
 })
 
-it('should render a .cntr-digit for each digit', function () {
+it('renders a .cntr-digit for each digit', function () {
   const component = shallow(<CounterSegment label='days' digits={['0', '1', '2']} />)
   expect(component.find('.cntr-digit').length).toEqual(3)
 })

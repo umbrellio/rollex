@@ -2,6 +2,13 @@ import React from 'react'
 import CounterSegment from './CounterSegment'
 const { number, string, bool } = React.PropTypes
 
+const PERIODS = [
+  'days',
+  'hours',
+  'minutes',
+  'seconds'
+]
+
 export default class Counter extends React.Component {
   static propTypes = {
     from: number,
@@ -10,13 +17,17 @@ export default class Counter extends React.Component {
     interval: number,
     minDigits: number,
     maxDigits: number,
+    minPeriod: string,
+    maxPeriod: string,
     frozen: bool,
     easing: string // currently unused
   }
 
   static defaultProps = {
     interval: 1000,
-    minDigits: 2
+    minDigits: 2,
+    minPeriod: 'second',
+    maxPeriod: 'day'
   }
 
   constructor (props) {
@@ -27,7 +38,7 @@ export default class Counter extends React.Component {
     const timeDiff = (seconds === undefined) ? (to - from) : (seconds * 1000)
     this.state = {
       timeDiff,
-      digits: calculateDigits(timeDiff)
+      digits: this.calculateDigits(timeDiff)
     }
   }
 
@@ -55,18 +66,29 @@ export default class Counter extends React.Component {
 
     this.setState({
       timeDiff: newTimeDiff,
-      digits: calculateDigits(newTimeDiff)
+      digits: this.calculateDigits(newTimeDiff)
     })
+  }
+
+  periods () {
+    return PERIODS.slice(
+      PERIODS.indexOf(this.props.maxPeriod + 's'),
+      PERIODS.indexOf(this.props.minPeriod + 's') + 1
+    )
   }
 
   render () {
     const digits = this.state.digits
+    const segments = this.periods().map((period, index) => {
+      return <CounterSegment
+        label={period}
+        key={index}
+        digits={this.formatDigits(digits[period])}
+      />
+    })
     return (
       <div className='cntr'>
-        <CounterSegment label='days' digits={this.formatDigits(digits.days)} />
-        <CounterSegment label='hours' digits={this.formatDigits(digits.hours)} />
-        <CounterSegment label='minutes' digits={this.formatDigits(digits.minutes)} />
-        <CounterSegment label='seconds' digits={this.formatDigits(digits.seconds)} />
+        {segments}
       </div>
     )
   }
@@ -86,14 +108,39 @@ export default class Counter extends React.Component {
     for (let i = 0; i < minDigits - number.length; i++) zeroArray.push(0)
     return (zeroArray.join('') + number).split('')
   }
-}
 
-function calculateDigits (timeDiff) {
-  return {
-    days: Math.floor(timeDiff / 1000 / 60 / 60 / 24),
-    hours: new Date(timeDiff).getUTCHours(),
-    minutes: new Date(timeDiff).getMinutes(),
-    seconds: new Date(timeDiff).getSeconds()
+  calculateDigits (timeDiff) {
+    var digits = {}
+    for (let period of this.periods()) {
+      Object.assign(digits, { [period]: this.calculateDigit(period, timeDiff) })
+    }
+    return digits
+  }
+
+  calculateDigit (period, timeDiff) {
+    const date = new Date(timeDiff)
+    switch (period) {
+      case 'days':
+        return Math.floor(timeDiff / 1000 / 60 / 60 / 24)
+      case 'hours':
+        if (this.props.maxPeriod !== 'hour') {
+          return date.getUTCHours()
+        } else {
+          return Math.floor(timeDiff / 1000 / 60 / 60)
+        }
+      case 'minutes':
+        if (this.props.maxPeriod !== 'minute') {
+          return date.getMinutes()
+        } else {
+          return Math.floor(timeDiff / 1000 / 60)
+        }
+      case 'seconds':
+        if (this.props.maxPeriod !== 'second') {
+          return date.getSeconds()
+        } else {
+          return Math.floor(timeDiff / 1000)
+        }
+    }
   }
 }
 
@@ -111,5 +158,11 @@ function validateProps (props) {
   }
   if (props.minDigits !== undefined && props.minDigits < 1) {
     throw new Error('"minDigits" must be positive')
+  }
+  if (props.minPeriod !== undefined && PERIODS.indexOf(props.minPeriod + 's') < 0) {
+    throw new Error('"minPeriod" must be one of: day, hour, minute, second')
+  }
+  if (props.maxPeriod !== undefined && PERIODS.indexOf(props.maxPeriod + 's') < 0) {
+    throw new Error('"maxPeriod" must be one of: day, hour, minute, second')
   }
 }
