@@ -20,6 +20,8 @@ export default class Counter extends React.Component {
     minPeriod: string,
     maxPeriod: string,
     frozen: bool,
+    syncTime: bool,
+    currentTime: number,
     easing: string // currently unused
   }
 
@@ -27,7 +29,8 @@ export default class Counter extends React.Component {
     interval: 1000,
     minDigits: 2,
     minPeriod: 'second',
-    maxPeriod: 'day'
+    maxPeriod: 'day',
+    currentTime: (new Date()).getTime()
   }
 
   constructor (props) {
@@ -59,7 +62,8 @@ export default class Counter extends React.Component {
   }
 
   tick () {
-    const newTimeDiff = this.state.timeDiff - this.props.interval
+    const { syncTime, currentTime, to, from, interval } = this.props
+    const newTimeDiff = syncTime ? (to - from - (new Date()).getTime() + currentTime) : (this.state.timeDiff - interval)
     if (newTimeDiff < 0) {
       return this.stop()
     }
@@ -74,22 +78,6 @@ export default class Counter extends React.Component {
     return PERIODS.slice(
       PERIODS.indexOf(this.props.maxPeriod + 's'),
       PERIODS.indexOf(this.props.minPeriod + 's') + 1
-    )
-  }
-
-  render () {
-    const digits = this.state.digits
-    const segments = this.periods().map((period, index) => {
-      return <CounterSegment
-        label={period}
-        key={index}
-        digits={this.formatDigits(digits[period])}
-      />
-    })
-    return (
-      <div className='cntr'>
-        {segments}
-      </div>
     )
   }
 
@@ -142,6 +130,22 @@ export default class Counter extends React.Component {
         }
     }
   }
+
+  render () {
+    const digits = this.state.digits
+    const segments = this.periods().map((period, index) => {
+      return <CounterSegment
+        label={period}
+        key={index}
+        digits={this.formatDigits(digits[period])}
+      />
+    })
+    return (
+      <div className='cntr'>
+        {segments}
+      </div>
+    )
+  }
 }
 
 function validateProps (props) {
@@ -159,10 +163,13 @@ function validateProps (props) {
   if (props.minDigits !== undefined && props.minDigits < 1) {
     throw new Error('"minDigits" must be positive')
   }
-  if (props.minPeriod !== undefined && PERIODS.indexOf(props.minPeriod + 's') < 0) {
+  if (props.minPeriod && PERIODS.indexOf(props.minPeriod + 's') < 0) {
     throw new Error('"minPeriod" must be one of: day, hour, minute, second')
   }
-  if (props.maxPeriod !== undefined && PERIODS.indexOf(props.maxPeriod + 's') < 0) {
+  if (props.maxPeriod && PERIODS.indexOf(props.maxPeriod + 's') < 0) {
     throw new Error('"maxPeriod" must be one of: day, hour, minute, second')
+  }
+  if (props.syncTime && props.to === undefined) {
+    throw new Error('"syncTime" must only be used with "to" and "from"')
   }
 }

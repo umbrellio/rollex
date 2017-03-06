@@ -45,6 +45,9 @@ describe('initialization', function () {
     expect(
       () => shallow(<Counter seconds={0} maxPeriod='sobaka' />)
     ).toThrowError('"maxPeriod" must be one of: day, hour, minute, second')
+    expect(
+      () => shallow(<Counter seconds={0} syncTime />)
+    ).toThrowError('"syncTime" must only be used with "to" and "from"')
   })
 
   it('initializes when options are correct', function () {
@@ -65,6 +68,9 @@ describe('initialization', function () {
     ).not.toThrow()
     expect(
       () => shallow(<Counter seconds={2} maxPeriod='hour' />)
+    ).not.toThrow()
+    expect(
+      () => shallow(<Counter from={0} to={1} syncTime />)
     ).not.toThrow()
   })
 })
@@ -179,7 +185,7 @@ describe('state and props', function () {
 
   test('default props', function () {
     const component = mount(<Counter from={0} to={1} />)
-    expect(component.props()).toEqual({
+    expect(component.props()).toMatchObject({
       from: 0,
       to: 1,
       interval: 1000,
@@ -194,9 +200,9 @@ describe('state and props', function () {
       <Counter from={10} to={20} interval={897}
         minDigits={3} maxDigits={4}
         minPeriod='minute' maxPeriod='hour'
-        easing='myEasing' />
+        syncTime easing='myEasing' />
     )
-    expect(component.props()).toEqual({
+    expect(component.props()).toMatchObject({
       from: 10,
       to: 20,
       interval: 897,
@@ -204,6 +210,7 @@ describe('state and props', function () {
       maxDigits: 4,
       minPeriod: 'minute',
       maxPeriod: 'hour',
+      syncTime: true,
       easing: 'myEasing'
     })
   })
@@ -258,5 +265,13 @@ describe('counting', function () {
     jest.runTimersToTime(10000)
     expect(component.state().timeDiff).toBe(0)
     expect(component.state().digits.seconds).toBe(0)
+  })
+
+  it('syncs time when syncTime is set', function () {
+    component = mount(<Counter from={0} to={10000} syncTime />)
+    const newDate = component.props().currentTime + 7000
+    jest.spyOn(Date.prototype, 'getTime').mockImplementation(() => newDate)
+    jest.runTimersToTime(5000)
+    expect(component.state().timeDiff).toBe(3000)
   })
 })
