@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "A counter React component",
   "main": "src/index.js",
-  "repository": "akxcv/rollex",
+  "repository": "umbrellio/rollex",
   "author": "Alexander Komarov <ak@akxcv.com>",
   "license": "MIT",
   "dependencies": {
