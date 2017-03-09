@@ -1,19 +1,29 @@
 import { resolve } from 'path'
 
-export default {
-  context: resolve('src'),
-  entry: './',
-  output: {
-    filename: 'bundle.js',
-    path: resolve('dist/')
-  },
-  module: {
-    loaders: [
-      {
-        test: /\.js$/,
-        loaders: ['babel-loader'],
-        include: /src/
-      }
-    ]
+export default function (env = {}) {
+  var config = {
+    context: resolve('src'),
+    output: {
+      filename: 'bundle.js'
+    },
+    module: {
+      loaders: [
+        {
+          test: /\.js$/,
+          loaders: ['babel-loader'],
+          include: /src/
+        }
+      ]
+    }
   }
+
+  if (env.demo) {
+    config.entry = './demo'
+    config.output.path = resolve('demo/')
+  } else {
+    config.entry = './'
+    config.output.path = resolve('dist/')
+  }
+
+  return config
 }
