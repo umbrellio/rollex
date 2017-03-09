@@ -1,0 +1,150 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`matches snapshot 1`] = `
+<div
+  className="rollex-digit"
+  onTransitionEnd={[Function]}
+  style={
+    Object {
+      "transform": "translateY(0px)",
+      "transitionDuration": "300ms",
+      "transitionProperty": "transform",
+      "transitionTimingFunction": "ease-in",
+      "willChange": "transform",
+    }
+  }
+>
+  <div
+    className="rollex-digit-lane-label"
+    style={
+      Object {
+        "height": 18,
+      }
+    }
+  >
+    <div>
+      0
+    </div>
+  </div>
+  <div
+    className="rollex-digit-lane-label"
+    style={
+      Object {
+        "height": 18,
+      }
+    }
+  >
+    <div>
+      1
+    </div>
+  </div>
+  <div
+    className="rollex-digit-lane-label"
+    style={
+      Object {
+        "height": 18,
+      }
+    }
+  >
+    <div>
+      2
+    </div>
+  </div>
+  <div
+    className="rollex-digit-lane-label"
+    style={
+      Object {
+        "height": 18,
+      }
+    }
+  >
+    <div>
+      3
+    </div>
+  </div>
+  <div
+    className="rollex-digit-lane-label"
+    style={
+      Object {
+        "height": 18,
+      }
+    }
+  >
+    <div>
+      4
+    </div>
+  </div>
+  <div
+    className="rollex-digit-lane-label"
+    style={
+      Object {
+        "height": 18,
+      }
+    }
+  >
+    <div>
+      5
+    </div>
+  </div>
+  <div
+    className="rollex-digit-lane-label"
+    style={
+      Object {
+        "height": 18,
+      }
+    }
+  >
+    <div>
+      6
+    </div>
+  </div>
+  <div
+    className="rollex-digit-lane-label"
+    style={
+      Object {
+        "height": 18,
+      }
+    }
+  >
+    <div>
+      7
+    </div>
+  </div>
+  <div
+    className="rollex-digit-lane-label"
+    style={
+      Object {
+        "height": 18,
+      }
+    }
+  >
+    <div>
+      8
+    </div>
+  </div>
+  <div
+    className="rollex-digit-lane-label"
+    style={
+      Object {
+        "height": 18,
+      }
+    }
+  >
+    <div>
+      9
+    </div>
+  </div>
+  <div
+    className="rollex-digit-lane-label"
+    style={
+      Object {
+        "height": 18,
+      }
+    }
+  >
+    <div>
+      0
+    </div>
+  </div>
+</div>
+`;

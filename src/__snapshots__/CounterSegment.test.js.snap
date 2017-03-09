@@ -1,21 +1,77 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`matches snapshot 1`] = `
+exports[`snaphots matches snapshots 1`] = `
 <div
-  className="cntr-segment"
+  className="rollex-segment"
 >
   <div
-    className="cntr-digit"
+    className="rollex-digits"
+    style={
+      Object {
+        "height": "0px",
+        "overflow": "hidden",
+      }
+    }
   >
-    0
+    <StaticCounterDigit
+      digit="0"
+      digitMap={Object {}}
+      digitWrapper={[Function]}
+      height={0}
+      radix={10}
+    />
+    <StaticCounterDigit
+      digit="2"
+      digitMap={Object {}}
+      digitWrapper={[Function]}
+      height={0}
+      radix={10}
+    />
   </div>
   <div
-    className="cntr-digit"
+    className="rollex-label"
   >
-    0
+    days
+  </div>
+</div>
+`;
+
+exports[`snaphots matches snapshots 2`] = `
+<div
+  className="rollex-segment"
+>
+  <div
+    className="rollex-digits"
+    style={
+      Object {
+        "height": "0px",
+        "overflow": "hidden",
+      }
+    }
+  >
+    <AnimatedCounterDigit
+      digit="0"
+      digitMap={Object {}}
+      digitWrapper={[Function]}
+      easingDuration={300}
+      easingFunction="ease-in"
+      height={0}
+      maxValue={9}
+      radix={10}
+    />
+    <AnimatedCounterDigit
+      digit="2"
+      digitMap={Object {}}
+      digitWrapper={[Function]}
+      easingDuration={300}
+      easingFunction="ease-in"
+      height={0}
+      maxValue={0}
+      radix={10}
+    />
   </div>
   <div
-    className="cntr-label"
+    className="rollex-label"
   >
     days
   </div>
