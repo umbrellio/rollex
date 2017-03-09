@@ -2,43 +2,63 @@
 
 exports[`rendering matches snapshot 1`] = `
 <div
-  className="cntr"
+  className="rollex"
 >
   <CounterSegment
+    digitMap={Object {}}
+    digitWrapper={[Function]}
     digits={
       Array [
         "0",
         "0",
       ]
     }
-    label="days"
+    easingDuration={300}
+    easingFunction={null}
+    period="days"
+    radix={10}
   />
   <CounterSegment
+    digitMap={Object {}}
+    digitWrapper={[Function]}
     digits={
       Array [
         "0",
         "0",
       ]
     }
-    label="hours"
+    easingDuration={300}
+    easingFunction={null}
+    period="hours"
+    radix={10}
   />
   <CounterSegment
+    digitMap={Object {}}
+    digitWrapper={[Function]}
     digits={
       Array [
         "0",
         "0",
       ]
     }
-    label="minutes"
+    easingDuration={300}
+    easingFunction={null}
+    period="minutes"
+    radix={10}
   />
   <CounterSegment
+    digitMap={Object {}}
+    digitWrapper={[Function]}
     digits={
       Array [
         "0",
         "0",
       ]
     }
-    label="seconds"
+    easingDuration={300}
+    easingFunction={null}
+    period="seconds"
+    radix={10}
   />
 </div>
 `;

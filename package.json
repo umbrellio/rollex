@@ -1,9 +1,9 @@
 {
-  "name": "react-cntr",
-  "version": "0.1.0",
+  "name": "rollex",
+  "version": "0.0.1",
   "description": "A counter React component",
   "main": "src/index.js",
-  "repository": "akxcv/react-cntr",
+  "repository": "akxcv/rollex",
   "author": "Alexander Komarov <ak@akxcv.com>",
   "license": "MIT",
   "dependencies": {
@@ -13,6 +13,11 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "webpack -p",
+    "build:dev": "webpack",
+    "build:watch": "yarn run build:dev -- --watch",
+    "build:demo": "webpack -p --env.demo",
+    "preesdoc": "rimraf docs",
+    "esdoc": "esdoc",
     "lint": "eslint .",
     "lint-staged": "lint-staged",
     "spellcheck": "yaspeller-ci *.md",
@@ -36,6 +41,7 @@
     "babel-preset-stage-0": "^6.22.0",
     "enzyme": "^2.7.1",
     "enzyme-to-json": "^1.5.0",
+    "esdoc": "^0.5.2",
     "eslint": "^3.17.0",
     "eslint-config-react": "^1.1.7",
     "eslint-config-standard": "^7.0.0",

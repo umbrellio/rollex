@@ -1,15 +1,103 @@
 import React from 'react'
-import { shallow } from 'enzyme'
+import { shallow, mount } from 'enzyme'
 import { shallowToJson } from 'enzyme-to-json'
 import CounterSegment from './CounterSegment'
+import AnimatedCounterDigit from './AnimatedCounterDigit'
+import StaticCounterDigit from './StaticCounterDigit'
 
-it('matches snapshot', function () {
-  const component = shallow(<CounterSegment label='days' digits={['0', '0']} />)
-  const tree = shallowToJson(component)
-  expect(tree).toMatchSnapshot()
+function digitWrapper (digit) {
+  return <div>{digit}</div>
+}
+
+describe('snaphots', function () {
+  var staticComponent, animatedComponent
+
+  beforeAll(function () {
+    staticComponent = shallow(
+      <CounterSegment
+        digits={['0', '2']}
+        period='days'
+        radix={10}
+        easingFunction={null}
+        easingDuration={300}
+        digitMap={{}}
+        digitWrapper={digitWrapper}
+      />
+    )
+    animatedComponent = shallow(
+      <CounterSegment
+        digits={['0', '2']}
+        period='days'
+        radix={10}
+        easingFunction={'ease-in'}
+        easingDuration={300}
+        digitMap={{}}
+        digitWrapper={digitWrapper}
+      />
+    )
+  })
+
+  it('matches snapshots', function () {
+    const staticTree = shallowToJson(staticComponent)
+    const animatedTree = shallowToJson(animatedComponent)
+    expect(staticTree).toMatchSnapshot()
+    expect(animatedTree).toMatchSnapshot()
+  })
 })
 
-it('renders a .cntr-digit for each digit', function () {
-  const component = shallow(<CounterSegment label='days' digits={['0', '1', '2']} />)
-  expect(component.find('.cntr-digit').length).toEqual(3)
+describe('rendering', function () {
+  var staticComponent, animatedComponent
+
+  beforeAll(function () {
+    staticComponent = mount(
+      <CounterSegment
+        digits={['0', '2']}
+        period='minutes'
+        radix={10}
+        easingFunction={null}
+        easingDuration={300}
+        digitMap={{}}
+        digitWrapper={digitWrapper}
+      />
+    )
+    animatedComponent = mount(
+      <CounterSegment
+        digits={['0', '2']}
+        period='minutes'
+        radix={10}
+        easingFunction={'ease-in'}
+        easingDuration={300}
+        digitMap={{}}
+        digitWrapper={digitWrapper}
+      />
+    )
+  })
+
+  it('renders a CounterDigit for each digit', function () {
+    expect(staticComponent.find(StaticCounterDigit).length).toBe(2)
+    expect(staticComponent.find(AnimatedCounterDigit).length).toBe(0)
+    expect(animatedComponent.find(AnimatedCounterDigit).length).toBe(2)
+    expect(animatedComponent.find(StaticCounterDigit).length).toBe(0)
+  })
+
+  it('passes correct maxValue to digits', function () {
+    const animatedDigits = animatedComponent.find(AnimatedCounterDigit)
+    expect(animatedDigits.at(0).props().maxValue).toBe(5)
+    expect(animatedDigits.at(1).props().maxValue).toBe(9)
+
+    const dozenalComponent = mount(
+      <CounterSegment
+        digits={['0', '2']}
+        period='minutes'
+        radix={12}
+        easingFunction={'ease-in'}
+        easingDuration={300}
+        digitMap={{}}
+        digitWrapper={digitWrapper}
+      />
+    )
+    const dozenalDigits = dozenalComponent.find(AnimatedCounterDigit)
+    expect(dozenalDigits.at(0).props().maxValue).toBe(4)
+    expect(dozenalDigits.at(1).props().maxValue).toBe(11)
+  })
 })
