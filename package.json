@@ -33,7 +33,10 @@
     "lint-staged"
   ],
   "jest": {
-    "collectCoverageFrom": ["src/**/*.js", "!src/docs/*"]
+    "collectCoverageFrom": [
+      "src/**/*.js",
+      "!src/docs/*"
+    ]
   },
   "devDependencies": {
     "babel-core": "^6.23.1",
