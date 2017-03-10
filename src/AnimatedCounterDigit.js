@@ -19,6 +19,7 @@ function forceReflow (element) {
  *   digit='5'
  *   height={18}
  *   radix={10}
+ *   direction='down'
  *   digitMap={{}}
  *   digitWrapper={(digit) => digit}
  *   maxValue={9}
@@ -28,15 +29,33 @@ function forceReflow (element) {
  */
 class AnimatedCounterDigit extends AbstractCounterDigit {
   /**
+   * @property {string} direction - counting direction
    * @property {number} maxValue - maximum value used to build a digit lane
    * @property {string} easingFunction - easing function for transitions
    * @property {number} easingDuration - duration for digit transitions in milliseconds
    */
   static propTypes = {
     ...AbstractCounterDigit.propTypes,
+    direction: string.isRequired,
     maxValue: number.isRequired,
     easingFunction: string.isRequired,
     easingDuration: number.isRequired
+  }
+
+  constructor (props) {
+    super(props)
+
+    const upperZeroPosition = -this.props.height * (this.props.radix - this.props.maxValue - 1)
+    const lowerZeroPosition = -this.props.height * this.props.radix
+    const initialZeroPosition = (this.props.direction === 'down')
+      ? lowerZeroPosition : upperZeroPosition
+    const finalZeroPosition = (this.props.direction === 'down')
+      ? upperZeroPosition : lowerZeroPosition
+
+    this.state = {
+      initialZeroPosition,
+      finalZeroPosition
+    }
   }
 
   componentDidMount () {
@@ -51,7 +70,7 @@ class AnimatedCounterDigit extends AbstractCounterDigit {
   reset = (event) => {
     if (this.props.digit === '0') {
       event.target.style.transitionProperty = 'none'
-      event.target.style.transform = `translateY(-${this.props.height * this.props.radix}px)`
+      event.target.style.transform = `translateY(${this.state.initialZeroPosition}px)`
       forceReflow(event.target)
       event.target.style.transitionProperty = ''
     }
@@ -87,14 +106,25 @@ class AnimatedCounterDigit extends AbstractCounterDigit {
   }
 
   /**
+   * Calculates Y position for the digit.
+   * @return {number} yPosition
+   */
+  getDigitPositionY () {
+    const digitIndex = parseInt(this.props.digit, this.props.radix)
+    if (digitIndex === 0) {
+      return this.state.finalZeroPosition
+    } else {
+      return -this.props.height * (digitIndex + (this.props.radix - this.props.maxValue - 1))
+    }
+  }
+
+  /**
    * Renders the digit.
    * @return {ReactElement} digit
    */
   render () {
-    const digitIndex = parseInt(this.props.digit, this.props.radix)
-    const yPosition = -this.props.height * (digitIndex + (this.props.radix - this.props.maxValue - 1))
     const style = {
-      transform: `translateY(${yPosition}px)`,
+      transform: `translateY(${this.getDigitPositionY()}px)`,
       transitionTimingFunction: this.props.easingFunction,
       transitionDuration: `${this.props.easingDuration}ms`,
       transitionProperty: 'transform',

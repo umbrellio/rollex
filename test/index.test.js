@@ -9,19 +9,13 @@ beforeAll(function () {
 })
 
 describe('initialization', function () {
-  it('throws an error when no time options are provided', function () {
+  it('throws an error when options are provided incorrectly', function () {
     expect(
       () => shallow(<Counter />)
     ).toThrowError('provide either "seconds" or "to"')
-  })
-
-  it('throws an error when "to", "from" and "seconds" are provided', function () {
     expect(
       () => shallow(<Counter from={0} to={1} seconds={2} />)
     ).toThrowError('cannot use "to" and "from" with "seconds"')
-  })
-
-  it('throws an error when time options are provided incorrectly', function () {
     expect(
       () => shallow(<Counter from={0} />)
     ).toThrowError('provide either "seconds" or "to"')
@@ -55,6 +49,9 @@ describe('initialization', function () {
     expect(
       () => shallow(<Counter seconds={0} digitMap='111' />)
     ).toThrowError('"digitMap" must be an object')
+    expect(
+      () => shallow(<Counter to={0} direction='sobaka' />)
+    ).toThrowError('"direction" must be either up or down')
   })
 
   it('initializes when options are correct', function () {
@@ -94,6 +91,9 @@ describe('initialization', function () {
     expect(
       () => shallow(<Counter seconds={0} digitMap={{}} />)
     ).not.toThrow()
+    expect(
+      () => shallow(<Counter to={9} direction='up' />)
+    ).not.toThrow()
   })
 })
 
@@ -122,6 +122,15 @@ describe('rendering', function () {
     expect(counterSegments.at(1).props().digits).toEqual(['0', '6'])
     expect(counterSegments.at(2).props().digits).toEqual(['3', '5'])
     expect(counterSegments.at(3).props().digits).toEqual(['5', '4'])
+  })
+
+  it('works with "up" direction', function () {
+    const component = shallow(<Counter from={0} to={to} direction='up' />)
+    const counterSegments = component.find(CounterSegment)
+    expect(counterSegments.at(0).props().digits).toEqual(['0', '0'])
+    expect(counterSegments.at(1).props().digits).toEqual(['0', '0'])
+    expect(counterSegments.at(2).props().digits).toEqual(['0', '0'])
+    expect(counterSegments.at(3).props().digits).toEqual(['0', '0'])
   })
 
   test('minDigits', function () {
@@ -242,7 +251,12 @@ describe('state and props', function () {
       to: 1,
       interval: 1000,
       minPeriod: 'second',
-      maxPeriod: 'day'
+      maxPeriod: 'day',
+      radix: 10,
+      direction: 'down',
+      frozen: false,
+      easingFunction: null,
+      easingDuration: 300
     })
   })
 
@@ -252,7 +266,7 @@ describe('state and props', function () {
       <Counter from={10} to={20} interval={897}
         minDigits={3} maxDigits={4}
         minPeriod='minute' maxPeriod='hour'
-        syncTime radix={8}
+        syncTime radix={8} direction='up'
         easingFunction='myEasingFn' easingDuration={123}
         digitMap={{ '0': 'o' }} digitWrapper={digitWrapper}
       />
@@ -270,6 +284,7 @@ describe('state and props', function () {
       easingDuration: 123,
       radix: 8,
       frozen: false,
+      direction: 'up',
       digitMap: { '0': 'o' },
       digitWrapper: digitWrapper
     })
@@ -376,6 +391,21 @@ describe('counting', function () {
     jest.spyOn(Date.prototype, 'getTime').mockImplementation(() => newDate)
     jest.runTimersToTime(5000)
     expect(component.state().timeDiff).toBe(3000)
+  })
+
+  it('works with "up" direction', function () {
+    const component = mount(<Counter seconds={10} direction='up' />)
+    expect(component.state().timeDiff).toBe(10000)
+    expect(component.state().numbers.seconds).toBe(0)
+    jest.runTimersToTime(5000)
+    expect(component.state().timeDiff).toBe(5000)
+    expect(component.state().numbers.seconds).toBe(5)
+    jest.runTimersToTime(5000)
+    expect(component.state().timeDiff).toBe(0)
+    expect(component.state().numbers.seconds).toBe(10)
+    jest.runTimersToTime(5000)
+    expect(component.state().timeDiff).toBe(0)
+    expect(component.state().numbers.seconds).toBe(10)
   })
 })
 

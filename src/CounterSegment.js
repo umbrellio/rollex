@@ -22,6 +22,7 @@ const PERIOD_LIMITS = {
  *   digits={['0', '0']}
  *   period='days'
  *   radix={10}
+ *   direction='down'
  *   easingDuration={300}
  *   digitMap={{ '0' => 'o' }}
  *   digitWrapper={(digit) => digit}
@@ -32,6 +33,7 @@ class CounterSegment extends React.Component {
    * @property {string[]} digits - digits to display
    * @property {string} period
    * @property {number} radix
+   * @property {string} direction - counting direction
    * @property {string} easingFunction - easing function to use for digit transitions
    * @property {number} easingDuration - duration of digit transitions
    * @property {Object} digitMap - a map for transforming particular digits
@@ -41,6 +43,7 @@ class CounterSegment extends React.Component {
     digits: arrayOf(string).isRequired,
     period: string.isRequired,
     radix: number.isRequired,
+    direction: string.isRequired,
     easingFunction: string,
     easingDuration: number.isRequired,
     digitMap: objectOf(any).isRequired,
@@ -101,6 +104,7 @@ class CounterSegment extends React.Component {
             digit={digit}
             maxValue={this.getMaxValue(index)}
             radix={this.props.radix}
+            direction={this.props.direction}
             easingFunction={this.props.easingFunction}
             easingDuration={this.props.easingDuration}
             height={this.state.digitHeight}

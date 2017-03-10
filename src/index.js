@@ -46,6 +46,7 @@ export default class Counter extends React.Component {
    * @property {number} to - timestamp to count to
    * @property {number} seconds - a number of seconds to count
    * @property {number} interval - update interval
+   * @property {string} direction - direction to count in
    * @property {number} minDigits - minimum number of digits per segment
    * @property {number} maxDigits - maximum number of digits per segment
    * @property {string} minPeriod - smallest period to create a segment for
@@ -64,6 +65,7 @@ export default class Counter extends React.Component {
     to: number,
     seconds: number,
     interval: number,
+    direction: string,
     minDigits: number,
     maxDigits: number,
     minPeriod: string,
@@ -80,6 +82,7 @@ export default class Counter extends React.Component {
   static defaultProps = {
     interval: 1000,
     frozen: false,
+    direction: 'down',
     minPeriod: 'second',
     maxPeriod: 'day',
     easingFunction: null,
@@ -119,6 +122,7 @@ export default class Counter extends React.Component {
       minDigits,
       startTime,
       from,
+      initialTimeDiff: timeDiff,
       periods: this.getPeriods()
     }
     this.state.numbers = this.calculateNumbers(timeDiff)
@@ -250,9 +254,12 @@ export default class Counter extends React.Component {
    * @return {number}
    */
   calculatePeriodNumber (period, timeDiff) {
-    const date = new Date(timeDiff)
+    const timestamp = (this.props.direction === 'down')
+      ? timeDiff
+      : this.state.initialTimeDiff - timeDiff
+    const date = new Date(timestamp)
     if (this.props.maxPeriod + 's' === period) {
-      return Math.floor(timeDiff / PERIOD_DURATIONS[period])
+      return Math.floor(timestamp / PERIOD_DURATIONS[period])
     } else {
       return date[PERIOD_DURATION_FUNCTIONS[period]]()
     }
@@ -291,6 +298,7 @@ export default class Counter extends React.Component {
         key={index}
         digits={this.getDigits(numbers[period])}
         radix={this.props.radix}
+        direction={this.props.direction}
         easingFunction={this.props.easingFunction}
         easingDuration={this.props.easingDuration}
         digitMap={this.props.digitMap}
@@ -338,5 +346,8 @@ function validateProps (props) {
   }
   if (typeof props.digitMap !== 'object') {
     throw new Error('"digitMap" must be an object')
+  }
+  if (props.direction !== 'up' && props.direction !== 'down') {
+    throw new Error('"direction" must be either up or down')
   }
 }
