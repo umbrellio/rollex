@@ -4,7 +4,7 @@ import AbstractCounterDigit from './AbstractCounterDigit'
 const { number, string } = React.PropTypes
 
 /**
- * forces reflow of a given element
+ * Forces reflow of a given element.
  * @param {Element} element
  */
 function forceReflow (element) {
@@ -12,8 +12,8 @@ function forceReflow (element) {
 }
 
 /**
- * animated digit component
- * used when easing function is provided
+ * Animated digit component.
+ * Used when counter has an easing function.
  * @example
  * <AnimatedCounterDigit
  *   digit='5'
@@ -28,7 +28,6 @@ function forceReflow (element) {
  */
 class AnimatedCounterDigit extends AbstractCounterDigit {
   /**
-   * propTypes
    * @property {number} maxValue - maximum value used to build a digit lane
    * @property {string} easingFunction - easing function for transitions
    * @property {number} easingDuration - duration for digit transitions in milliseconds
@@ -40,17 +39,13 @@ class AnimatedCounterDigit extends AbstractCounterDigit {
     easingDuration: number.isRequired
   }
 
-  /**
-   * componentDidMount
-   * calls reset in case current digit is a zero
-   */
   componentDidMount () {
     this.reset({ target: ReactDOM.findDOMNode(this) })
   }
 
   /**
-   * changes vertical position of digit lane without triggering a transition
-   * in a lane like [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0] goes from first zero to last zero instantly
+   * Changes vertical position of digit lane without triggering a transition.
+   * In a lane like [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0] goes from first zero to last zero instantly.
    * @param {SyntheticEvent} event
    */
   reset = (event) => {
@@ -63,7 +58,7 @@ class AnimatedCounterDigit extends AbstractCounterDigit {
   }
 
   /**
-   * creates a div for a digit lane member
+   * Creates a div for a digit lane member.
    * @param {string} digit
    * @param {number} key - index to use for React's key property
    * @return {ReactElement}
@@ -77,9 +72,9 @@ class AnimatedCounterDigit extends AbstractCounterDigit {
   }
 
   /**
-   * builds the digit lane
-   * digit lane contains all available digits
-   * it changes its vertical position in order to emulate counter rolling
+   * Builds the digit lane.
+   * Digit lane contains all available digits.
+   * It changes its vertical position in order to emulate counter rolling.
    * @return {ReactElement[]}
    */
   buildDigitLane () {
@@ -92,7 +87,7 @@ class AnimatedCounterDigit extends AbstractCounterDigit {
   }
 
   /**
-   * render
+   * Renders the digit.
    * @return {ReactElement} digit
    */
   render () {
