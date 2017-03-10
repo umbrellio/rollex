@@ -269,6 +269,7 @@ describe('state and props', function () {
       easingFunction: 'myEasingFn',
       easingDuration: 123,
       radix: 8,
+      frozen: false,
       digitMap: { '0': 'o' },
       digitWrapper: digitWrapper
     })
@@ -324,6 +325,38 @@ describe('counting', function () {
     jest.runTimersToTime(10000)
     expect(component.state().timeDiff).toBe(0)
     expect(component.state().numbers.seconds).toBe(0)
+  })
+
+  it('stops to count if frozen prop is updated to true', function () {
+    component = mount(<Counter from={0} to={10000} />)
+    component.instance().stop = jest.genMockFunction()
+    component.instance().forceUpdate()
+    component.setProps({
+      frozen: true
+    }, () => expect(component.instance().stop.mock.calls.length).toBe(1))
+
+    const frozenComponent = mount(<Counter from={0} to={10000} frozen />)
+    frozenComponent.instance().stop = jest.genMockFunction()
+    frozenComponent.instance().forceUpdate()
+    frozenComponent.setProps({
+      frozen: true
+    }, () => expect(frozenComponent.instance().stop.mock.calls.length).toBe(0))
+  })
+
+  it('starts to count if frozen prop is updated to false', function () {
+    component = mount(<Counter from={0} to={10000} />)
+    component.instance().start = jest.genMockFunction()
+    component.instance().forceUpdate()
+    component.setProps({
+      frozen: false
+    }, () => expect(component.instance().start.mock.calls.length).toBe(0))
+
+    const frozenComponent = mount(<Counter from={0} to={10000} frozen />)
+    frozenComponent.instance().start = jest.genMockFunction()
+    frozenComponent.instance().forceUpdate()
+    frozenComponent.setProps({
+      frozen: false
+    }, () => expect(frozenComponent.instance().start.mock.calls.length).toBe(1))
   })
 
   it('syncs time when syncTime is set', function () {
