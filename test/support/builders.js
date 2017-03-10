@@ -19,6 +19,7 @@ export class CounterSegmentBuilder extends AbstractBuilder {
     digits = ['0', '0'],
     period = 'seconds',
     radix = 10,
+    direction = 'down',
     easingFunction = null,
     easingDuration = 300,
     digitMap = {},
@@ -26,7 +27,7 @@ export class CounterSegmentBuilder extends AbstractBuilder {
   } = {}) {
     return React.createElement(
       CounterSegment,
-      { digits, period, radix, easingFunction, easingDuration, digitMap, digitWrapper }
+      { digits, period, radix, direction, easingFunction, easingDuration, digitMap, digitWrapper }
     )
   }
 }
@@ -51,6 +52,7 @@ export class AnimatedCounterDigitBuilder extends AbstractBuilder {
     digit = '0',
     height = 18,
     radix = 10,
+    direction = 'down',
     digitMap = {},
     digitWrapper = (digit) => <span>{digit}</span>,
     maxValue = 9,
@@ -59,7 +61,7 @@ export class AnimatedCounterDigitBuilder extends AbstractBuilder {
   } = {}) {
     return React.createElement(
       AnimatedCounterDigit,
-      { digit, height, radix, digitMap, digitWrapper, maxValue, easingFunction, easingDuration }
+      { digit, height, radix, direction, digitMap, digitWrapper, maxValue, easingFunction, easingDuration }
     )
   }
 }
