@@ -2,8 +2,8 @@ import React from 'react'
 import AbstractCounterDigit from './AbstractCounterDigit'
 
 /**
- * static digit component
- * used when no easing function is set
+ * Static digit component.
+ * Used when no easing function is set for a counter.
  * @example
  * <StaticCounterDigit
  *   digit='5'
@@ -15,7 +15,7 @@ import AbstractCounterDigit from './AbstractCounterDigit'
  */
 class StaticCounterDigit extends AbstractCounterDigit {
   /**
-   * render
+   * Renders the digit.
    * @return {ReactElement} digit
    */
   render () {

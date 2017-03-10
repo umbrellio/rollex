@@ -2,7 +2,8 @@
   "parser": "babel-eslint",
   "extends": ["standard", "standard-react"],
   "env": {
-    "jest": true
+    "jest": true,
+    "browser": true
   },
   "rules": {
     "no-redeclare": 0

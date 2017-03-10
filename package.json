@@ -33,6 +33,7 @@
     "lint-staged"
   ],
   "jest": {
+    "browser": true,
     "collectCoverageFrom": [
       "src/**/*.js",
       "!src/docs/*"

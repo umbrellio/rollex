@@ -1,10 +1,11 @@
 import React from 'react'
 import CounterSegment from './CounterSegment'
+import GlobalIntervals from './globalIntervals'
 const { number, string, bool, objectOf, any, func } = React.PropTypes
 
 /**
  * @type {string[]}
- * names for available periods
+ * Names for available periods.
  */
 const PERIODS = [
   'days',
@@ -15,7 +16,7 @@ const PERIODS = [
 
 /**
  * @type {Object}
- * durations for available periods (in milliseconds)
+ * Durations for available periods (in milliseconds).
  */
 const PERIOD_DURATIONS = {
   'days': 86400000,
@@ -26,7 +27,7 @@ const PERIOD_DURATIONS = {
 
 /**
  * @type {Object}
- * time calculation functions for available periods
+ * Time calculation functions for available periods.
  */
 const PERIOD_DURATION_FUNCTIONS = {
   'hours': 'getUTCHours',
@@ -35,13 +36,12 @@ const PERIOD_DURATION_FUNCTIONS = {
 }
 
 /**
- * main counter component
+ * Main counter component.
  * @example
  * <Counter seconds={98} />
  */
 export default class Counter extends React.Component {
   /**
-   * propTypes
    * @property {number} from - timestamp to count from
    * @property {number} to - timestamp to count to
    * @property {number} seconds - a number of seconds to count
@@ -118,6 +118,12 @@ export default class Counter extends React.Component {
       periods: this.getPeriods()
     }
     this.state.numbers = this.calculateNumbers(timeDiff)
+
+    /**
+     * Creates a function bound to "this"
+     * for subscribing to and unsubscribing from global Rollex tick event.
+     */
+    this.boundTick = this.tick.bind(this)
   }
 
   componentDidMount () {
@@ -128,6 +134,10 @@ export default class Counter extends React.Component {
     if (!this.props.frozen) this.stop()
   }
 
+  /**
+   * Handles prop updates.
+   * @param {Object} nextProps - new props
+   */
   componentWillReceiveProps (nextProps) {
     if (this.props.frozen !== nextProps.frozen) {
       if (nextProps.frozen) {
@@ -139,21 +149,23 @@ export default class Counter extends React.Component {
   }
 
   /**
-   * start the countdown
+   * Starts the countdown.
    */
   start () {
-    this._interval = setInterval(() => this.tick(), this.props.interval)
+    GlobalIntervals.ensureExistence(this.props.interval)
+    GlobalIntervals.subscribe(this.props.interval, this.boundTick)
   }
 
   /**
-   * pause / stop the countdown
+   * Pauses the countdown.
    */
   stop () {
-    clearInterval(this._interval)
+    GlobalIntervals.unsubscribe(this.props.interval, this.boundTick)
+    GlobalIntervals.cleanup(this.props.interval)
   }
 
   /**
-   * handle counter tick
+   * Handles counter ticks.
    */
   tick () {
     const newTimeDiff = this.getTimeDiff()
@@ -173,7 +185,7 @@ export default class Counter extends React.Component {
   }
 
   /**
-   * calculates minimum number of digits for current radix
+   * Calculates minimum number of digits for current radix.
    * @return {number}
    */
   getInitialMinDigits () {
@@ -181,7 +193,7 @@ export default class Counter extends React.Component {
   }
 
   /**
-   * get current amount of time to count from
+   * Gets current amount of time to count from.
    * @return {number} timestamp
    */
   getTimeDiff () {
@@ -193,7 +205,7 @@ export default class Counter extends React.Component {
   }
 
   /**
-   * get an array of periods to create segments for
+   * Gets an array of periods to create segments for.
    * @return {string[]} periods
    */
   getPeriods () {
@@ -204,7 +216,7 @@ export default class Counter extends React.Component {
   }
 
   /**
-   * get CSS classes for main counter
+   * Gets CSS classes for main counter.
    * @return {string} class names
    */
   getCSSClassNames () {
@@ -213,7 +225,7 @@ export default class Counter extends React.Component {
   }
 
   /**
-   * calculate numbers for each period for a given timestamp
+   * Calculates numbers for each period for a given timestamp.
    * @param {number} timeDiff - timestamp to calculate numbers for
    * @return {Object} numbers - a map from periods to corresponding numbers
    */
@@ -226,7 +238,7 @@ export default class Counter extends React.Component {
   }
 
   /**
-   * calculate number for given period and timestamp
+   * Calculates number for given period and timestamp.
    * @param {string} period - period to calculate number for
    * @param {number} timeDiff - timestamp to use for calculation
    * @return {number}
@@ -241,7 +253,7 @@ export default class Counter extends React.Component {
   }
 
   /**
-   * get correct digits for given number accounting for counter's radix, minDigits and maxDigits
+   * Gets correct digits for given number accounting for counter's radix, minDigits and maxDigits.
    * @param {number} number - number to get digits for
    * @return {string[]} digits
    */
@@ -262,7 +274,7 @@ export default class Counter extends React.Component {
   }
 
   /**
-   * render
+   * Renders the counter.
    * @return {ReactElement} counter
    */
   render () {
@@ -288,7 +300,7 @@ export default class Counter extends React.Component {
 }
 
 /**
- * validate counter's props
+ * Validates counter's props.
  * @param {Object} props - props to validate
  */
 function validateProps (props) {

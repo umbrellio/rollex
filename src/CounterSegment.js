@@ -6,7 +6,7 @@ const { arrayOf, objectOf, number, string, any, func } = React.PropTypes
 
 /**
  * @type {Object}
- * maximum decimal values for available periods' numbers
+ * Maximum decimal values for available periods' numbers.
  */
 const PERIOD_LIMITS = {
   'seconds': 59,
@@ -16,7 +16,7 @@ const PERIOD_LIMITS = {
 }
 
 /**
- * counter segment component
+ * Counter segment component.
  * @example
  * <CounterSegment
  *   digits={['0', '0']}
@@ -29,7 +29,6 @@ const PERIOD_LIMITS = {
  */
 class CounterSegment extends React.Component {
   /**
-   * propTypes
    * @property {string[]} digits - digits to display
    * @property {string} period
    * @property {number} radix
@@ -50,12 +49,14 @@ class CounterSegment extends React.Component {
 
   /**
    * constructor
-   * calculates height of a single digit
    * @param {Object} props
    */
   constructor (props) {
     super(props)
 
+    /**
+     * Calculates height of a single digit.
+     */
     const testDigit = document.createElement('div')
     testDigit.innerHTML = ReactDOMServer.renderToString(this.props.digitWrapper('0'))
     document.getElementsByTagName('body')[0].appendChild(testDigit)
@@ -71,8 +72,8 @@ class CounterSegment extends React.Component {
   }
 
   /**
-   * get maximum value for period's digit with account for radix
-   * used for building digit lanes in {@link AnimatedCounterDigit}
+   * Gets maximum value for period's digit with account for radix.
+   * Used for building digit lanes in {@link AnimatedCounterDigit}.
    * @param {number} index - digit's index in number
    * @return {number} maxValue
    */
@@ -88,7 +89,7 @@ class CounterSegment extends React.Component {
   }
 
   /**
-   * map digits to corresponding components according to easing function
+   * Maps digits to corresponding components according to easing function.
    * @return {ReactElement[]}
    */
   buildDigits () {
@@ -123,7 +124,7 @@ class CounterSegment extends React.Component {
   }
 
   /**
-   * render
+   * Renders the segment.
    * @return {ReactElement} counter segment
    */
   render () {

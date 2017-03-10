@@ -2,11 +2,10 @@ import React from 'react'
 const { objectOf, any, number, string, func } = React.PropTypes
 
 /**
- * common logic for {@link StaticCounterDigit} and {@link AnimatedCounterDigit}
+ * Common logic for {@link StaticCounterDigit} and {@link AnimatedCounterDigit}.
  */
 class AbstractCounterDigit extends React.Component {
   /**
-   * propTypes
    * @property {string} digit - digit to display
    * @property {number} height - digit height in pixels
    * @property {number} radix
@@ -22,7 +21,7 @@ class AbstractCounterDigit extends React.Component {
   }
 
   /**
-   * decorates given digit according to radix, digit map and digit wrapper
+   * Decorates given digit according to radix, digit map and digit wrapper.
    * @param {number} digit
    * @return {string} decoratedDigit
    */

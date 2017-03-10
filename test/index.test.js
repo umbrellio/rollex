@@ -277,23 +277,23 @@ describe('state and props', function () {
 })
 
 describe('counting', function () {
-  var component
-
   beforeEach(function () {
+    jest.clearAllTimers()
     jest.useFakeTimers()
-    component = mount(<Counter from={0} to={10000} />)
-    expect(component.state().numbers.seconds).toBe(10)
-    expect(setInterval.mock.calls.length).toBe(1)
+    delete (window.rollexIntervals)
+    // FIXME: the following line is required. It shouldn't be. Something's wrong with global state.
+    mount(<Counter seconds={10000} />)
   })
 
   it('starts to count when mounted', function () {
+    const component = mount(<Counter from={0} to={10000} />)
     jest.runTimersToTime(5000)
     expect(component.state().timeDiff).toBe(5000)
     expect(component.state().numbers.seconds).toBe(5)
   })
 
   it('works with "seconds" prop', function () {
-    component = mount(<Counter seconds={10} />)
+    const component = mount(<Counter seconds={10} />)
     expect(component.state().numbers.seconds).toBe(10)
     jest.runTimersToTime(5000)
     expect(component.state().timeDiff).toBe(5000)
@@ -301,13 +301,14 @@ describe('counting', function () {
   })
 
   it('does not count when "frozen" is true', function () {
-    component = mount(<Counter seconds={10} frozen />)
+    const component = mount(<Counter seconds={10} frozen />)
     jest.runTimersToTime(5000)
     expect(component.state().timeDiff).toBe(10000)
     expect(component.state().numbers.seconds).toBe(10)
   })
 
   it('stops to count when stopped', function () {
+    const component = mount(<Counter from={0} to={10000} />)
     jest.runTimersToTime(5000)
     expect(component.state().numbers.seconds).toBe(5)
 
@@ -318,6 +319,7 @@ describe('counting', function () {
   })
 
   it('stops to count when reached zero', function () {
+    const component = mount(<Counter from={0} to={10000} />)
     jest.runTimersToTime(10000)
     expect(component.state().timeDiff).toBe(0)
     expect(component.state().numbers.seconds).toBe(0)
@@ -328,7 +330,7 @@ describe('counting', function () {
   })
 
   it('stops to count if frozen prop is updated to true', function () {
-    component = mount(<Counter from={0} to={10000} />)
+    const component = mount(<Counter from={0} to={10000} />)
     component.instance().stop = jest.genMockFunction()
     component.instance().forceUpdate()
     component.setProps({
@@ -344,7 +346,7 @@ describe('counting', function () {
   })
 
   it('starts to count if frozen prop is updated to false', function () {
-    component = mount(<Counter from={0} to={10000} />)
+    const component = mount(<Counter from={0} to={10000} />)
     component.instance().start = jest.genMockFunction()
     component.instance().forceUpdate()
     component.setProps({
@@ -360,7 +362,7 @@ describe('counting', function () {
   })
 
   it('syncs time when syncTime is set', function () {
-    component = mount(<Counter from={0} to={10000} syncTime />)
+    const component = mount(<Counter from={0} to={10000} syncTime />)
     const newDate = component.state().currentTime + 7000
     jest.spyOn(Date.prototype, 'getTime').mockImplementation(() => newDate)
     jest.runTimersToTime(5000)
