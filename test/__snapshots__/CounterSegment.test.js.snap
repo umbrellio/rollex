@@ -66,7 +66,7 @@ exports[`snaphots matches snapshots 2`] = `
       easingDuration={300}
       easingFunction="ease-in"
       height={0}
-      maxValue={0}
+      maxValue={9}
       radix={10}
     />
   </div>

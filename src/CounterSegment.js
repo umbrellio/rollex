@@ -77,10 +77,13 @@ class CounterSegment extends React.Component {
    * @return {number} maxValue
    */
   getMaxValue (index) {
-    const maxValue = PERIOD_LIMITS[this.props.period].toString(this.props.radix)
-    const maxDigitPos = maxValue.length
+    const maxValue = PERIOD_LIMITS[this.props.period]
+    if (!maxValue) return this.props.radix - 1
+
+    const maxValueString = maxValue.toString(this.props.radix)
+    const maxDigitPos = maxValueString.length
     return (index === this.props.digits.length - maxDigitPos)
-      ? parseInt(maxValue[0])
+      ? parseInt(maxValueString[0])
       : this.props.radix - 1
   }
 
