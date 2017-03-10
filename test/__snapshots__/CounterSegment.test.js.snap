@@ -21,7 +21,7 @@ exports[`snaphots matches snapshots 1`] = `
       radix={10}
     />
     <StaticCounterDigit
-      digit="2"
+      digit="0"
       digitMap={Object {}}
       digitWrapper={[Function]}
       height={0}
@@ -31,7 +31,7 @@ exports[`snaphots matches snapshots 1`] = `
   <div
     className="rollex-label"
   >
-    days
+    seconds
   </div>
 </div>
 `;
@@ -56,11 +56,11 @@ exports[`snaphots matches snapshots 2`] = `
       easingDuration={300}
       easingFunction="ease-in"
       height={0}
-      maxValue={9}
+      maxValue={5}
       radix={10}
     />
     <AnimatedCounterDigit
-      digit="2"
+      digit="0"
       digitMap={Object {}}
       digitWrapper={[Function]}
       easingDuration={300}
@@ -73,7 +73,7 @@ exports[`snaphots matches snapshots 2`] = `
   <div
     className="rollex-label"
   >
-    days
+    seconds
   </div>
 </div>
 `;

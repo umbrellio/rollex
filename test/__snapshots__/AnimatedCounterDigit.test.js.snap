@@ -22,9 +22,9 @@ exports[`matches snapshot 1`] = `
       }
     }
   >
-    <div>
+    <span>
       0
-    </div>
+    </span>
   </div>
   <div
     className="rollex-digit-lane-label"
@@ -34,9 +34,9 @@ exports[`matches snapshot 1`] = `
       }
     }
   >
-    <div>
+    <span>
       1
-    </div>
+    </span>
   </div>
   <div
     className="rollex-digit-lane-label"
@@ -46,9 +46,9 @@ exports[`matches snapshot 1`] = `
       }
     }
   >
-    <div>
+    <span>
       2
-    </div>
+    </span>
   </div>
   <div
     className="rollex-digit-lane-label"
@@ -58,9 +58,9 @@ exports[`matches snapshot 1`] = `
       }
     }
   >
-    <div>
+    <span>
       3
-    </div>
+    </span>
   </div>
   <div
     className="rollex-digit-lane-label"
@@ -70,9 +70,9 @@ exports[`matches snapshot 1`] = `
       }
     }
   >
-    <div>
+    <span>
       4
-    </div>
+    </span>
   </div>
   <div
     className="rollex-digit-lane-label"
@@ -82,9 +82,9 @@ exports[`matches snapshot 1`] = `
       }
     }
   >
-    <div>
+    <span>
       5
-    </div>
+    </span>
   </div>
   <div
     className="rollex-digit-lane-label"
@@ -94,9 +94,9 @@ exports[`matches snapshot 1`] = `
       }
     }
   >
-    <div>
+    <span>
       6
-    </div>
+    </span>
   </div>
   <div
     className="rollex-digit-lane-label"
@@ -106,9 +106,9 @@ exports[`matches snapshot 1`] = `
       }
     }
   >
-    <div>
+    <span>
       7
-    </div>
+    </span>
   </div>
   <div
     className="rollex-digit-lane-label"
@@ -118,9 +118,9 @@ exports[`matches snapshot 1`] = `
       }
     }
   >
-    <div>
+    <span>
       8
-    </div>
+    </span>
   </div>
   <div
     className="rollex-digit-lane-label"
@@ -130,9 +130,9 @@ exports[`matches snapshot 1`] = `
       }
     }
   >
-    <div>
+    <span>
       9
-    </div>
+    </span>
   </div>
   <div
     className="rollex-digit-lane-label"
@@ -142,9 +142,9 @@ exports[`matches snapshot 1`] = `
       }
     }
   >
-    <div>
+    <span>
       0
-    </div>
+    </span>
   </div>
 </div>
 `;
