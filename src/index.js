@@ -79,6 +79,7 @@ export default class Counter extends React.Component {
 
   static defaultProps = {
     interval: 1000,
+    frozen: false,
     minPeriod: 'second',
     maxPeriod: 'day',
     easingFunction: null,
@@ -120,27 +121,35 @@ export default class Counter extends React.Component {
   }
 
   componentDidMount () {
-    this.start()
+    if (!this.props.frozen) this.start()
   }
 
   componentWillUnmount () {
-    this.stop()
+    if (!this.props.frozen) this.stop()
+  }
+
+  componentWillReceiveProps (nextProps) {
+    if (this.props.frozen !== nextProps.frozen) {
+      if (nextProps.frozen) {
+        this.stop()
+      } else {
+        this.start()
+      }
+    }
   }
 
   /**
    * start the countdown
    */
   start () {
-    if (!this.props.frozen) {
-      this._interval = setInterval(() => this.tick(), this.props.interval)
-    }
+    this._interval = setInterval(() => this.tick(), this.props.interval)
   }
 
   /**
    * pause / stop the countdown
    */
   stop () {
-    if (!this.props.frozen) clearInterval(this._interval)
+    clearInterval(this._interval)
   }
 
   /**
