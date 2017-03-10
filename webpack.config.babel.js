@@ -18,7 +18,7 @@ export default function (env = {}) {
   }
 
   if (env.pages) {
-    config.entry = './docs'
+    config.entry = './docs/'
     config.output.path = resolve('docs/')
   } else {
     config.entry = './'
