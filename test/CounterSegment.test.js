@@ -99,5 +99,20 @@ describe('rendering', function () {
     const dozenalDigits = dozenalComponent.find(AnimatedCounterDigit)
     expect(dozenalDigits.at(0).props().maxValue).toBe(4)
     expect(dozenalDigits.at(1).props().maxValue).toBe(11)
+
+    const daysComponent = mount(
+      <CounterSegment
+        digits={['9', '8']}
+        period='days'
+        radix={10}
+        easingFunction={'ease-in'}
+        easingDuration={399}
+        digitMap={{}}
+        digitWrapper={digitWrapper}
+      />
+    )
+    const daysComponentDigits = daysComponent.find(AnimatedCounterDigit)
+    expect(daysComponentDigits.at(0).props().maxValue).toBe(9)
+    expect(daysComponentDigits.at(1).props().maxValue).toBe(9)
   })
 })

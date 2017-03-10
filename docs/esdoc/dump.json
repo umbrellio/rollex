@@ -1,0 +1,2197 @@
+[
+  {
+    "__docId__": 0,
+    "kind": "file",
+    "name": "src/AbstractCounterDigit.js",
+    "content": "import React from 'react'\nconst { objectOf, any, number, string, func } = React.PropTypes\n\n/**\n * common logic for {@link StaticCounterDigit} and {@link AnimatedCounterDigit}\n */\nclass AbstractCounterDigit extends React.Component {\n  /**\n   * propTypes\n   * @property {string} digit - digit to display\n   * @property {number} height - digit height in pixels\n   * @property {number} radix\n   * @property {Object} digitMap - a map for transforming particular digits\n   * @property {function(digit: number)} digitWrapper - a function for wrapping mapped digits\n   */\n  static propTypes = {\n    digit: string.isRequired,\n    height: number.isRequired,\n    radix: number.isRequired,\n    digitMap: objectOf(any).isRequired,\n    digitWrapper: func.isRequired\n  }\n\n  /**\n   * decorates given digit according to radix, digit map and digit wrapper\n   * @param {number} digit\n   * @return {string} decoratedDigit\n   */\n  decorateDigit (digit) {\n    const digitString = (digit).toString(this.props.radix)\n    return this.props.digitWrapper(this.props.digitMap[digitString] || digitString)\n  }\n}\n\nexport default AbstractCounterDigit\n",
+    "static": true,
+    "longname": "src/AbstractCounterDigit.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 1,
+    "kind": "variable",
+    "name": "objectOf",
+    "memberof": "src/AbstractCounterDigit.js",
+    "static": true,
+    "longname": "src/AbstractCounterDigit.js~objectOf",
+    "access": null,
+    "export": false,
+    "importPath": "rollex/src/AbstractCounterDigit.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 2,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 2,
+    "kind": "class",
+    "name": "AbstractCounterDigit",
+    "memberof": "src/AbstractCounterDigit.js",
+    "static": true,
+    "longname": "src/AbstractCounterDigit.js~AbstractCounterDigit",
+    "access": null,
+    "export": true,
+    "importPath": "rollex/src/AbstractCounterDigit.js",
+    "importStyle": "AbstractCounterDigit",
+    "description": "common logic for {@link StaticCounterDigit} and {@link AnimatedCounterDigit}",
+    "lineNumber": 7,
+    "interface": false,
+    "extends": [
+      "react~React.Component"
+    ]
+  },
+  {
+    "__docId__": 3,
+    "kind": "member",
+    "name": "propTypes",
+    "memberof": "src/AbstractCounterDigit.js~AbstractCounterDigit",
+    "static": true,
+    "longname": "src/AbstractCounterDigit.js~AbstractCounterDigit.propTypes",
+    "access": null,
+    "description": "propTypes",
+    "lineNumber": 16,
+    "properties": [
+      {
+        "nullable": null,
+        "types": [
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "digit",
+        "description": "digit to display"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "height",
+        "description": "digit height in pixels"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "radix",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "digitMap",
+        "description": "a map for transforming particular digits"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "function(digit: number)"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "digitWrapper",
+        "description": "a function for wrapping mapped digits"
+      }
+    ],
+    "type": {
+      "types": [
+        "{\"digit\": *, \"height\": *, \"radix\": *, \"digitMap\": *, \"digitWrapper\": *}"
+      ]
+    }
+  },
+  {
+    "__docId__": 4,
+    "kind": "method",
+    "name": "decorateDigit",
+    "memberof": "src/AbstractCounterDigit.js~AbstractCounterDigit",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/AbstractCounterDigit.js~AbstractCounterDigit#decorateDigit",
+    "access": null,
+    "description": "decorates given digit according to radix, digit map and digit wrapper",
+    "lineNumber": 29,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "digit",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "string"
+      ],
+      "spread": false,
+      "description": "decoratedDigit"
+    }
+  },
+  {
+    "__docId__": 5,
+    "kind": "file",
+    "name": "src/AnimatedCounterDigit.js",
+    "content": "import React from 'react'\nimport ReactDOM from 'react-dom'\nimport AbstractCounterDigit from './AbstractCounterDigit'\nconst { number, string } = React.PropTypes\n\n/**\n * forces reflow of a given element\n * @param {Element} element\n */\nfunction forceReflow (element) {\n  element.offsetHeight // eslint-disable-line no-unused-expressions\n}\n\n/**\n * animated digit component\n * used when easing function is provided\n * @example\n * <AnimatedCounterDigit\n *   digit='5'\n *   height={18}\n *   radix={10}\n *   digitMap={{}}\n *   digitWrapper={(digit) => digit}\n *   maxValue={9}\n *   easingFunction='ease-in'\n *   easingDuration={200}\n * />\n */\nclass AnimatedCounterDigit extends AbstractCounterDigit {\n  /**\n   * propTypes\n   * @property {number} maxValue - maximum value used to build a digit lane\n   * @property {string} easingFunction - easing function for transitions\n   * @property {number} easingDuration - duration for digit transitions in milliseconds\n   */\n  static propTypes = {\n    ...AbstractCounterDigit.propTypes,\n    maxValue: number.isRequired,\n    easingFunction: string.isRequired,\n    easingDuration: number.isRequired\n  }\n\n  /**\n   * componentDidMount\n   * calls reset in case current digit is a zero\n   */\n  componentDidMount () {\n    this.reset({ target: ReactDOM.findDOMNode(this) })\n  }\n\n  /**\n   * changes vertical position of digit lane without triggering a transition\n   * in a lane like [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0] goes from first zero to last zero instantly\n   * @param {SyntheticEvent} event\n   */\n  reset = (event) => {\n    if (this.props.digit === '0') {\n      event.target.style.transitionProperty = 'none'\n      event.target.style.transform = `translateY(-${this.props.height * this.props.radix}px)`\n      forceReflow(event.target)\n      event.target.style.transitionProperty = ''\n    }\n  }\n\n  /**\n   * creates a div for a digit lane member\n   * @param {string} digit\n   * @param {number} key - index to use for React's key property\n   * @return {ReactElement}\n   */\n  buildDigitDiv (digit, key) {\n    return (\n      <div key={key || digit} className='rollex-digit-lane-label' style={{ height: this.props.height }}>\n        {this.decorateDigit(digit)}\n      </div>\n    )\n  }\n\n  /**\n   * builds the digit lane\n   * digit lane contains all available digits\n   * it changes its vertical position in order to emulate counter rolling\n   * @return {ReactElement[]}\n   */\n  buildDigitLane () {\n    var digitDivs = []\n    for (let i = 0; i <= this.props.maxValue; i++) {\n      digitDivs.push(this.buildDigitDiv(i))\n    }\n    digitDivs.push(this.buildDigitDiv(0, this.props.radix + 1))\n    return digitDivs\n  }\n\n  /**\n   * render\n   * @return {ReactElement} digit\n   */\n  render () {\n    const digitIndex = parseInt(this.props.digit, this.props.radix)\n    const yPosition = -this.props.height * (digitIndex + (this.props.radix - this.props.maxValue - 1))\n    const style = {\n      transform: `translateY(${yPosition}px)`,\n      transitionTimingFunction: this.props.easingFunction,\n      transitionDuration: `${this.props.easingDuration}ms`,\n      transitionProperty: 'transform',\n      willChange: 'transform'\n    }\n\n    return (\n      <div className='rollex-digit' onTransitionEnd={this.reset} style={style}>\n        {this.buildDigitLane()}\n      </div>\n    )\n  }\n}\n\nexport default AnimatedCounterDigit\n",
+    "static": true,
+    "longname": "src/AnimatedCounterDigit.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 6,
+    "kind": "variable",
+    "name": "number",
+    "memberof": "src/AnimatedCounterDigit.js",
+    "static": true,
+    "longname": "src/AnimatedCounterDigit.js~number",
+    "access": null,
+    "export": false,
+    "importPath": "rollex/src/AnimatedCounterDigit.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 4,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 7,
+    "kind": "function",
+    "name": "forceReflow",
+    "memberof": "src/AnimatedCounterDigit.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/AnimatedCounterDigit.js~forceReflow",
+    "access": null,
+    "export": false,
+    "importPath": "rollex/src/AnimatedCounterDigit.js",
+    "importStyle": null,
+    "description": "forces reflow of a given element",
+    "lineNumber": 10,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Element"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "element",
+        "description": ""
+      }
+    ]
+  },
+  {
+    "__docId__": 8,
+    "kind": "class",
+    "name": "AnimatedCounterDigit",
+    "memberof": "src/AnimatedCounterDigit.js",
+    "static": true,
+    "longname": "src/AnimatedCounterDigit.js~AnimatedCounterDigit",
+    "access": null,
+    "export": true,
+    "importPath": "rollex/src/AnimatedCounterDigit.js",
+    "importStyle": "AnimatedCounterDigit",
+    "description": "animated digit component\nused when easing function is provided",
+    "examples": [
+      "<AnimatedCounterDigit\n  digit='5'\n  height={18}\n  radix={10}\n  digitMap={{}}\n  digitWrapper={(digit) => digit}\n  maxValue={9}\n  easingFunction='ease-in'\n  easingDuration={200}\n/>"
+    ],
+    "lineNumber": 29,
+    "interface": false,
+    "extends": [
+      "src/AbstractCounterDigit.js~AbstractCounterDigit"
+    ]
+  },
+  {
+    "__docId__": 9,
+    "kind": "member",
+    "name": "propTypes",
+    "memberof": "src/AnimatedCounterDigit.js~AnimatedCounterDigit",
+    "static": true,
+    "longname": "src/AnimatedCounterDigit.js~AnimatedCounterDigit.propTypes",
+    "access": null,
+    "description": "propTypes",
+    "lineNumber": 36,
+    "properties": [
+      {
+        "nullable": null,
+        "types": [
+          "number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "maxValue",
+        "description": "maximum value used to build a digit lane"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "easingFunction",
+        "description": "easing function for transitions"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "easingDuration",
+        "description": "duration for digit transitions in milliseconds"
+      }
+    ],
+    "type": {
+      "types": [
+        "{...undefined: Object, \"maxValue\": *, \"easingFunction\": *, \"easingDuration\": *}"
+      ]
+    }
+  },
+  {
+    "__docId__": 10,
+    "kind": "method",
+    "name": "componentDidMount",
+    "memberof": "src/AnimatedCounterDigit.js~AnimatedCounterDigit",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/AnimatedCounterDigit.js~AnimatedCounterDigit#componentDidMount",
+    "access": null,
+    "description": "componentDidMount\ncalls reset in case current digit is a zero",
+    "lineNumber": 47,
+    "params": []
+  },
+  {
+    "__docId__": 11,
+    "kind": "member",
+    "name": "reset",
+    "memberof": "src/AnimatedCounterDigit.js~AnimatedCounterDigit",
+    "static": false,
+    "longname": "src/AnimatedCounterDigit.js~AnimatedCounterDigit#reset",
+    "access": null,
+    "description": "changes vertical position of digit lane without triggering a transition\nin a lane like [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0] goes from first zero to last zero instantly",
+    "lineNumber": 56,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "SyntheticEvent"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "event",
+        "description": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 12,
+    "kind": "method",
+    "name": "buildDigitDiv",
+    "memberof": "src/AnimatedCounterDigit.js~AnimatedCounterDigit",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/AnimatedCounterDigit.js~AnimatedCounterDigit#buildDigitDiv",
+    "access": null,
+    "description": "creates a div for a digit lane member",
+    "lineNumber": 71,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "digit",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "key",
+        "description": "index to use for React's key property"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "ReactElement"
+      ],
+      "spread": false,
+      "description": ""
+    }
+  },
+  {
+    "__docId__": 13,
+    "kind": "method",
+    "name": "buildDigitLane",
+    "memberof": "src/AnimatedCounterDigit.js~AnimatedCounterDigit",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/AnimatedCounterDigit.js~AnimatedCounterDigit#buildDigitLane",
+    "access": null,
+    "description": "builds the digit lane\ndigit lane contains all available digits\nit changes its vertical position in order to emulate counter rolling",
+    "lineNumber": 85,
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "ReactElement[]"
+      ],
+      "spread": false,
+      "description": ""
+    }
+  },
+  {
+    "__docId__": 14,
+    "kind": "method",
+    "name": "render",
+    "memberof": "src/AnimatedCounterDigit.js~AnimatedCounterDigit",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/AnimatedCounterDigit.js~AnimatedCounterDigit#render",
+    "access": null,
+    "description": "render",
+    "lineNumber": 98,
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "ReactElement"
+      ],
+      "spread": false,
+      "description": "digit"
+    }
+  },
+  {
+    "__docId__": 15,
+    "kind": "file",
+    "name": "src/CounterSegment.js",
+    "content": "import React from 'react'\nimport ReactDOMServer from 'react-dom/server'\nimport AnimatedCounterDigit from './AnimatedCounterDigit'\nimport StaticCounterDigit from './StaticCounterDigit'\nconst { arrayOf, objectOf, number, string, any, func } = React.PropTypes\n\n/**\n * @type {Object}\n * maximum decimal values for available periods' numbers\n */\nconst PERIOD_LIMITS = {\n  'seconds': 59,\n  'minutes': 59,\n  'hours': 23,\n  'days': 0\n}\n\n/**\n * counter segment component\n * @example\n * <CounterSegment\n *   digits={['0', '0']}\n *   period='days'\n *   radix={10}\n *   easingDuration={300}\n *   digitMap={{ '0' => 'o' }}\n *   digitWrapper={(digit) => digit}\n * />\n */\nclass CounterSegment extends React.Component {\n  /**\n   * propTypes\n   * @property {string[]} digits - digits to display\n   * @property {string} period\n   * @property {number} radix\n   * @property {string} easingFunction - easing function to use for digit transitions\n   * @property {number} easingDuration - duration of digit transitions\n   * @property {Object} digitMap - a map for transforming particular digits\n   * @property {function(digit: number)} digitWrapper - a function for wrapping mapped digits\n   */\n  static propTypes = {\n    digits: arrayOf(string).isRequired,\n    period: string.isRequired,\n    radix: number.isRequired,\n    easingFunction: string,\n    easingDuration: number.isRequired,\n    digitMap: objectOf(any).isRequired,\n    digitWrapper: func.isRequired\n  }\n\n  /**\n   * constructor\n   * calculates height of a single digit\n   * @param {Object} props\n   */\n  constructor (props) {\n    super(props)\n\n    const testDigit = document.createElement('div')\n    testDigit.innerHTML = ReactDOMServer.renderToString(this.props.digitWrapper('0'))\n    document.getElementsByTagName('body')[0].appendChild(testDigit)\n\n    /**\n     * @type {Object}\n     * @property {number} digitHeight - height of a single digit\n     */\n    this.state = {\n      digitHeight: testDigit.clientHeight\n    }\n    testDigit.remove()\n  }\n\n  /**\n   * get maximum value for period's digit with account for radix\n   * used for building digit lanes in {@link AnimatedCounterDigit}\n   * @param {number} index - digit's index in number\n   * @return {number} maxValue\n   */\n  getMaxValue (index) {\n    const maxValue = PERIOD_LIMITS[this.props.period]\n    if (!maxValue) return this.props.radix - 1\n\n    const maxValueString = maxValue.toString(this.props.radix)\n    const maxDigitPos = maxValueString.length\n    return (index === this.props.digits.length - maxDigitPos)\n      ? parseInt(maxValueString[0])\n      : this.props.radix - 1\n  }\n\n  /**\n   * map digits to corresponding components according to easing function\n   * @return {ReactElement[]}\n   */\n  buildDigits () {\n    return this.props.digits.map((digit, index) => {\n      if (this.props.easingFunction) {\n        return (\n          <AnimatedCounterDigit\n            key={index}\n            digit={digit}\n            maxValue={this.getMaxValue(index)}\n            radix={this.props.radix}\n            easingFunction={this.props.easingFunction}\n            easingDuration={this.props.easingDuration}\n            height={this.state.digitHeight}\n            digitMap={this.props.digitMap}\n            digitWrapper={this.props.digitWrapper}\n          />\n        )\n      } else {\n        return (\n          <StaticCounterDigit\n            key={index}\n            digit={digit}\n            radix={this.props.radix}\n            height={this.state.digitHeight}\n            digitMap={this.props.digitMap}\n            digitWrapper={this.props.digitWrapper}\n          />\n        )\n      }\n    })\n  }\n\n  /**\n   * render\n   * @return {ReactElement} counter segment\n   */\n  render () {\n    const style = {\n      overflow: 'hidden',\n      height: `${this.state.digitHeight}px`\n    }\n    return (\n      <div className='rollex-segment'>\n        <div className='rollex-digits' style={style}>\n          {this.buildDigits()}\n        </div>\n        <div className='rollex-label'>\n          {this.props.period}\n        </div>\n      </div>\n    )\n  }\n}\n\nexport default CounterSegment\n",
+    "static": true,
+    "longname": "src/CounterSegment.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 16,
+    "kind": "variable",
+    "name": "arrayOf",
+    "memberof": "src/CounterSegment.js",
+    "static": true,
+    "longname": "src/CounterSegment.js~arrayOf",
+    "access": null,
+    "export": false,
+    "importPath": "rollex/src/CounterSegment.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 5,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 17,
+    "kind": "variable",
+    "name": "PERIOD_LIMITS",
+    "memberof": "src/CounterSegment.js",
+    "static": true,
+    "longname": "src/CounterSegment.js~PERIOD_LIMITS",
+    "access": null,
+    "export": false,
+    "importPath": "rollex/src/CounterSegment.js",
+    "importStyle": null,
+    "description": "",
+    "lineNumber": 11,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 18,
+    "kind": "class",
+    "name": "CounterSegment",
+    "memberof": "src/CounterSegment.js",
+    "static": true,
+    "longname": "src/CounterSegment.js~CounterSegment",
+    "access": null,
+    "export": true,
+    "importPath": "rollex/src/CounterSegment.js",
+    "importStyle": "CounterSegment",
+    "description": "counter segment component",
+    "examples": [
+      "<CounterSegment\n  digits={['0', '0']}\n  period='days'\n  radix={10}\n  easingDuration={300}\n  digitMap={{ '0' => 'o' }}\n  digitWrapper={(digit) => digit}\n/>"
+    ],
+    "lineNumber": 30,
+    "interface": false,
+    "extends": [
+      "react~React.Component"
+    ]
+  },
+  {
+    "__docId__": 19,
+    "kind": "member",
+    "name": "propTypes",
+    "memberof": "src/CounterSegment.js~CounterSegment",
+    "static": true,
+    "longname": "src/CounterSegment.js~CounterSegment.propTypes",
+    "access": null,
+    "description": "propTypes",
+    "lineNumber": 41,
+    "properties": [
+      {
+        "nullable": null,
+        "types": [
+          "string[]"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "digits",
+        "description": "digits to display"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "period",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "radix",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "easingFunction",
+        "description": "easing function to use for digit transitions"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "easingDuration",
+        "description": "duration of digit transitions"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "digitMap",
+        "description": "a map for transforming particular digits"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "function(digit: number)"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "digitWrapper",
+        "description": "a function for wrapping mapped digits"
+      }
+    ],
+    "type": {
+      "types": [
+        "{\"digits\": *, \"period\": *, \"radix\": *, \"easingFunction\": *, \"easingDuration\": *, \"digitMap\": *, \"digitWrapper\": *}"
+      ]
+    }
+  },
+  {
+    "__docId__": 20,
+    "kind": "constructor",
+    "name": "constructor",
+    "memberof": "src/CounterSegment.js~CounterSegment",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/CounterSegment.js~CounterSegment#constructor",
+    "access": null,
+    "description": "constructor\ncalculates height of a single digit",
+    "lineNumber": 56,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "props",
+        "description": ""
+      }
+    ]
+  },
+  {
+    "__docId__": 21,
+    "kind": "member",
+    "name": "state",
+    "memberof": "src/CounterSegment.js~CounterSegment",
+    "static": false,
+    "longname": "src/CounterSegment.js~CounterSegment#state",
+    "access": null,
+    "description": "",
+    "lineNumber": 67,
+    "properties": [
+      {
+        "nullable": null,
+        "types": [
+          "number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "digitHeight",
+        "description": "height of a single digit"
+      }
+    ],
+    "type": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 22,
+    "kind": "method",
+    "name": "getMaxValue",
+    "memberof": "src/CounterSegment.js~CounterSegment",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/CounterSegment.js~CounterSegment#getMaxValue",
+    "access": null,
+    "description": "get maximum value for period's digit with account for radix\nused for building digit lanes in {@link AnimatedCounterDigit}",
+    "lineNumber": 79,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "index",
+        "description": "digit's index in number"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "number"
+      ],
+      "spread": false,
+      "description": "maxValue"
+    }
+  },
+  {
+    "__docId__": 23,
+    "kind": "method",
+    "name": "buildDigits",
+    "memberof": "src/CounterSegment.js~CounterSegment",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/CounterSegment.js~CounterSegment#buildDigits",
+    "access": null,
+    "description": "map digits to corresponding components according to easing function",
+    "lineNumber": 94,
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "ReactElement[]"
+      ],
+      "spread": false,
+      "description": ""
+    }
+  },
+  {
+    "__docId__": 24,
+    "kind": "method",
+    "name": "render",
+    "memberof": "src/CounterSegment.js~CounterSegment",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/CounterSegment.js~CounterSegment#render",
+    "access": null,
+    "description": "render",
+    "lineNumber": 129,
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "ReactElement"
+      ],
+      "spread": false,
+      "description": "counter segment"
+    }
+  },
+  {
+    "__docId__": 25,
+    "kind": "file",
+    "name": "src/StaticCounterDigit.js",
+    "content": "import React from 'react'\nimport AbstractCounterDigit from './AbstractCounterDigit'\n\n/**\n * static digit component\n * used when no easing function is set\n * @example\n * <StaticCounterDigit\n *   digit='5'\n *   height={18}\n *   radix={10}\n *   digitMap={{}}\n *   digitWrapper={(digit) => digit}\n * />\n */\nclass StaticCounterDigit extends AbstractCounterDigit {\n  /**\n   * render\n   * @return {ReactElement} digit\n   */\n  render () {\n    return (\n      <div className='rollex-digit'>\n        {this.decorateDigit(this.props.digit)}\n      </div>\n    )\n  }\n}\n\nexport default StaticCounterDigit\n",
+    "static": true,
+    "longname": "src/StaticCounterDigit.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 26,
+    "kind": "class",
+    "name": "StaticCounterDigit",
+    "memberof": "src/StaticCounterDigit.js",
+    "static": true,
+    "longname": "src/StaticCounterDigit.js~StaticCounterDigit",
+    "access": null,
+    "export": true,
+    "importPath": "rollex/src/StaticCounterDigit.js",
+    "importStyle": "StaticCounterDigit",
+    "description": "static digit component\nused when no easing function is set",
+    "examples": [
+      "<StaticCounterDigit\n  digit='5'\n  height={18}\n  radix={10}\n  digitMap={{}}\n  digitWrapper={(digit) => digit}\n/>"
+    ],
+    "lineNumber": 16,
+    "interface": false,
+    "extends": [
+      "src/AbstractCounterDigit.js~AbstractCounterDigit"
+    ]
+  },
+  {
+    "__docId__": 27,
+    "kind": "method",
+    "name": "render",
+    "memberof": "src/StaticCounterDigit.js~StaticCounterDigit",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/StaticCounterDigit.js~StaticCounterDigit#render",
+    "access": null,
+    "description": "render",
+    "lineNumber": 21,
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "ReactElement"
+      ],
+      "spread": false,
+      "description": "digit"
+    }
+  },
+  {
+    "__docId__": 28,
+    "kind": "file",
+    "name": "src/docs.js",
+    "content": "import React from 'react'\nimport ReactDOM from 'react-dom'\nimport Counter from './'\n\nReactDOM.render(\n  <div>\n    <Counter\n      seconds={100000}\n    />\n    <Counter\n      seconds={24891235}\n      minDigits={3}\n    />\n    <Counter\n      seconds={243523}\n    />\n    <Counter\n      seconds={53423}\n      radix={2}\n    />\n    <Counter\n      seconds={10}\n      interval={2000}\n    />\n    <Counter\n      seconds={1000000}\n      easingFunction='ease-in'\n    />\n    <Counter\n      seconds={3128741412}\n      easingFunction='ease-in-out'\n      easingDuration={800}\n      maxDigits={2}\n    />\n    <Counter\n      seconds={4132749}\n      easingFunction='ease-out'\n      radix={12}\n      digitMap={{\n        'a': 'X',\n        'b': 'E'\n      }}\n    />\n    <Counter\n      seconds={10}\n      easingFunction='cubic-bezier(0.6, 0.04, 0.98, 0.335)'\n    />\n    <Counter\n      seconds={3128414}\n      easingFunction='cubic-bezier(0.6, -0.28, 0.735, 0.045)'\n      radix={16}\n    />\n  </div>,\n  document.getElementById('app')\n)\n",
+    "static": true,
+    "longname": "src/docs.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 29,
+    "kind": "file",
+    "name": "src/index.js",
+    "content": "import React from 'react'\nimport CounterSegment from './CounterSegment'\nconst { number, string, bool, objectOf, any, func } = React.PropTypes\n\n/**\n * @type {string[]}\n * names for available periods\n */\nconst PERIODS = [\n  'days',\n  'hours',\n  'minutes',\n  'seconds'\n]\n\n/**\n * @type {Object}\n * durations for available periods (in milliseconds)\n */\nconst PERIOD_DURATIONS = {\n  'days': 86400000,\n  'hours': 3600000,\n  'minutes': 60000,\n  'seconds': 1000\n}\n\n/**\n * @type {Object}\n * time calculation functions for available periods\n */\nconst PERIOD_DURATION_FUNCTIONS = {\n  'hours': 'getUTCHours',\n  'minutes': 'getMinutes',\n  'seconds': 'getSeconds'\n}\n\n/**\n * main counter component\n * @example\n * <Counter seconds={98} />\n */\nexport default class Counter extends React.Component {\n  /**\n   * propTypes\n   * @property {number} from - timestamp to count from\n   * @property {number} to - timestamp to count to\n   * @property {number} seconds - a number of seconds to count\n   * @property {number} interval - update interval\n   * @property {number} minDigits - minimum number of digits per segment\n   * @property {number} maxDigits - maximum number of digits per segment\n   * @property {string} minPeriod - smallest period to create a segment for\n   * @property {string} maxPeriod - largest period to create a segment for\n   * @property {boolean} frozen - determines if counter is frozen\n   * @property {boolean} syncTime - determines if counter should try to synchronize with client\n   * time.\n   * @property {string} easingFunction - easing function to use for rolling digits\n   * @property {number} easingDuration - easing duration in milliseconds\n   * @property {number} radix - numeral base to use\n   * @property {Object} digitMap - a map to use when transforming digit symbols\n   * @property {function(digit: number)} digitWrapper - a wrapping function for mapped digits\n   */\n  static propTypes = {\n    from: number,\n    to: number,\n    seconds: number,\n    interval: number,\n    minDigits: number,\n    maxDigits: number,\n    minPeriod: string,\n    maxPeriod: string,\n    frozen: bool,\n    syncTime: bool,\n    easingFunction: string,\n    easingDuration: number,\n    radix: number,\n    digitMap: objectOf(any),\n    digitWrapper: func\n  }\n\n  static defaultProps = {\n    interval: 1000,\n    minDigits: 2,\n    minPeriod: 'second',\n    maxPeriod: 'day',\n    easingFunction: null,\n    easingDuration: 300,\n    radix: 10,\n    digitMap: {},\n    digitWrapper: (digit) => <span>{digit}</span>\n  }\n\n  /**\n   * constructor\n   * @param {Object} props\n   */\n  constructor (props) {\n    validateProps(props)\n    super(props)\n\n    const { to, from, seconds } = this.props\n    const timeDiff = (seconds === undefined) ? (to - from) : (seconds * 1000)\n\n    var minDigits = this.props.minDigits\n    if (this.props.minDigits > this.props.maxDigits) minDigits = this.props.maxDigits\n\n    /**\n     * @type {object}\n     * @property {number} timeDiff - current amount of time to count from in milliseconds\n     * @property {number} minDigits - minimum number of digits per segment\n     * @property {Object} numbers - a map from periods to their corresponding numbers\n     * @property {number} currentTime - a timestamp of current moment\n     * @property {string[]} periods - an array of periods to create segments for\n     */\n    this.state = {\n      timeDiff,\n      minDigits,\n      currentTime: new Date().getTime(),\n      periods: this.getPeriods()\n    }\n    this.state.numbers = this.calculateNumbers(timeDiff)\n  }\n\n  componentDidMount () {\n    this.start()\n  }\n\n  componentWillUnmount () {\n    this.stop()\n  }\n\n  /**\n   * start the countdown\n   */\n  start () {\n    if (!this.props.frozen) {\n      this._interval = setInterval(() => this.tick(), this.props.interval)\n    }\n  }\n\n  /**\n   * pause / stop the countdown\n   */\n  stop () {\n    if (!this.props.frozen) clearInterval(this._interval)\n  }\n\n  /**\n   * handle counter tick\n   */\n  tick () {\n    const newTimeDiff = this.getTimeDiff()\n    if (newTimeDiff < 0) {\n      return this.stop()\n    }\n\n    /**\n     * @type {object}\n     * @property {number} timeDiff - current amount of time to count from in milliseconds\n     * @property {Object} numbers - a map from periods to their corresponding numbers\n     */\n    this.setState({\n      timeDiff: newTimeDiff,\n      numbers: this.calculateNumbers(newTimeDiff)\n    })\n  }\n\n  /**\n   * get current amount of time to count from\n   * @return {number} timestamp\n   */\n  getTimeDiff () {\n    if (this.props.syncTime) {\n      return this.props.to - this.props.from - new Date().getTime() + this.state.currentTime\n    } else {\n      return this.state.timeDiff - this.props.interval\n    }\n  }\n\n  /**\n   * get an array of periods to create segments for\n   * @return {string[]} periods\n   */\n  getPeriods () {\n    return PERIODS.slice(\n      PERIODS.indexOf(this.props.maxPeriod + 's'),\n      PERIODS.indexOf(this.props.minPeriod + 's') + 1\n    )\n  }\n\n  /**\n   * get CSS classes for main counter\n   * @return {string} class names\n   */\n  getCSSClassNames () {\n    const type = this.props.easingFunction ? 'animated' : 'static'\n    return `rollex rollex-${type}`\n  }\n\n  /**\n   * calculate numbers for each period for a given timestamp\n   * @param {number} timeDiff - timestamp to calculate numbers for\n   * @return {Object} numbers - a map from periods to corresponding numbers\n   */\n  calculateNumbers (timeDiff) {\n    var numbers = {}\n    for (let period of this.state.periods) {\n      numbers = { ...numbers, [period]: this.calculatePeriodNumber(period, timeDiff) }\n    }\n    return numbers\n  }\n\n  /**\n   * calculate number for given period and timestamp\n   * @param {string} period - period to calculate number for\n   * @param {number} timeDiff - timestamp to use for calculation\n   * @return {number}\n   */\n  calculatePeriodNumber (period, timeDiff) {\n    const date = new Date(timeDiff)\n    if (this.props.maxPeriod + 's' === period) {\n      return Math.floor(timeDiff / PERIOD_DURATIONS[period])\n    } else {\n      return date[PERIOD_DURATION_FUNCTIONS[period]]()\n    }\n  }\n\n  /**\n   * get correct digits for given number accounting for counter's radix, minDigits and maxDigits\n   * @param {number} number - number to get digits for\n   * @return {string[]} digits\n   */\n  getDigits (number) {\n    const { maxDigits, radix } = this.props\n    const minDigits = this.state.minDigits\n\n    if (maxDigits && maxDigits > 0 && number >= Math.pow(radix, maxDigits)) {\n      var nineArray = []\n      for (let i = 0; i < maxDigits; i++) nineArray.push((radix - 1).toString())\n      return nineArray\n    }\n\n    number = number.toString(radix)\n    var zeroArray = []\n    for (let i = 0; i < minDigits - number.length; i++) zeroArray.push('0')\n    return (zeroArray.join('') + number).split('')\n  }\n\n  /**\n   * render\n   * @return {ReactElement} counter\n   */\n  render () {\n    const numbers = this.state.numbers\n    const segments = this.getPeriods().map((period, index) => {\n      return (<CounterSegment\n        period={period}\n        key={index}\n        digits={this.getDigits(numbers[period])}\n        radix={this.props.radix}\n        easingFunction={this.props.easingFunction}\n        easingDuration={this.props.easingDuration}\n        digitMap={this.props.digitMap}\n        digitWrapper={this.props.digitWrapper}\n      />)\n    })\n    return (\n      <div className={this.getCSSClassNames()}>\n        {segments}\n      </div>\n    )\n  }\n}\n\n/**\n * validate counter's props\n * @param {Object} props - props to validate\n */\nfunction validateProps (props) {\n  if (props.seconds !== undefined) {\n    if (props.to !== undefined || props.from !== undefined) {\n      throw new Error('cannot use \"to\" and \"from\" with \"seconds\"')\n    } else if (props.seconds < 0) {\n      throw new Error('\"seconds\" must be greater than or equal to zero')\n    }\n  } else if (props.to === undefined || props.from === undefined) {\n    throw new Error('provide either \"seconds\" or \"to\" and \"from\"')\n  } else if (props.to < props.from) {\n    throw new Error('\"to\" must be bigger than \"from\"')\n  }\n  if (props.minDigits !== undefined && props.minDigits < 1) {\n    throw new Error('\"minDigits\" must be positive')\n  }\n  if (props.minPeriod && PERIODS.indexOf(props.minPeriod + 's') < 0) {\n    throw new Error('\"minPeriod\" must be one of: day, hour, minute, second')\n  }\n  if (props.maxPeriod && PERIODS.indexOf(props.maxPeriod + 's') < 0) {\n    throw new Error('\"maxPeriod\" must be one of: day, hour, minute, second')\n  }\n  if (props.syncTime && props.to === undefined) {\n    throw new Error('\"syncTime\" must only be used with \"to\" and \"from\"')\n  }\n  if (props.radix < 2 || props.radix > 36) {\n    throw new Error('\"radix\" must be between 2 and 36')\n  }\n  if (typeof props.digitWrapper !== 'function') {\n    throw new Error('\"digitWrapper\" must be a function')\n  }\n  if (typeof props.digitMap !== 'object') {\n    throw new Error('\"digitMap\" must be an object')\n  }\n}\n",
+    "static": true,
+    "longname": "src/index.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 30,
+    "kind": "variable",
+    "name": "number",
+    "memberof": "src/index.js",
+    "static": true,
+    "longname": "src/index.js~number",
+    "access": null,
+    "export": false,
+    "importPath": "rollex",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 3,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 31,
+    "kind": "variable",
+    "name": "PERIODS",
+    "memberof": "src/index.js",
+    "static": true,
+    "longname": "src/index.js~PERIODS",
+    "access": null,
+    "export": false,
+    "importPath": "rollex",
+    "importStyle": null,
+    "description": "",
+    "lineNumber": 9,
+    "type": {
+      "nullable": null,
+      "types": [
+        "string[]"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 32,
+    "kind": "variable",
+    "name": "PERIOD_DURATIONS",
+    "memberof": "src/index.js",
+    "static": true,
+    "longname": "src/index.js~PERIOD_DURATIONS",
+    "access": null,
+    "export": false,
+    "importPath": "rollex",
+    "importStyle": null,
+    "description": "",
+    "lineNumber": 20,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 33,
+    "kind": "variable",
+    "name": "PERIOD_DURATION_FUNCTIONS",
+    "memberof": "src/index.js",
+    "static": true,
+    "longname": "src/index.js~PERIOD_DURATION_FUNCTIONS",
+    "access": null,
+    "export": false,
+    "importPath": "rollex",
+    "importStyle": null,
+    "description": "",
+    "lineNumber": 31,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 34,
+    "kind": "class",
+    "name": "Counter",
+    "memberof": "src/index.js",
+    "static": true,
+    "longname": "src/index.js~Counter",
+    "access": null,
+    "export": true,
+    "importPath": "rollex",
+    "importStyle": "Counter",
+    "description": "main counter component",
+    "examples": [
+      "<Counter seconds={98} />"
+    ],
+    "lineNumber": 42,
+    "interface": false,
+    "extends": [
+      "react~React.Component"
+    ]
+  },
+  {
+    "__docId__": 35,
+    "kind": "member",
+    "name": "propTypes",
+    "memberof": "src/index.js~Counter",
+    "static": true,
+    "longname": "src/index.js~Counter.propTypes",
+    "access": null,
+    "description": "propTypes",
+    "lineNumber": 62,
+    "properties": [
+      {
+        "nullable": null,
+        "types": [
+          "number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "from",
+        "description": "timestamp to count from"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "to",
+        "description": "timestamp to count to"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "seconds",
+        "description": "a number of seconds to count"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "interval",
+        "description": "update interval"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "minDigits",
+        "description": "minimum number of digits per segment"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "maxDigits",
+        "description": "maximum number of digits per segment"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "minPeriod",
+        "description": "smallest period to create a segment for"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "maxPeriod",
+        "description": "largest period to create a segment for"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "boolean"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "frozen",
+        "description": "determines if counter is frozen"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "boolean"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "syncTime",
+        "description": "determines if counter should try to synchronize with client\ntime."
+      },
+      {
+        "nullable": null,
+        "types": [
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "easingFunction",
+        "description": "easing function to use for rolling digits"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "easingDuration",
+        "description": "easing duration in milliseconds"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "radix",
+        "description": "numeral base to use"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "digitMap",
+        "description": "a map to use when transforming digit symbols"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "function(digit: number)"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "digitWrapper",
+        "description": "a wrapping function for mapped digits"
+      }
+    ],
+    "type": {
+      "types": [
+        "{\"from\": *, \"to\": *, \"seconds\": *, \"interval\": *, \"minDigits\": *, \"maxDigits\": *, \"minPeriod\": *, \"maxPeriod\": *, \"frozen\": *, \"syncTime\": *, \"easingFunction\": *, \"easingDuration\": *, \"radix\": *, \"digitMap\": *, \"digitWrapper\": *}"
+      ]
+    }
+  },
+  {
+    "__docId__": 36,
+    "kind": "member",
+    "name": "defaultProps",
+    "memberof": "src/index.js~Counter",
+    "static": true,
+    "longname": "src/index.js~Counter.defaultProps",
+    "access": null,
+    "description": null,
+    "lineNumber": 80,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "{\"interval\": number, \"minDigits\": number, \"minPeriod\": string, \"maxPeriod\": string, \"easingFunction\": *, \"easingDuration\": number, \"radix\": number, \"digitMap\": *, \"digitWrapper\": *}"
+      ]
+    }
+  },
+  {
+    "__docId__": 37,
+    "kind": "constructor",
+    "name": "constructor",
+    "memberof": "src/index.js~Counter",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/index.js~Counter#constructor",
+    "access": null,
+    "description": "constructor",
+    "lineNumber": 96,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "props",
+        "description": ""
+      }
+    ]
+  },
+  {
+    "__docId__": 38,
+    "kind": "member",
+    "name": "state",
+    "memberof": "src/index.js~Counter",
+    "static": false,
+    "longname": "src/index.js~Counter#state",
+    "access": null,
+    "description": "",
+    "lineNumber": 114,
+    "properties": [
+      {
+        "nullable": null,
+        "types": [
+          "number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "timeDiff",
+        "description": "current amount of time to count from in milliseconds"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "minDigits",
+        "description": "minimum number of digits per segment"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "numbers",
+        "description": "a map from periods to their corresponding numbers"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "currentTime",
+        "description": "a timestamp of current moment"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "string[]"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "periods",
+        "description": "an array of periods to create segments for"
+      }
+    ],
+    "type": {
+      "nullable": null,
+      "types": [
+        "object"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 39,
+    "kind": "method",
+    "name": "componentDidMount",
+    "memberof": "src/index.js~Counter",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/index.js~Counter#componentDidMount",
+    "access": null,
+    "description": null,
+    "lineNumber": 123,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "params": []
+  },
+  {
+    "__docId__": 40,
+    "kind": "method",
+    "name": "componentWillUnmount",
+    "memberof": "src/index.js~Counter",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/index.js~Counter#componentWillUnmount",
+    "access": null,
+    "description": null,
+    "lineNumber": 127,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "params": []
+  },
+  {
+    "__docId__": 41,
+    "kind": "method",
+    "name": "start",
+    "memberof": "src/index.js~Counter",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/index.js~Counter#start",
+    "access": null,
+    "description": "start the countdown",
+    "lineNumber": 134,
+    "params": []
+  },
+  {
+    "__docId__": 42,
+    "kind": "member",
+    "name": "_interval",
+    "memberof": "src/index.js~Counter",
+    "static": false,
+    "longname": "src/index.js~Counter#_interval",
+    "access": null,
+    "description": null,
+    "lineNumber": 136,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 43,
+    "kind": "method",
+    "name": "stop",
+    "memberof": "src/index.js~Counter",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/index.js~Counter#stop",
+    "access": null,
+    "description": "pause / stop the countdown",
+    "lineNumber": 143,
+    "params": []
+  },
+  {
+    "__docId__": 44,
+    "kind": "method",
+    "name": "tick",
+    "memberof": "src/index.js~Counter",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/index.js~Counter#tick",
+    "access": null,
+    "description": "handle counter tick",
+    "lineNumber": 150,
+    "params": [],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 45,
+    "kind": "method",
+    "name": "getTimeDiff",
+    "memberof": "src/index.js~Counter",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/index.js~Counter#getTimeDiff",
+    "access": null,
+    "description": "get current amount of time to count from",
+    "lineNumber": 171,
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "number"
+      ],
+      "spread": false,
+      "description": "timestamp"
+    }
+  },
+  {
+    "__docId__": 46,
+    "kind": "method",
+    "name": "getPeriods",
+    "memberof": "src/index.js~Counter",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/index.js~Counter#getPeriods",
+    "access": null,
+    "description": "get an array of periods to create segments for",
+    "lineNumber": 183,
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "string[]"
+      ],
+      "spread": false,
+      "description": "periods"
+    }
+  },
+  {
+    "__docId__": 47,
+    "kind": "method",
+    "name": "getCSSClassNames",
+    "memberof": "src/index.js~Counter",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/index.js~Counter#getCSSClassNames",
+    "access": null,
+    "description": "get CSS classes for main counter",
+    "lineNumber": 194,
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "string"
+      ],
+      "spread": false,
+      "description": "class names"
+    }
+  },
+  {
+    "__docId__": 48,
+    "kind": "method",
+    "name": "calculateNumbers",
+    "memberof": "src/index.js~Counter",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/index.js~Counter#calculateNumbers",
+    "access": null,
+    "description": "calculate numbers for each period for a given timestamp",
+    "lineNumber": 204,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "timeDiff",
+        "description": "timestamp to calculate numbers for"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": "numbers - a map from periods to corresponding numbers"
+    }
+  },
+  {
+    "__docId__": 49,
+    "kind": "method",
+    "name": "calculatePeriodNumber",
+    "memberof": "src/index.js~Counter",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/index.js~Counter#calculatePeriodNumber",
+    "access": null,
+    "description": "calculate number for given period and timestamp",
+    "lineNumber": 218,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "period",
+        "description": "period to calculate number for"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "timeDiff",
+        "description": "timestamp to use for calculation"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "number"
+      ],
+      "spread": false,
+      "description": ""
+    }
+  },
+  {
+    "__docId__": 50,
+    "kind": "method",
+    "name": "getDigits",
+    "memberof": "src/index.js~Counter",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/index.js~Counter#getDigits",
+    "access": null,
+    "description": "get correct digits for given number accounting for counter's radix, minDigits and maxDigits",
+    "lineNumber": 232,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "number",
+        "description": "number to get digits for"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "string[]"
+      ],
+      "spread": false,
+      "description": "digits"
+    }
+  },
+  {
+    "__docId__": 51,
+    "kind": "method",
+    "name": "render",
+    "memberof": "src/index.js~Counter",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/index.js~Counter#render",
+    "access": null,
+    "description": "render",
+    "lineNumber": 252,
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "ReactElement"
+      ],
+      "spread": false,
+      "description": "counter"
+    }
+  },
+  {
+    "__docId__": 52,
+    "kind": "function",
+    "name": "validateProps",
+    "memberof": "src/index.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/index.js~validateProps",
+    "access": null,
+    "export": false,
+    "importPath": "rollex",
+    "importStyle": null,
+    "description": "validate counter's props",
+    "lineNumber": 278,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "props",
+        "description": "props to validate"
+      }
+    ]
+  },
+  {
+    "__docId__": 54,
+    "kind": "external",
+    "name": "Infinity",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Infinity",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Infinity",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 55,
+    "kind": "external",
+    "name": "NaN",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NaN",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~NaN",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 56,
+    "kind": "external",
+    "name": "undefined",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~undefined",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 57,
+    "kind": "external",
+    "name": "null",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~null",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 58,
+    "kind": "external",
+    "name": "Object",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Object",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 59,
+    "kind": "external",
+    "name": "object",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~object",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 60,
+    "kind": "external",
+    "name": "Function",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Function",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 61,
+    "kind": "external",
+    "name": "function",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~function",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 62,
+    "kind": "external",
+    "name": "Boolean",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Boolean",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 63,
+    "kind": "external",
+    "name": "boolean",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~boolean",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 64,
+    "kind": "external",
+    "name": "Symbol",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Symbol",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 65,
+    "kind": "external",
+    "name": "Error",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Error",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 66,
+    "kind": "external",
+    "name": "EvalError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/EvalError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~EvalError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 67,
+    "kind": "external",
+    "name": "InternalError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/InternalError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~InternalError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 68,
+    "kind": "external",
+    "name": "RangeError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RangeError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~RangeError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 69,
+    "kind": "external",
+    "name": "ReferenceError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ReferenceError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~ReferenceError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 70,
+    "kind": "external",
+    "name": "SyntaxError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SyntaxError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~SyntaxError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 71,
+    "kind": "external",
+    "name": "TypeError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypeError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~TypeError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 72,
+    "kind": "external",
+    "name": "URIError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/URIError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~URIError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 73,
+    "kind": "external",
+    "name": "Number",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Number",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 74,
+    "kind": "external",
+    "name": "number",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~number",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 75,
+    "kind": "external",
+    "name": "Date",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Date",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 76,
+    "kind": "external",
+    "name": "String",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~String",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 77,
+    "kind": "external",
+    "name": "string",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~string",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 78,
+    "kind": "external",
+    "name": "RegExp",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~RegExp",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 79,
+    "kind": "external",
+    "name": "Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 80,
+    "kind": "external",
+    "name": "Int8Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int8Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Int8Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 81,
+    "kind": "external",
+    "name": "Uint8Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint8Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 82,
+    "kind": "external",
+    "name": "Uint8ClampedArray",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8ClampedArray",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint8ClampedArray",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 83,
+    "kind": "external",
+    "name": "Int16Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int16Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Int16Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 84,
+    "kind": "external",
+    "name": "Uint16Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint16Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint16Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 85,
+    "kind": "external",
+    "name": "Int32Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int32Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Int32Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 86,
+    "kind": "external",
+    "name": "Uint32Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint32Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint32Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 87,
+    "kind": "external",
+    "name": "Float32Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float32Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Float32Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 88,
+    "kind": "external",
+    "name": "Float64Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float64Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Float64Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 89,
+    "kind": "external",
+    "name": "Map",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Map",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 90,
+    "kind": "external",
+    "name": "Set",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Set",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 91,
+    "kind": "external",
+    "name": "WeakMap",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~WeakMap",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 92,
+    "kind": "external",
+    "name": "WeakSet",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~WeakSet",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 93,
+    "kind": "external",
+    "name": "ArrayBuffer",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~ArrayBuffer",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 94,
+    "kind": "external",
+    "name": "DataView",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~DataView",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 95,
+    "kind": "external",
+    "name": "JSON",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~JSON",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 96,
+    "kind": "external",
+    "name": "Promise",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Promise",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 97,
+    "kind": "external",
+    "name": "Generator",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Generator",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 98,
+    "kind": "external",
+    "name": "GeneratorFunction",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/GeneratorFunction",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~GeneratorFunction",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 99,
+    "kind": "external",
+    "name": "Reflect",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Reflect",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 100,
+    "kind": "external",
+    "name": "Proxy",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Proxy",
+    "access": null,
+    "description": "",
+    "lineNumber": 193,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 102,
+    "kind": "external",
+    "name": "CanvasRenderingContext2D",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/WebAPIExternal.js~CanvasRenderingContext2D",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 103,
+    "kind": "external",
+    "name": "DocumentFragment",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/WebAPIExternal.js~DocumentFragment",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 104,
+    "kind": "external",
+    "name": "Element",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Element",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/WebAPIExternal.js~Element",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 105,
+    "kind": "external",
+    "name": "Event",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Event",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/WebAPIExternal.js~Event",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 106,
+    "kind": "external",
+    "name": "Node",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Node",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/WebAPIExternal.js~Node",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 107,
+    "kind": "external",
+    "name": "NodeList",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/NodeList",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/WebAPIExternal.js~NodeList",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 108,
+    "kind": "external",
+    "name": "XMLHttpRequest",
+    "externalLink": "https://developer.mozilla.org/en/docs/Web/API/XMLHttpRequest",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/WebAPIExternal.js~XMLHttpRequest",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 109,
+    "kind": "external",
+    "name": "AudioContext",
+    "externalLink": "https://developer.mozilla.org/en/docs/Web/API/AudioContext",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/WebAPIExternal.js~AudioContext",
+    "access": null,
+    "description": "",
+    "lineNumber": 34,
+    "builtinExternal": true
+  }
+]

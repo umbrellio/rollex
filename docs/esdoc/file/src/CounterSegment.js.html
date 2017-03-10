@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../">
+  <title data-ice="title">src/CounterSegment.js | API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+  <script src="script/manual.js"></script>
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <a data-ice="repoURL" href="https://github.com/umbrellio/rollex" class="repo-url-github">Repository</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/AbstractCounterDigit.js~AbstractCounterDigit.html">AbstractCounterDigit</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/AnimatedCounterDigit.js~AnimatedCounterDigit.html">AnimatedCounterDigit</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/CounterSegment.js~CounterSegment.html">CounterSegment</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/StaticCounterDigit.js~StaticCounterDigit.html">StaticCounterDigit</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/index.js~Counter.html">Counter</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/CounterSegment.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import React from &apos;react&apos;
+import ReactDOMServer from &apos;react-dom/server&apos;
+import AnimatedCounterDigit from &apos;./AnimatedCounterDigit&apos;
+import StaticCounterDigit from &apos;./StaticCounterDigit&apos;
+const { arrayOf, objectOf, number, string, any, func } = React.PropTypes
+
+/**
+ * @type {Object}
+ * maximum decimal values for available periods&apos; numbers
+ */
+const PERIOD_LIMITS = {
+  &apos;seconds&apos;: 59,
+  &apos;minutes&apos;: 59,
+  &apos;hours&apos;: 23,
+  &apos;days&apos;: 0
+}
+
+/**
+ * counter segment component
+ * @example
+ * &lt;CounterSegment
+ *   digits={[&apos;0&apos;, &apos;0&apos;]}
+ *   period=&apos;days&apos;
+ *   radix={10}
+ *   easingDuration={300}
+ *   digitMap={{ &apos;0&apos; =&gt; &apos;o&apos; }}
+ *   digitWrapper={(digit) =&gt; digit}
+ * /&gt;
+ */
+class CounterSegment extends React.Component {
+  /**
+   * propTypes
+   * @property {string[]} digits - digits to display
+   * @property {string} period
+   * @property {number} radix
+   * @property {string} easingFunction - easing function to use for digit transitions
+   * @property {number} easingDuration - duration of digit transitions
+   * @property {Object} digitMap - a map for transforming particular digits
+   * @property {function(digit: number)} digitWrapper - a function for wrapping mapped digits
+   */
+  static propTypes = {
+    digits: arrayOf(string).isRequired,
+    period: string.isRequired,
+    radix: number.isRequired,
+    easingFunction: string,
+    easingDuration: number.isRequired,
+    digitMap: objectOf(any).isRequired,
+    digitWrapper: func.isRequired
+  }
+
+  /**
+   * constructor
+   * calculates height of a single digit
+   * @param {Object} props
+   */
+  constructor (props) {
+    super(props)
+
+    const testDigit = document.createElement(&apos;div&apos;)
+    testDigit.innerHTML = ReactDOMServer.renderToString(this.props.digitWrapper(&apos;0&apos;))
+    document.getElementsByTagName(&apos;body&apos;)[0].appendChild(testDigit)
+
+    /**
+     * @type {Object}
+     * @property {number} digitHeight - height of a single digit
+     */
+    this.state = {
+      digitHeight: testDigit.clientHeight
+    }
+    testDigit.remove()
+  }
+
+  /**
+   * get maximum value for period&apos;s digit with account for radix
+   * used for building digit lanes in {@link AnimatedCounterDigit}
+   * @param {number} index - digit&apos;s index in number
+   * @return {number} maxValue
+   */
+  getMaxValue (index) {
+    const maxValue = PERIOD_LIMITS[this.props.period]
+    if (!maxValue) return this.props.radix - 1
+
+    const maxValueString = maxValue.toString(this.props.radix)
+    const maxDigitPos = maxValueString.length
+    return (index === this.props.digits.length - maxDigitPos)
+      ? parseInt(maxValueString[0])
+      : this.props.radix - 1
+  }
+
+  /**
+   * map digits to corresponding components according to easing function
+   * @return {ReactElement[]}
+   */
+  buildDigits () {
+    return this.props.digits.map((digit, index) =&gt; {
+      if (this.props.easingFunction) {
+        return (
+          &lt;AnimatedCounterDigit
+            key={index}
+            digit={digit}
+            maxValue={this.getMaxValue(index)}
+            radix={this.props.radix}
+            easingFunction={this.props.easingFunction}
+            easingDuration={this.props.easingDuration}
+            height={this.state.digitHeight}
+            digitMap={this.props.digitMap}
+            digitWrapper={this.props.digitWrapper}
+          /&gt;
+        )
+      } else {
+        return (
+          &lt;StaticCounterDigit
+            key={index}
+            digit={digit}
+            radix={this.props.radix}
+            height={this.state.digitHeight}
+            digitMap={this.props.digitMap}
+            digitWrapper={this.props.digitWrapper}
+          /&gt;
+        )
+      }
+    })
+  }
+
+  /**
+   * render
+   * @return {ReactElement} counter segment
+   */
+  render () {
+    const style = {
+      overflow: &apos;hidden&apos;,
+      height: `${this.state.digitHeight}px`
+    }
+    return (
+      &lt;div className=&apos;rollex-segment&apos;&gt;
+        &lt;div className=&apos;rollex-digits&apos; style={style}&gt;
+          {this.buildDigits()}
+        &lt;/div&gt;
+        &lt;div className=&apos;rollex-label&apos;&gt;
+          {this.props.period}
+        &lt;/div&gt;
+      &lt;/div&gt;
+    )
+  }
+}
+
+export default CounterSegment
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.5.2)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>
