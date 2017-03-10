@@ -1,8 +1,8 @@
 import React from 'react'
 import { shallow, mount } from 'enzyme'
 import { shallowToJson } from 'enzyme-to-json'
-import Counter from './'
-import CounterSegment from './CounterSegment'
+import Counter from '../src/'
+import CounterSegment from '../src/CounterSegment'
 
 beforeAll(function () {
   console.error = jest.fn(() => null) // disable React PropTypes warnings
@@ -226,7 +226,7 @@ describe('state and props', function () {
     const component = shallow(<Counter from={from} to={to} />)
     expect(component.state()).toMatchObject({
       timeDiff: to - from,
-      digits: {
+      numbers: {
         days: 2,
         hours: 6,
         minutes: 35,
@@ -282,49 +282,49 @@ describe('counting', function () {
   beforeEach(function () {
     jest.useFakeTimers()
     component = mount(<Counter from={0} to={10000} />)
-    expect(component.state().digits.seconds).toBe(10)
+    expect(component.state().numbers.seconds).toBe(10)
     expect(setInterval.mock.calls.length).toBe(1)
   })
 
   it('starts to count when mounted', function () {
     jest.runTimersToTime(5000)
     expect(component.state().timeDiff).toBe(5000)
-    expect(component.state().digits.seconds).toBe(5)
+    expect(component.state().numbers.seconds).toBe(5)
   })
 
   it('works with "seconds" prop', function () {
     component = mount(<Counter seconds={10} />)
-    expect(component.state().digits.seconds).toBe(10)
+    expect(component.state().numbers.seconds).toBe(10)
     jest.runTimersToTime(5000)
     expect(component.state().timeDiff).toBe(5000)
-    expect(component.state().digits.seconds).toBe(5)
+    expect(component.state().numbers.seconds).toBe(5)
   })
 
   it('does not count when "frozen" is true', function () {
     component = mount(<Counter seconds={10} frozen />)
     jest.runTimersToTime(5000)
     expect(component.state().timeDiff).toBe(10000)
-    expect(component.state().digits.seconds).toBe(10)
+    expect(component.state().numbers.seconds).toBe(10)
   })
 
   it('stops to count when stopped', function () {
     jest.runTimersToTime(5000)
-    expect(component.state().digits.seconds).toBe(5)
+    expect(component.state().numbers.seconds).toBe(5)
 
     component.instance().stop()
 
     jest.runTimersToTime(10000)
-    expect(component.state().digits.seconds).toBe(5)
+    expect(component.state().numbers.seconds).toBe(5)
   })
 
   it('stops to count when reached zero', function () {
     jest.runTimersToTime(10000)
     expect(component.state().timeDiff).toBe(0)
-    expect(component.state().digits.seconds).toBe(0)
+    expect(component.state().numbers.seconds).toBe(0)
 
     jest.runTimersToTime(10000)
     expect(component.state().timeDiff).toBe(0)
-    expect(component.state().digits.seconds).toBe(0)
+    expect(component.state().numbers.seconds).toBe(0)
   })
 
   it('syncs time when syncTime is set', function () {

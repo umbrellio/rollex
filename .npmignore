@@ -3,8 +3,7 @@ demo/
 dist/
 docs/
 node_modules/
-
-src/*.test.*
+test/
 
 .babelrc
 .esdoc.json

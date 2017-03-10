@@ -7,18 +7,23 @@
   <title>Document</title>
   <style>
     .rollex-segment {
-      display: inline-block;
-      width: 100px;
+      width: 80px;
       margin: 0 5px;
       padding: 5px;
       text-align: center;
+      float: left;
     }
 
     .rollex-digits {
       border: 1px solid #ccc;
       border-radius: 3px;
-      display: inline-block;
       padding: 0 3px;
+    }
+
+    .rollex-static .rollex-digits {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
     }
 
     .rollex-label {
@@ -35,8 +40,18 @@
         "Segoe UI Symbol";
     }
 
-    .rollex-digit {
+    .rollex-static .rollex-digit {
+      float: left;
+    }
+
+    .rollex-animated .rollex-digit {
       display: inline-block;
+    }
+
+    .rollex:after {
+      content: '';
+      clear: both;
+      display: table;
     }
   </style>
 </head>
