@@ -221,7 +221,9 @@ export default class Counter extends React.Component {
    */
   getCSSClassNames () {
     const type = this.props.easingFunction ? 'animated' : 'static'
-    return `rollex rollex-${type}`
+    var classNames = `rollex rollex-${type}`
+    if (this.props.frozen) classNames += ' rollex-frozen'
+    return classNames
   }
 
   /**
