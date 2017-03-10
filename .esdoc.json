@@ -1,6 +1,6 @@
 {
   "source": "src/",
-  "destination": "docs/",
+  "destination": "docs/esdoc",
   "experimentalProposal": {
     "classProperties": true,
     "objectRestSpread": true

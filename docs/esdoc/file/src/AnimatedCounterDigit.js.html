@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../">
+  <title data-ice="title">src/AnimatedCounterDigit.js | API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+  <script src="script/manual.js"></script>
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <a data-ice="repoURL" href="https://github.com/umbrellio/rollex" class="repo-url-github">Repository</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/AbstractCounterDigit.js~AbstractCounterDigit.html">AbstractCounterDigit</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/AnimatedCounterDigit.js~AnimatedCounterDigit.html">AnimatedCounterDigit</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/CounterSegment.js~CounterSegment.html">CounterSegment</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/StaticCounterDigit.js~StaticCounterDigit.html">StaticCounterDigit</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/index.js~Counter.html">Counter</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/AnimatedCounterDigit.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import React from &apos;react&apos;
+import ReactDOM from &apos;react-dom&apos;
+import AbstractCounterDigit from &apos;./AbstractCounterDigit&apos;
+const { number, string } = React.PropTypes
+
+/**
+ * forces reflow of a given element
+ * @param {Element} element
+ */
+function forceReflow (element) {
+  element.offsetHeight // eslint-disable-line no-unused-expressions
+}
+
+/**
+ * animated digit component
+ * used when easing function is provided
+ * @example
+ * &lt;AnimatedCounterDigit
+ *   digit=&apos;5&apos;
+ *   height={18}
+ *   radix={10}
+ *   digitMap={{}}
+ *   digitWrapper={(digit) =&gt; digit}
+ *   maxValue={9}
+ *   easingFunction=&apos;ease-in&apos;
+ *   easingDuration={200}
+ * /&gt;
+ */
+class AnimatedCounterDigit extends AbstractCounterDigit {
+  /**
+   * propTypes
+   * @property {number} maxValue - maximum value used to build a digit lane
+   * @property {string} easingFunction - easing function for transitions
+   * @property {number} easingDuration - duration for digit transitions in milliseconds
+   */
+  static propTypes = {
+    ...AbstractCounterDigit.propTypes,
+    maxValue: number.isRequired,
+    easingFunction: string.isRequired,
+    easingDuration: number.isRequired
+  }
+
+  /**
+   * componentDidMount
+   * calls reset in case current digit is a zero
+   */
+  componentDidMount () {
+    this.reset({ target: ReactDOM.findDOMNode(this) })
+  }
+
+  /**
+   * changes vertical position of digit lane without triggering a transition
+   * in a lane like [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0] goes from first zero to last zero instantly
+   * @param {SyntheticEvent} event
+   */
+  reset = (event) =&gt; {
+    if (this.props.digit === &apos;0&apos;) {
+      event.target.style.transitionProperty = &apos;none&apos;
+      event.target.style.transform = `translateY(-${this.props.height * this.props.radix}px)`
+      forceReflow(event.target)
+      event.target.style.transitionProperty = &apos;&apos;
+    }
+  }
+
+  /**
+   * creates a div for a digit lane member
+   * @param {string} digit
+   * @param {number} key - index to use for React&apos;s key property
+   * @return {ReactElement}
+   */
+  buildDigitDiv (digit, key) {
+    return (
+      &lt;div key={key || digit} className=&apos;rollex-digit-lane-label&apos; style={{ height: this.props.height }}&gt;
+        {this.decorateDigit(digit)}
+      &lt;/div&gt;
+    )
+  }
+
+  /**
+   * builds the digit lane
+   * digit lane contains all available digits
+   * it changes its vertical position in order to emulate counter rolling
+   * @return {ReactElement[]}
+   */
+  buildDigitLane () {
+    var digitDivs = []
+    for (let i = 0; i &lt;= this.props.maxValue; i++) {
+      digitDivs.push(this.buildDigitDiv(i))
+    }
+    digitDivs.push(this.buildDigitDiv(0, this.props.radix + 1))
+    return digitDivs
+  }
+
+  /**
+   * render
+   * @return {ReactElement} digit
+   */
+  render () {
+    const digitIndex = parseInt(this.props.digit, this.props.radix)
+    const yPosition = -this.props.height * (digitIndex + (this.props.radix - this.props.maxValue - 1))
+    const style = {
+      transform: `translateY(${yPosition}px)`,
+      transitionTimingFunction: this.props.easingFunction,
+      transitionDuration: `${this.props.easingDuration}ms`,
+      transitionProperty: &apos;transform&apos;,
+      willChange: &apos;transform&apos;
+    }
+
+    return (
+      &lt;div className=&apos;rollex-digit&apos; onTransitionEnd={this.reset} style={style}&gt;
+        {this.buildDigitLane()}
+      &lt;/div&gt;
+    )
+  }
+}
+
+export default AnimatedCounterDigit
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.5.2)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

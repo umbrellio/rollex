@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../">
+  <title data-ice="title">src/index.js | API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+  <script src="script/manual.js"></script>
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <a data-ice="repoURL" href="https://github.com/umbrellio/rollex" class="repo-url-github">Repository</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/AbstractCounterDigit.js~AbstractCounterDigit.html">AbstractCounterDigit</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/AnimatedCounterDigit.js~AnimatedCounterDigit.html">AnimatedCounterDigit</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/CounterSegment.js~CounterSegment.html">CounterSegment</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/StaticCounterDigit.js~StaticCounterDigit.html">StaticCounterDigit</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/index.js~Counter.html">Counter</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/index.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import React from &apos;react&apos;
+import CounterSegment from &apos;./CounterSegment&apos;
+const { number, string, bool, objectOf, any, func } = React.PropTypes
+
+/**
+ * @type {string[]}
+ * names for available periods
+ */
+const PERIODS = [
+  &apos;days&apos;,
+  &apos;hours&apos;,
+  &apos;minutes&apos;,
+  &apos;seconds&apos;
+]
+
+/**
+ * @type {Object}
+ * durations for available periods (in milliseconds)
+ */
+const PERIOD_DURATIONS = {
+  &apos;days&apos;: 86400000,
+  &apos;hours&apos;: 3600000,
+  &apos;minutes&apos;: 60000,
+  &apos;seconds&apos;: 1000
+}
+
+/**
+ * @type {Object}
+ * time calculation functions for available periods
+ */
+const PERIOD_DURATION_FUNCTIONS = {
+  &apos;hours&apos;: &apos;getUTCHours&apos;,
+  &apos;minutes&apos;: &apos;getMinutes&apos;,
+  &apos;seconds&apos;: &apos;getSeconds&apos;
+}
+
+/**
+ * main counter component
+ * @example
+ * &lt;Counter seconds={98} /&gt;
+ */
+export default class Counter extends React.Component {
+  /**
+   * propTypes
+   * @property {number} from - timestamp to count from
+   * @property {number} to - timestamp to count to
+   * @property {number} seconds - a number of seconds to count
+   * @property {number} interval - update interval
+   * @property {number} minDigits - minimum number of digits per segment
+   * @property {number} maxDigits - maximum number of digits per segment
+   * @property {string} minPeriod - smallest period to create a segment for
+   * @property {string} maxPeriod - largest period to create a segment for
+   * @property {boolean} frozen - determines if counter is frozen
+   * @property {boolean} syncTime - determines if counter should try to synchronize with client
+   * time.
+   * @property {string} easingFunction - easing function to use for rolling digits
+   * @property {number} easingDuration - easing duration in milliseconds
+   * @property {number} radix - numeral base to use
+   * @property {Object} digitMap - a map to use when transforming digit symbols
+   * @property {function(digit: number)} digitWrapper - a wrapping function for mapped digits
+   */
+  static propTypes = {
+    from: number,
+    to: number,
+    seconds: number,
+    interval: number,
+    minDigits: number,
+    maxDigits: number,
+    minPeriod: string,
+    maxPeriod: string,
+    frozen: bool,
+    syncTime: bool,
+    easingFunction: string,
+    easingDuration: number,
+    radix: number,
+    digitMap: objectOf(any),
+    digitWrapper: func
+  }
+
+  static defaultProps = {
+    interval: 1000,
+    minDigits: 2,
+    minPeriod: &apos;second&apos;,
+    maxPeriod: &apos;day&apos;,
+    easingFunction: null,
+    easingDuration: 300,
+    radix: 10,
+    digitMap: {},
+    digitWrapper: (digit) =&gt; &lt;span&gt;{digit}&lt;/span&gt;
+  }
+
+  /**
+   * constructor
+   * @param {Object} props
+   */
+  constructor (props) {
+    validateProps(props)
+    super(props)
+
+    const { to, from, seconds } = this.props
+    const timeDiff = (seconds === undefined) ? (to - from) : (seconds * 1000)
+
+    var minDigits = this.props.minDigits
+    if (this.props.minDigits &gt; this.props.maxDigits) minDigits = this.props.maxDigits
+
+    /**
+     * @type {object}
+     * @property {number} timeDiff - current amount of time to count from in milliseconds
+     * @property {number} minDigits - minimum number of digits per segment
+     * @property {Object} numbers - a map from periods to their corresponding numbers
+     * @property {number} currentTime - a timestamp of current moment
+     * @property {string[]} periods - an array of periods to create segments for
+     */
+    this.state = {
+      timeDiff,
+      minDigits,
+      currentTime: new Date().getTime(),
+      periods: this.getPeriods()
+    }
+    this.state.numbers = this.calculateNumbers(timeDiff)
+  }
+
+  componentDidMount () {
+    this.start()
+  }
+
+  componentWillUnmount () {
+    this.stop()
+  }
+
+  /**
+   * start the countdown
+   */
+  start () {
+    if (!this.props.frozen) {
+      this._interval = setInterval(() =&gt; this.tick(), this.props.interval)
+    }
+  }
+
+  /**
+   * pause / stop the countdown
+   */
+  stop () {
+    if (!this.props.frozen) clearInterval(this._interval)
+  }
+
+  /**
+   * handle counter tick
+   */
+  tick () {
+    const newTimeDiff = this.getTimeDiff()
+    if (newTimeDiff &lt; 0) {
+      return this.stop()
+    }
+
+    /**
+     * @type {object}
+     * @property {number} timeDiff - current amount of time to count from in milliseconds
+     * @property {Object} numbers - a map from periods to their corresponding numbers
+     */
+    this.setState({
+      timeDiff: newTimeDiff,
+      numbers: this.calculateNumbers(newTimeDiff)
+    })
+  }
+
+  /**
+   * get current amount of time to count from
+   * @return {number} timestamp
+   */
+  getTimeDiff () {
+    if (this.props.syncTime) {
+      return this.props.to - this.props.from - new Date().getTime() + this.state.currentTime
+    } else {
+      return this.state.timeDiff - this.props.interval
+    }
+  }
+
+  /**
+   * get an array of periods to create segments for
+   * @return {string[]} periods
+   */
+  getPeriods () {
+    return PERIODS.slice(
+      PERIODS.indexOf(this.props.maxPeriod + &apos;s&apos;),
+      PERIODS.indexOf(this.props.minPeriod + &apos;s&apos;) + 1
+    )
+  }
+
+  /**
+   * get CSS classes for main counter
+   * @return {string} class names
+   */
+  getCSSClassNames () {
+    const type = this.props.easingFunction ? &apos;animated&apos; : &apos;static&apos;
+    return `rollex rollex-${type}`
+  }
+
+  /**
+   * calculate numbers for each period for a given timestamp
+   * @param {number} timeDiff - timestamp to calculate numbers for
+   * @return {Object} numbers - a map from periods to corresponding numbers
+   */
+  calculateNumbers (timeDiff) {
+    var numbers = {}
+    for (let period of this.state.periods) {
+      numbers = { ...numbers, [period]: this.calculatePeriodNumber(period, timeDiff) }
+    }
+    return numbers
+  }
+
+  /**
+   * calculate number for given period and timestamp
+   * @param {string} period - period to calculate number for
+   * @param {number} timeDiff - timestamp to use for calculation
+   * @return {number}
+   */
+  calculatePeriodNumber (period, timeDiff) {
+    const date = new Date(timeDiff)
+    if (this.props.maxPeriod + &apos;s&apos; === period) {
+      return Math.floor(timeDiff / PERIOD_DURATIONS[period])
+    } else {
+      return date[PERIOD_DURATION_FUNCTIONS[period]]()
+    }
+  }
+
+  /**
+   * get correct digits for given number accounting for counter&apos;s radix, minDigits and maxDigits
+   * @param {number} number - number to get digits for
+   * @return {string[]} digits
+   */
+  getDigits (number) {
+    const { maxDigits, radix } = this.props
+    const minDigits = this.state.minDigits
+
+    if (maxDigits &amp;&amp; maxDigits &gt; 0 &amp;&amp; number &gt;= Math.pow(radix, maxDigits)) {
+      var nineArray = []
+      for (let i = 0; i &lt; maxDigits; i++) nineArray.push((radix - 1).toString())
+      return nineArray
+    }
+
+    number = number.toString(radix)
+    var zeroArray = []
+    for (let i = 0; i &lt; minDigits - number.length; i++) zeroArray.push(&apos;0&apos;)
+    return (zeroArray.join(&apos;&apos;) + number).split(&apos;&apos;)
+  }
+
+  /**
+   * render
+   * @return {ReactElement} counter
+   */
+  render () {
+    const numbers = this.state.numbers
+    const segments = this.getPeriods().map((period, index) =&gt; {
+      return (&lt;CounterSegment
+        period={period}
+        key={index}
+        digits={this.getDigits(numbers[period])}
+        radix={this.props.radix}
+        easingFunction={this.props.easingFunction}
+        easingDuration={this.props.easingDuration}
+        digitMap={this.props.digitMap}
+        digitWrapper={this.props.digitWrapper}
+      /&gt;)
+    })
+    return (
+      &lt;div className={this.getCSSClassNames()}&gt;
+        {segments}
+      &lt;/div&gt;
+    )
+  }
+}
+
+/**
+ * validate counter&apos;s props
+ * @param {Object} props - props to validate
+ */
+function validateProps (props) {
+  if (props.seconds !== undefined) {
+    if (props.to !== undefined || props.from !== undefined) {
+      throw new Error(&apos;cannot use &quot;to&quot; and &quot;from&quot; with &quot;seconds&quot;&apos;)
+    } else if (props.seconds &lt; 0) {
+      throw new Error(&apos;&quot;seconds&quot; must be greater than or equal to zero&apos;)
+    }
+  } else if (props.to === undefined || props.from === undefined) {
+    throw new Error(&apos;provide either &quot;seconds&quot; or &quot;to&quot; and &quot;from&quot;&apos;)
+  } else if (props.to &lt; props.from) {
+    throw new Error(&apos;&quot;to&quot; must be bigger than &quot;from&quot;&apos;)
+  }
+  if (props.minDigits !== undefined &amp;&amp; props.minDigits &lt; 1) {
+    throw new Error(&apos;&quot;minDigits&quot; must be positive&apos;)
+  }
+  if (props.minPeriod &amp;&amp; PERIODS.indexOf(props.minPeriod + &apos;s&apos;) &lt; 0) {
+    throw new Error(&apos;&quot;minPeriod&quot; must be one of: day, hour, minute, second&apos;)
+  }
+  if (props.maxPeriod &amp;&amp; PERIODS.indexOf(props.maxPeriod + &apos;s&apos;) &lt; 0) {
+    throw new Error(&apos;&quot;maxPeriod&quot; must be one of: day, hour, minute, second&apos;)
+  }
+  if (props.syncTime &amp;&amp; props.to === undefined) {
+    throw new Error(&apos;&quot;syncTime&quot; must only be used with &quot;to&quot; and &quot;from&quot;&apos;)
+  }
+  if (props.radix &lt; 2 || props.radix &gt; 36) {
+    throw new Error(&apos;&quot;radix&quot; must be between 2 and 36&apos;)
+  }
+  if (typeof props.digitWrapper !== &apos;function&apos;) {
+    throw new Error(&apos;&quot;digitWrapper&quot; must be a function&apos;)
+  }
+  if (typeof props.digitMap !== &apos;object&apos;) {
+    throw new Error(&apos;&quot;digitMap&quot; must be an object&apos;)
+  }
+}
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.5.2)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>
