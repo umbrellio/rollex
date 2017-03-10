@@ -97,8 +97,11 @@ export default class Counter extends React.Component {
     validateProps(props)
     super(props)
 
-    const { to, from, seconds } = this.props
-    const timeDiff = (seconds === undefined) ? (to - from) : (seconds * 1000)
+    const startTime = new Date().getTime()
+    const from = (this.props.from === undefined) ? startTime : this.props.from
+    const timeDiff = (this.props.seconds === undefined)
+      ? (this.props.to - from)
+      : (this.props.seconds * 1000)
 
     var minDigits = this.props.minDigits || this.getInitialMinDigits()
     if (minDigits > this.props.maxDigits) minDigits = this.props.maxDigits
@@ -108,13 +111,14 @@ export default class Counter extends React.Component {
      * @property {number} timeDiff - current amount of time to count from in milliseconds
      * @property {number} minDigits - minimum number of digits per segment
      * @property {Object} numbers - a map from periods to their corresponding numbers
-     * @property {number} currentTime - a timestamp of current moment
+     * @property {number} startTime - a timestamp of current moment
      * @property {string[]} periods - an array of periods to create segments for
      */
     this.state = {
       timeDiff,
       minDigits,
-      currentTime: new Date().getTime(),
+      startTime,
+      from,
       periods: this.getPeriods()
     }
     this.state.numbers = this.calculateNumbers(timeDiff)
@@ -198,7 +202,7 @@ export default class Counter extends React.Component {
    */
   getTimeDiff () {
     if (this.props.syncTime) {
-      return this.props.to - this.props.from - new Date().getTime() + this.state.currentTime
+      return this.props.to - this.state.from - new Date().getTime() + this.state.startTime
     } else {
       return this.state.timeDiff - this.props.interval
     }
@@ -312,8 +316,8 @@ function validateProps (props) {
     } else if (props.seconds < 0) {
       throw new Error('"seconds" must be greater than or equal to zero')
     }
-  } else if (props.to === undefined || props.from === undefined) {
-    throw new Error('provide either "seconds" or "to" and "from"')
+  } else if (props.to === undefined) {
+    throw new Error('provide either "seconds" or "to"')
   } else if (props.to < props.from) {
     throw new Error('"to" must be bigger than "from"')
   }
@@ -325,9 +329,6 @@ function validateProps (props) {
   }
   if (props.maxPeriod && PERIODS.indexOf(props.maxPeriod + 's') < 0) {
     throw new Error('"maxPeriod" must be one of: day, hour, minute, second')
-  }
-  if (props.syncTime && props.to === undefined) {
-    throw new Error('"syncTime" must only be used with "to" and "from"')
   }
   if (props.radix < 2 || props.radix > 36) {
     throw new Error('"radix" must be between 2 and 36')

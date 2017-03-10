@@ -12,7 +12,7 @@ describe('initialization', function () {
   it('throws an error when no time options are provided', function () {
     expect(
       () => shallow(<Counter />)
-    ).toThrowError('provide either "seconds" or "to" and "from"')
+    ).toThrowError('provide either "seconds" or "to"')
   })
 
   it('throws an error when "to", "from" and "seconds" are provided', function () {
@@ -24,10 +24,7 @@ describe('initialization', function () {
   it('throws an error when time options are provided incorrectly', function () {
     expect(
       () => shallow(<Counter from={0} />)
-    ).toThrowError('provide either "seconds" or "to" and "from"')
-    expect(
-      () => shallow(<Counter to={0} />)
-    ).toThrowError('provide either "seconds" or "to" and "from"')
+    ).toThrowError('provide either "seconds" or "to"')
     expect(
       () => shallow(<Counter from={0} seconds={2} />)
     ).toThrowError('cannot use "to" and "from" with "seconds"')
@@ -50,9 +47,6 @@ describe('initialization', function () {
       () => shallow(<Counter seconds={0} maxPeriod='sobaka' />)
     ).toThrowError('"maxPeriod" must be one of: day, hour, minute, second')
     expect(
-      () => shallow(<Counter seconds={0} syncTime />)
-    ).toThrowError('"syncTime" must only be used with "to" and "from"')
-    expect(
       () => shallow(<Counter seconds={0} radix={37} />)
     ).toThrowError('"radix" must be between 2 and 36')
     expect(
@@ -64,6 +58,9 @@ describe('initialization', function () {
   })
 
   it('initializes when options are correct', function () {
+    expect(
+      () => shallow(<Counter to={0} />)
+    ).not.toThrow()
     expect(
       () => shallow(<Counter from={0} to={1} />)
     ).not.toThrow()
@@ -84,6 +81,9 @@ describe('initialization', function () {
     ).not.toThrow()
     expect(
       () => shallow(<Counter from={0} to={1} syncTime />)
+    ).not.toThrow()
+    expect(
+      () => shallow(<Counter seconds={0} syncTime />)
     ).not.toThrow()
     expect(
       () => shallow(<Counter seconds={0} radix={12} />)
@@ -300,6 +300,15 @@ describe('counting', function () {
     expect(component.state().numbers.seconds).toBe(5)
   })
 
+  it('works without "from" prop', function () {
+    jest.spyOn(Date.prototype, 'getTime').mockImplementation(() => 78781234)
+    const to = new Date().getTime() + 10000
+    const component = mount(<Counter to={to} />)
+    expect(component.state().timeDiff).toBe(10000)
+    jest.runTimersToTime(5000)
+    expect(component.state().timeDiff).toBe(5000)
+  })
+
   it('does not count when "frozen" is true', function () {
     const component = mount(<Counter seconds={10} frozen />)
     jest.runTimersToTime(5000)
@@ -363,7 +372,7 @@ describe('counting', function () {
 
   it('syncs time when syncTime is set', function () {
     const component = mount(<Counter from={0} to={10000} syncTime />)
-    const newDate = component.state().currentTime + 7000
+    const newDate = component.state().startTime + 7000
     jest.spyOn(Date.prototype, 'getTime').mockImplementation(() => newDate)
     jest.runTimersToTime(5000)
     expect(component.state().timeDiff).toBe(3000)
