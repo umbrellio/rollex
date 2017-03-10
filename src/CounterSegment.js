@@ -4,6 +4,10 @@ import AnimatedCounterDigit from './AnimatedCounterDigit'
 import StaticCounterDigit from './StaticCounterDigit'
 const { arrayOf, objectOf, number, string, any, func } = React.PropTypes
 
+/**
+ * @type {Object}
+ * maximum decimal values for available periods' numbers
+ */
 const PERIOD_LIMITS = {
   'seconds': 59,
   'minutes': 59,
@@ -11,7 +15,29 @@ const PERIOD_LIMITS = {
   'days': 0
 }
 
+/**
+ * counter segment component
+ * @example
+ * <CounterSegment
+ *   digits={['0', '0']}
+ *   period='days'
+ *   radix={10}
+ *   easingDuration={300}
+ *   digitMap={{ '0' => 'o' }}
+ *   digitWrapper={(digit) => digit}
+ * />
+ */
 class CounterSegment extends React.Component {
+  /**
+   * propTypes
+   * @property {string[]} digits - digits to display
+   * @property {string} period
+   * @property {number} radix
+   * @property {string} easingFunction - easing function to use for digit transitions
+   * @property {number} easingDuration - duration of digit transitions
+   * @property {Object} digitMap - a map for transforming particular digits
+   * @property {function(digit: number)} digitWrapper - a function for wrapping mapped digits
+   */
   static propTypes = {
     digits: arrayOf(string).isRequired,
     period: string.isRequired,
@@ -22,18 +48,34 @@ class CounterSegment extends React.Component {
     digitWrapper: func.isRequired
   }
 
+  /**
+   * constructor
+   * calculates height of a single digit
+   * @param {Object} props
+   */
   constructor (props) {
     super(props)
 
     const testDigit = document.createElement('div')
     testDigit.innerHTML = ReactDOMServer.renderToString(this.props.digitWrapper('0'))
     document.getElementsByTagName('body')[0].appendChild(testDigit)
+
+    /**
+     * @type {Object}
+     * @property {number} digitHeight - height of a single digit
+     */
     this.state = {
       digitHeight: testDigit.clientHeight
     }
     testDigit.remove()
   }
 
+  /**
+   * get maximum value for period's digit with account for radix
+   * used for building digit lanes in {@link AnimatedCounterDigit}
+   * @param {number} index - digit's index in number
+   * @return {number} maxValue
+   */
   getMaxValue (index) {
     const maxValue = PERIOD_LIMITS[this.props.period].toString(this.props.radix)
     const maxDigitPos = maxValue.length
@@ -42,6 +84,10 @@ class CounterSegment extends React.Component {
       : this.props.radix - 1
   }
 
+  /**
+   * map digits to corresponding components according to easing function
+   * @return {ReactElement[]}
+   */
   buildDigits () {
     return this.props.digits.map((digit, index) => {
       if (this.props.easingFunction) {
@@ -73,6 +119,10 @@ class CounterSegment extends React.Component {
     })
   }
 
+  /**
+   * render
+   * @return {ReactElement} counter segment
+   */
   render () {
     const style = {
       overflow: 'hidden',

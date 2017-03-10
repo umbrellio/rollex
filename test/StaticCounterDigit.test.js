@@ -1,5 +1,5 @@
 import React from 'react'
-import StaticCounterDigit from './StaticCounterDigit'
+import StaticCounterDigit from '../src/StaticCounterDigit'
 import { shallow } from 'enzyme'
 
 it('decorates the digit', function () {

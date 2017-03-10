@@ -3,11 +3,36 @@ import ReactDOM from 'react-dom'
 import AbstractCounterDigit from './AbstractCounterDigit'
 const { number, string } = React.PropTypes
 
+/**
+ * forces reflow of a given element
+ * @param {Element} element
+ */
 function forceReflow (element) {
   element.offsetHeight // eslint-disable-line no-unused-expressions
 }
 
+/**
+ * animated digit component
+ * used when easing function is provided
+ * @example
+ * <AnimatedCounterDigit
+ *   digit='5'
+ *   height={18}
+ *   radix={10}
+ *   digitMap={{}}
+ *   digitWrapper={(digit) => digit}
+ *   maxValue={9}
+ *   easingFunction='ease-in'
+ *   easingDuration={200}
+ * />
+ */
 class AnimatedCounterDigit extends AbstractCounterDigit {
+  /**
+   * propTypes
+   * @property {number} maxValue - maximum value used to build a digit lane
+   * @property {string} easingFunction - easing function for transitions
+   * @property {number} easingDuration - duration for digit transitions in milliseconds
+   */
   static propTypes = {
     ...AbstractCounterDigit.propTypes,
     maxValue: number.isRequired,
@@ -15,13 +40,17 @@ class AnimatedCounterDigit extends AbstractCounterDigit {
     easingDuration: number.isRequired
   }
 
+  /**
+   * componentDidMount
+   * calls reset in case current digit is a zero
+   */
   componentDidMount () {
     this.reset({ target: ReactDOM.findDOMNode(this) })
   }
 
   /**
-   * Change vertical position of digit lane without transition.
-   * In a lane like [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0] go from first zero to last zero instantly.
+   * changes vertical position of digit lane without triggering a transition
+   * in a lane like [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0] goes from first zero to last zero instantly
    * @param {SyntheticEvent} event
    */
   reset = (event) => {
@@ -33,6 +62,12 @@ class AnimatedCounterDigit extends AbstractCounterDigit {
     }
   }
 
+  /**
+   * creates a div for a digit lane member
+   * @param {string} digit
+   * @param {number} key - index to use for React's key property
+   * @return {ReactElement}
+   */
   buildDigitDiv (digit, key) {
     return (
       <div key={key || digit} className='rollex-digit-lane-label' style={{ height: this.props.height }}>
@@ -41,6 +76,12 @@ class AnimatedCounterDigit extends AbstractCounterDigit {
     )
   }
 
+  /**
+   * builds the digit lane
+   * digit lane contains all available digits
+   * it changes its vertical position in order to emulate counter rolling
+   * @return {ReactElement[]}
+   */
   buildDigitLane () {
     var digitDivs = []
     for (let i = 0; i <= this.props.maxValue; i++) {
@@ -50,6 +91,10 @@ class AnimatedCounterDigit extends AbstractCounterDigit {
     return digitDivs
   }
 
+  /**
+   * render
+   * @return {ReactElement} digit
+   */
   render () {
     const digitIndex = parseInt(this.props.digit, this.props.radix)
     const yPosition = -this.props.height * (digitIndex + (this.props.radix - this.props.maxValue - 1))

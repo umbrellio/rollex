@@ -1,7 +1,18 @@
 import React from 'react'
 const { objectOf, any, number, string, func } = React.PropTypes
 
+/**
+ * common logic for {@link StaticCounterDigit} and {@link AnimatedCounterDigit}
+ */
 class AbstractCounterDigit extends React.Component {
+  /**
+   * propTypes
+   * @property {string} digit - digit to display
+   * @property {number} height - digit height in pixels
+   * @property {number} radix
+   * @property {Object} digitMap - a map for transforming particular digits
+   * @property {function(digit: number)} digitWrapper - a function for wrapping mapped digits
+   */
   static propTypes = {
     digit: string.isRequired,
     height: number.isRequired,
@@ -10,6 +21,11 @@ class AbstractCounterDigit extends React.Component {
     digitWrapper: func.isRequired
   }
 
+  /**
+   * decorates given digit according to radix, digit map and digit wrapper
+   * @param {number} digit
+   * @return {string} decoratedDigit
+   */
   decorateDigit (digit) {
     const digitString = (digit).toString(this.props.radix)
     return this.props.digitWrapper(this.props.digitMap[digitString] || digitString)
