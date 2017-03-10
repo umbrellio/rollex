@@ -1,5 +1,5 @@
 import React from 'react'
-import AnimatedCounterDigit from './AnimatedCounterDigit'
+import AnimatedCounterDigit from '../src/AnimatedCounterDigit'
 import { shallow } from 'enzyme'
 import { shallowToJson } from 'enzyme-to-json'
 

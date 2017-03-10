@@ -1,9 +1,9 @@
 import React from 'react'
 import { shallow, mount } from 'enzyme'
 import { shallowToJson } from 'enzyme-to-json'
-import CounterSegment from './CounterSegment'
-import AnimatedCounterDigit from './AnimatedCounterDigit'
-import StaticCounterDigit from './StaticCounterDigit'
+import CounterSegment from '../src/CounterSegment'
+import AnimatedCounterDigit from '../src/AnimatedCounterDigit'
+import StaticCounterDigit from '../src/StaticCounterDigit'
 
 function digitWrapper (digit) {
   return <div>{digit}</div>

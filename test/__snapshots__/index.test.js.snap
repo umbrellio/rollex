@@ -2,7 +2,7 @@
 
 exports[`rendering matches snapshot 1`] = `
 <div
-  className="rollex"
+  className="rollex rollex-static"
 >
   <CounterSegment
     digitMap={Object {}}
