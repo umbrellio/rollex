@@ -21,9 +21,9 @@
     "lint": "eslint .",
     "lint-staged": "lint-staged",
     "spellcheck": "yaspeller-ci *.md",
-    "test": "yarn run test:unit && yarn run lint && yarn run spellcheck",
+    "test": "jest && yarn run lint && yarn run spellcheck",
     "test:unit": "jest --coverage",
-    "test:watch": "yarn run test:unit -- --watch"
+    "test:watch": "jest --watch"
   },
   "lint-staged": {
     "*.js": "eslint",
@@ -32,6 +32,12 @@
   "pre-commit": [
     "lint-staged"
   ],
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.js",
+      "!src/docs/*"
+    ]
+  },
   "devDependencies": {
     "babel-core": "^6.23.1",
     "babel-eslint": "^7.1.1",

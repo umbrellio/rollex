@@ -79,7 +79,6 @@ export default class Counter extends React.Component {
 
   static defaultProps = {
     interval: 1000,
-    minDigits: 2,
     minPeriod: 'second',
     maxPeriod: 'day',
     easingFunction: null,
@@ -100,8 +99,8 @@ export default class Counter extends React.Component {
     const { to, from, seconds } = this.props
     const timeDiff = (seconds === undefined) ? (to - from) : (seconds * 1000)
 
-    var minDigits = this.props.minDigits
-    if (this.props.minDigits > this.props.maxDigits) minDigits = this.props.maxDigits
+    var minDigits = this.props.minDigits || this.getInitialMinDigits()
+    if (minDigits > this.props.maxDigits) minDigits = this.props.maxDigits
 
     /**
      * @type {object}
@@ -162,6 +161,14 @@ export default class Counter extends React.Component {
       timeDiff: newTimeDiff,
       numbers: this.calculateNumbers(newTimeDiff)
     })
+  }
+
+  /**
+   * calculates minimum number of digits for current radix
+   * @return {number}
+   */
+  getInitialMinDigits () {
+    return (59).toString(this.props.radix).length
   }
 
   /**

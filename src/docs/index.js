@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import Counter from './'
+import Counter from '../'
 
 ReactDOM.render(
   <div>

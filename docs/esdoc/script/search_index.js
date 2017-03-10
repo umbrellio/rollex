@@ -474,9 +474,9 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/docs.js",
-    "file/src/docs.js.html",
-    "src/docs.js",
+    "src/docs/index.js",
+    "file/src/docs/index.js.html",
+    "src/docs/index.js",
     "file"
   ],
   [
@@ -525,6 +525,12 @@ window.esdocSearchIndex = [
     "src/index.js~counter#getdigits",
     "class/src/index.js~Counter.html#instance-method-getDigits",
     "src/index.js~Counter#getDigits",
+    "method"
+  ],
+  [
+    "src/index.js~counter#getinitialmindigits",
+    "class/src/index.js~Counter.html#instance-method-getInitialMinDigits",
+    "src/index.js~Counter#getInitialMinDigits",
     "method"
   ],
   [

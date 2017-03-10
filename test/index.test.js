@@ -241,7 +241,6 @@ describe('state and props', function () {
       from: 0,
       to: 1,
       interval: 1000,
-      minDigits: 2,
       minPeriod: 'second',
       maxPeriod: 'day'
     })

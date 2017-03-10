@@ -776,10 +776,10 @@
   {
     "__docId__": 28,
     "kind": "file",
-    "name": "src/docs.js",
-    "content": "import React from 'react'\nimport ReactDOM from 'react-dom'\nimport Counter from './'\n\nReactDOM.render(\n  <div>\n    <Counter\n      seconds={100000}\n    />\n    <Counter\n      seconds={24891235}\n      minDigits={3}\n    />\n    <Counter\n      seconds={243523}\n    />\n    <Counter\n      seconds={53423}\n      radix={2}\n    />\n    <Counter\n      seconds={10}\n      interval={2000}\n    />\n    <Counter\n      seconds={1000000}\n      easingFunction='ease-in'\n    />\n    <Counter\n      seconds={3128741412}\n      easingFunction='ease-in-out'\n      easingDuration={800}\n      maxDigits={2}\n    />\n    <Counter\n      seconds={4132749}\n      easingFunction='ease-out'\n      radix={12}\n      digitMap={{\n        'a': 'X',\n        'b': 'E'\n      }}\n    />\n    <Counter\n      seconds={10}\n      easingFunction='cubic-bezier(0.6, 0.04, 0.98, 0.335)'\n    />\n    <Counter\n      seconds={3128414}\n      easingFunction='cubic-bezier(0.6, -0.28, 0.735, 0.045)'\n      radix={16}\n    />\n  </div>,\n  document.getElementById('app')\n)\n",
+    "name": "src/docs/index.js",
+    "content": "import React from 'react'\nimport ReactDOM from 'react-dom'\nimport Counter from '../'\n\nReactDOM.render(\n  <div>\n    <Counter\n      seconds={100000}\n    />\n    <Counter\n      seconds={24891235}\n      minDigits={3}\n    />\n    <Counter\n      seconds={243523}\n    />\n    <Counter\n      seconds={53423}\n      radix={2}\n    />\n    <Counter\n      seconds={10}\n      interval={2000}\n    />\n    <Counter\n      seconds={1000000}\n      easingFunction='ease-in'\n    />\n    <Counter\n      seconds={3128741412}\n      easingFunction='ease-in-out'\n      easingDuration={800}\n      maxDigits={2}\n    />\n    <Counter\n      seconds={4132749}\n      easingFunction='ease-out'\n      radix={12}\n      digitMap={{\n        'a': 'X',\n        'b': 'E'\n      }}\n    />\n    <Counter\n      seconds={10}\n      easingFunction='cubic-bezier(0.6, 0.04, 0.98, 0.335)'\n    />\n    <Counter\n      seconds={3128414}\n      easingFunction='cubic-bezier(0.6, -0.28, 0.735, 0.045)'\n      radix={16}\n    />\n  </div>,\n  document.getElementById('app')\n)\n",
     "static": true,
-    "longname": "src/docs.js",
+    "longname": "src/docs/index.js",
     "access": null,
     "description": null,
     "lineNumber": 1
@@ -788,7 +788,7 @@
     "__docId__": 29,
     "kind": "file",
     "name": "src/index.js",
-    "content": "import React from 'react'\nimport CounterSegment from './CounterSegment'\nconst { number, string, bool, objectOf, any, func } = React.PropTypes\n\n/**\n * @type {string[]}\n * names for available periods\n */\nconst PERIODS = [\n  'days',\n  'hours',\n  'minutes',\n  'seconds'\n]\n\n/**\n * @type {Object}\n * durations for available periods (in milliseconds)\n */\nconst PERIOD_DURATIONS = {\n  'days': 86400000,\n  'hours': 3600000,\n  'minutes': 60000,\n  'seconds': 1000\n}\n\n/**\n * @type {Object}\n * time calculation functions for available periods\n */\nconst PERIOD_DURATION_FUNCTIONS = {\n  'hours': 'getUTCHours',\n  'minutes': 'getMinutes',\n  'seconds': 'getSeconds'\n}\n\n/**\n * main counter component\n * @example\n * <Counter seconds={98} />\n */\nexport default class Counter extends React.Component {\n  /**\n   * propTypes\n   * @property {number} from - timestamp to count from\n   * @property {number} to - timestamp to count to\n   * @property {number} seconds - a number of seconds to count\n   * @property {number} interval - update interval\n   * @property {number} minDigits - minimum number of digits per segment\n   * @property {number} maxDigits - maximum number of digits per segment\n   * @property {string} minPeriod - smallest period to create a segment for\n   * @property {string} maxPeriod - largest period to create a segment for\n   * @property {boolean} frozen - determines if counter is frozen\n   * @property {boolean} syncTime - determines if counter should try to synchronize with client\n   * time.\n   * @property {string} easingFunction - easing function to use for rolling digits\n   * @property {number} easingDuration - easing duration in milliseconds\n   * @property {number} radix - numeral base to use\n   * @property {Object} digitMap - a map to use when transforming digit symbols\n   * @property {function(digit: number)} digitWrapper - a wrapping function for mapped digits\n   */\n  static propTypes = {\n    from: number,\n    to: number,\n    seconds: number,\n    interval: number,\n    minDigits: number,\n    maxDigits: number,\n    minPeriod: string,\n    maxPeriod: string,\n    frozen: bool,\n    syncTime: bool,\n    easingFunction: string,\n    easingDuration: number,\n    radix: number,\n    digitMap: objectOf(any),\n    digitWrapper: func\n  }\n\n  static defaultProps = {\n    interval: 1000,\n    minDigits: 2,\n    minPeriod: 'second',\n    maxPeriod: 'day',\n    easingFunction: null,\n    easingDuration: 300,\n    radix: 10,\n    digitMap: {},\n    digitWrapper: (digit) => <span>{digit}</span>\n  }\n\n  /**\n   * constructor\n   * @param {Object} props\n   */\n  constructor (props) {\n    validateProps(props)\n    super(props)\n\n    const { to, from, seconds } = this.props\n    const timeDiff = (seconds === undefined) ? (to - from) : (seconds * 1000)\n\n    var minDigits = this.props.minDigits\n    if (this.props.minDigits > this.props.maxDigits) minDigits = this.props.maxDigits\n\n    /**\n     * @type {object}\n     * @property {number} timeDiff - current amount of time to count from in milliseconds\n     * @property {number} minDigits - minimum number of digits per segment\n     * @property {Object} numbers - a map from periods to their corresponding numbers\n     * @property {number} currentTime - a timestamp of current moment\n     * @property {string[]} periods - an array of periods to create segments for\n     */\n    this.state = {\n      timeDiff,\n      minDigits,\n      currentTime: new Date().getTime(),\n      periods: this.getPeriods()\n    }\n    this.state.numbers = this.calculateNumbers(timeDiff)\n  }\n\n  componentDidMount () {\n    this.start()\n  }\n\n  componentWillUnmount () {\n    this.stop()\n  }\n\n  /**\n   * start the countdown\n   */\n  start () {\n    if (!this.props.frozen) {\n      this._interval = setInterval(() => this.tick(), this.props.interval)\n    }\n  }\n\n  /**\n   * pause / stop the countdown\n   */\n  stop () {\n    if (!this.props.frozen) clearInterval(this._interval)\n  }\n\n  /**\n   * handle counter tick\n   */\n  tick () {\n    const newTimeDiff = this.getTimeDiff()\n    if (newTimeDiff < 0) {\n      return this.stop()\n    }\n\n    /**\n     * @type {object}\n     * @property {number} timeDiff - current amount of time to count from in milliseconds\n     * @property {Object} numbers - a map from periods to their corresponding numbers\n     */\n    this.setState({\n      timeDiff: newTimeDiff,\n      numbers: this.calculateNumbers(newTimeDiff)\n    })\n  }\n\n  /**\n   * get current amount of time to count from\n   * @return {number} timestamp\n   */\n  getTimeDiff () {\n    if (this.props.syncTime) {\n      return this.props.to - this.props.from - new Date().getTime() + this.state.currentTime\n    } else {\n      return this.state.timeDiff - this.props.interval\n    }\n  }\n\n  /**\n   * get an array of periods to create segments for\n   * @return {string[]} periods\n   */\n  getPeriods () {\n    return PERIODS.slice(\n      PERIODS.indexOf(this.props.maxPeriod + 's'),\n      PERIODS.indexOf(this.props.minPeriod + 's') + 1\n    )\n  }\n\n  /**\n   * get CSS classes for main counter\n   * @return {string} class names\n   */\n  getCSSClassNames () {\n    const type = this.props.easingFunction ? 'animated' : 'static'\n    return `rollex rollex-${type}`\n  }\n\n  /**\n   * calculate numbers for each period for a given timestamp\n   * @param {number} timeDiff - timestamp to calculate numbers for\n   * @return {Object} numbers - a map from periods to corresponding numbers\n   */\n  calculateNumbers (timeDiff) {\n    var numbers = {}\n    for (let period of this.state.periods) {\n      numbers = { ...numbers, [period]: this.calculatePeriodNumber(period, timeDiff) }\n    }\n    return numbers\n  }\n\n  /**\n   * calculate number for given period and timestamp\n   * @param {string} period - period to calculate number for\n   * @param {number} timeDiff - timestamp to use for calculation\n   * @return {number}\n   */\n  calculatePeriodNumber (period, timeDiff) {\n    const date = new Date(timeDiff)\n    if (this.props.maxPeriod + 's' === period) {\n      return Math.floor(timeDiff / PERIOD_DURATIONS[period])\n    } else {\n      return date[PERIOD_DURATION_FUNCTIONS[period]]()\n    }\n  }\n\n  /**\n   * get correct digits for given number accounting for counter's radix, minDigits and maxDigits\n   * @param {number} number - number to get digits for\n   * @return {string[]} digits\n   */\n  getDigits (number) {\n    const { maxDigits, radix } = this.props\n    const minDigits = this.state.minDigits\n\n    if (maxDigits && maxDigits > 0 && number >= Math.pow(radix, maxDigits)) {\n      var nineArray = []\n      for (let i = 0; i < maxDigits; i++) nineArray.push((radix - 1).toString())\n      return nineArray\n    }\n\n    number = number.toString(radix)\n    var zeroArray = []\n    for (let i = 0; i < minDigits - number.length; i++) zeroArray.push('0')\n    return (zeroArray.join('') + number).split('')\n  }\n\n  /**\n   * render\n   * @return {ReactElement} counter\n   */\n  render () {\n    const numbers = this.state.numbers\n    const segments = this.getPeriods().map((period, index) => {\n      return (<CounterSegment\n        period={period}\n        key={index}\n        digits={this.getDigits(numbers[period])}\n        radix={this.props.radix}\n        easingFunction={this.props.easingFunction}\n        easingDuration={this.props.easingDuration}\n        digitMap={this.props.digitMap}\n        digitWrapper={this.props.digitWrapper}\n      />)\n    })\n    return (\n      <div className={this.getCSSClassNames()}>\n        {segments}\n      </div>\n    )\n  }\n}\n\n/**\n * validate counter's props\n * @param {Object} props - props to validate\n */\nfunction validateProps (props) {\n  if (props.seconds !== undefined) {\n    if (props.to !== undefined || props.from !== undefined) {\n      throw new Error('cannot use \"to\" and \"from\" with \"seconds\"')\n    } else if (props.seconds < 0) {\n      throw new Error('\"seconds\" must be greater than or equal to zero')\n    }\n  } else if (props.to === undefined || props.from === undefined) {\n    throw new Error('provide either \"seconds\" or \"to\" and \"from\"')\n  } else if (props.to < props.from) {\n    throw new Error('\"to\" must be bigger than \"from\"')\n  }\n  if (props.minDigits !== undefined && props.minDigits < 1) {\n    throw new Error('\"minDigits\" must be positive')\n  }\n  if (props.minPeriod && PERIODS.indexOf(props.minPeriod + 's') < 0) {\n    throw new Error('\"minPeriod\" must be one of: day, hour, minute, second')\n  }\n  if (props.maxPeriod && PERIODS.indexOf(props.maxPeriod + 's') < 0) {\n    throw new Error('\"maxPeriod\" must be one of: day, hour, minute, second')\n  }\n  if (props.syncTime && props.to === undefined) {\n    throw new Error('\"syncTime\" must only be used with \"to\" and \"from\"')\n  }\n  if (props.radix < 2 || props.radix > 36) {\n    throw new Error('\"radix\" must be between 2 and 36')\n  }\n  if (typeof props.digitWrapper !== 'function') {\n    throw new Error('\"digitWrapper\" must be a function')\n  }\n  if (typeof props.digitMap !== 'object') {\n    throw new Error('\"digitMap\" must be an object')\n  }\n}\n",
+    "content": "import React from 'react'\nimport CounterSegment from './CounterSegment'\nconst { number, string, bool, objectOf, any, func } = React.PropTypes\n\n/**\n * @type {string[]}\n * names for available periods\n */\nconst PERIODS = [\n  'days',\n  'hours',\n  'minutes',\n  'seconds'\n]\n\n/**\n * @type {Object}\n * durations for available periods (in milliseconds)\n */\nconst PERIOD_DURATIONS = {\n  'days': 86400000,\n  'hours': 3600000,\n  'minutes': 60000,\n  'seconds': 1000\n}\n\n/**\n * @type {Object}\n * time calculation functions for available periods\n */\nconst PERIOD_DURATION_FUNCTIONS = {\n  'hours': 'getUTCHours',\n  'minutes': 'getMinutes',\n  'seconds': 'getSeconds'\n}\n\n/**\n * main counter component\n * @example\n * <Counter seconds={98} />\n */\nexport default class Counter extends React.Component {\n  /**\n   * propTypes\n   * @property {number} from - timestamp to count from\n   * @property {number} to - timestamp to count to\n   * @property {number} seconds - a number of seconds to count\n   * @property {number} interval - update interval\n   * @property {number} minDigits - minimum number of digits per segment\n   * @property {number} maxDigits - maximum number of digits per segment\n   * @property {string} minPeriod - smallest period to create a segment for\n   * @property {string} maxPeriod - largest period to create a segment for\n   * @property {boolean} frozen - determines if counter is frozen\n   * @property {boolean} syncTime - determines if counter should try to synchronize with client\n   * time.\n   * @property {string} easingFunction - easing function to use for rolling digits\n   * @property {number} easingDuration - easing duration in milliseconds\n   * @property {number} radix - numeral base to use\n   * @property {Object} digitMap - a map to use when transforming digit symbols\n   * @property {function(digit: number)} digitWrapper - a wrapping function for mapped digits\n   */\n  static propTypes = {\n    from: number,\n    to: number,\n    seconds: number,\n    interval: number,\n    minDigits: number,\n    maxDigits: number,\n    minPeriod: string,\n    maxPeriod: string,\n    frozen: bool,\n    syncTime: bool,\n    easingFunction: string,\n    easingDuration: number,\n    radix: number,\n    digitMap: objectOf(any),\n    digitWrapper: func\n  }\n\n  static defaultProps = {\n    interval: 1000,\n    minPeriod: 'second',\n    maxPeriod: 'day',\n    easingFunction: null,\n    easingDuration: 300,\n    radix: 10,\n    digitMap: {},\n    digitWrapper: (digit) => <span>{digit}</span>\n  }\n\n  /**\n   * constructor\n   * @param {Object} props\n   */\n  constructor (props) {\n    validateProps(props)\n    super(props)\n\n    const { to, from, seconds } = this.props\n    const timeDiff = (seconds === undefined) ? (to - from) : (seconds * 1000)\n\n    var minDigits = this.props.minDigits || this.getInitialMinDigits()\n    if (minDigits > this.props.maxDigits) minDigits = this.props.maxDigits\n\n    /**\n     * @type {object}\n     * @property {number} timeDiff - current amount of time to count from in milliseconds\n     * @property {number} minDigits - minimum number of digits per segment\n     * @property {Object} numbers - a map from periods to their corresponding numbers\n     * @property {number} currentTime - a timestamp of current moment\n     * @property {string[]} periods - an array of periods to create segments for\n     */\n    this.state = {\n      timeDiff,\n      minDigits,\n      currentTime: new Date().getTime(),\n      periods: this.getPeriods()\n    }\n    this.state.numbers = this.calculateNumbers(timeDiff)\n  }\n\n  componentDidMount () {\n    this.start()\n  }\n\n  componentWillUnmount () {\n    this.stop()\n  }\n\n  /**\n   * start the countdown\n   */\n  start () {\n    if (!this.props.frozen) {\n      this._interval = setInterval(() => this.tick(), this.props.interval)\n    }\n  }\n\n  /**\n   * pause / stop the countdown\n   */\n  stop () {\n    if (!this.props.frozen) clearInterval(this._interval)\n  }\n\n  /**\n   * handle counter tick\n   */\n  tick () {\n    const newTimeDiff = this.getTimeDiff()\n    if (newTimeDiff < 0) {\n      return this.stop()\n    }\n\n    /**\n     * @type {object}\n     * @property {number} timeDiff - current amount of time to count from in milliseconds\n     * @property {Object} numbers - a map from periods to their corresponding numbers\n     */\n    this.setState({\n      timeDiff: newTimeDiff,\n      numbers: this.calculateNumbers(newTimeDiff)\n    })\n  }\n\n  /**\n   * calculates minimum number of digits for current radix\n   * @return {number}\n   */\n  getInitialMinDigits () {\n    return (59).toString(this.props.radix).length\n  }\n\n  /**\n   * get current amount of time to count from\n   * @return {number} timestamp\n   */\n  getTimeDiff () {\n    if (this.props.syncTime) {\n      return this.props.to - this.props.from - new Date().getTime() + this.state.currentTime\n    } else {\n      return this.state.timeDiff - this.props.interval\n    }\n  }\n\n  /**\n   * get an array of periods to create segments for\n   * @return {string[]} periods\n   */\n  getPeriods () {\n    return PERIODS.slice(\n      PERIODS.indexOf(this.props.maxPeriod + 's'),\n      PERIODS.indexOf(this.props.minPeriod + 's') + 1\n    )\n  }\n\n  /**\n   * get CSS classes for main counter\n   * @return {string} class names\n   */\n  getCSSClassNames () {\n    const type = this.props.easingFunction ? 'animated' : 'static'\n    return `rollex rollex-${type}`\n  }\n\n  /**\n   * calculate numbers for each period for a given timestamp\n   * @param {number} timeDiff - timestamp to calculate numbers for\n   * @return {Object} numbers - a map from periods to corresponding numbers\n   */\n  calculateNumbers (timeDiff) {\n    var numbers = {}\n    for (let period of this.state.periods) {\n      numbers = { ...numbers, [period]: this.calculatePeriodNumber(period, timeDiff) }\n    }\n    return numbers\n  }\n\n  /**\n   * calculate number for given period and timestamp\n   * @param {string} period - period to calculate number for\n   * @param {number} timeDiff - timestamp to use for calculation\n   * @return {number}\n   */\n  calculatePeriodNumber (period, timeDiff) {\n    const date = new Date(timeDiff)\n    if (this.props.maxPeriod + 's' === period) {\n      return Math.floor(timeDiff / PERIOD_DURATIONS[period])\n    } else {\n      return date[PERIOD_DURATION_FUNCTIONS[period]]()\n    }\n  }\n\n  /**\n   * get correct digits for given number accounting for counter's radix, minDigits and maxDigits\n   * @param {number} number - number to get digits for\n   * @return {string[]} digits\n   */\n  getDigits (number) {\n    const { maxDigits, radix } = this.props\n    const minDigits = this.state.minDigits\n\n    if (maxDigits && maxDigits > 0 && number >= Math.pow(radix, maxDigits)) {\n      var nineArray = []\n      for (let i = 0; i < maxDigits; i++) nineArray.push((radix - 1).toString())\n      return nineArray\n    }\n\n    number = number.toString(radix)\n    var zeroArray = []\n    for (let i = 0; i < minDigits - number.length; i++) zeroArray.push('0')\n    return (zeroArray.join('') + number).split('')\n  }\n\n  /**\n   * render\n   * @return {ReactElement} counter\n   */\n  render () {\n    const numbers = this.state.numbers\n    const segments = this.getPeriods().map((period, index) => {\n      return (<CounterSegment\n        period={period}\n        key={index}\n        digits={this.getDigits(numbers[period])}\n        radix={this.props.radix}\n        easingFunction={this.props.easingFunction}\n        easingDuration={this.props.easingDuration}\n        digitMap={this.props.digitMap}\n        digitWrapper={this.props.digitWrapper}\n      />)\n    })\n    return (\n      <div className={this.getCSSClassNames()}>\n        {segments}\n      </div>\n    )\n  }\n}\n\n/**\n * validate counter's props\n * @param {Object} props - props to validate\n */\nfunction validateProps (props) {\n  if (props.seconds !== undefined) {\n    if (props.to !== undefined || props.from !== undefined) {\n      throw new Error('cannot use \"to\" and \"from\" with \"seconds\"')\n    } else if (props.seconds < 0) {\n      throw new Error('\"seconds\" must be greater than or equal to zero')\n    }\n  } else if (props.to === undefined || props.from === undefined) {\n    throw new Error('provide either \"seconds\" or \"to\" and \"from\"')\n  } else if (props.to < props.from) {\n    throw new Error('\"to\" must be bigger than \"from\"')\n  }\n  if (props.minDigits !== undefined && props.minDigits < 1) {\n    throw new Error('\"minDigits\" must be positive')\n  }\n  if (props.minPeriod && PERIODS.indexOf(props.minPeriod + 's') < 0) {\n    throw new Error('\"minPeriod\" must be one of: day, hour, minute, second')\n  }\n  if (props.maxPeriod && PERIODS.indexOf(props.maxPeriod + 's') < 0) {\n    throw new Error('\"maxPeriod\" must be one of: day, hour, minute, second')\n  }\n  if (props.syncTime && props.to === undefined) {\n    throw new Error('\"syncTime\" must only be used with \"to\" and \"from\"')\n  }\n  if (props.radix < 2 || props.radix > 36) {\n    throw new Error('\"radix\" must be between 2 and 36')\n  }\n  if (typeof props.digitWrapper !== 'function') {\n    throw new Error('\"digitWrapper\" must be a function')\n  }\n  if (typeof props.digitMap !== 'object') {\n    throw new Error('\"digitMap\" must be an object')\n  }\n}\n",
     "static": true,
     "longname": "src/index.js",
     "access": null,
@@ -1095,7 +1095,7 @@
     ],
     "type": {
       "types": [
-        "{\"interval\": number, \"minDigits\": number, \"minPeriod\": string, \"maxPeriod\": string, \"easingFunction\": *, \"easingDuration\": number, \"radix\": number, \"digitMap\": *, \"digitWrapper\": *}"
+        "{\"interval\": number, \"minPeriod\": string, \"maxPeriod\": string, \"easingFunction\": *, \"easingDuration\": number, \"radix\": number, \"digitMap\": *, \"digitWrapper\": *}"
       ]
     }
   },
@@ -1110,7 +1110,7 @@
     "longname": "src/index.js~Counter#constructor",
     "access": null,
     "description": "constructor",
-    "lineNumber": 96,
+    "lineNumber": 95,
     "params": [
       {
         "nullable": null,
@@ -1133,7 +1133,7 @@
     "longname": "src/index.js~Counter#state",
     "access": null,
     "description": "",
-    "lineNumber": 114,
+    "lineNumber": 113,
     "properties": [
       {
         "nullable": null,
@@ -1206,7 +1206,7 @@
     "longname": "src/index.js~Counter#componentDidMount",
     "access": null,
     "description": null,
-    "lineNumber": 123,
+    "lineNumber": 122,
     "undocument": true,
     "unknown": [
       {
@@ -1227,7 +1227,7 @@
     "longname": "src/index.js~Counter#componentWillUnmount",
     "access": null,
     "description": null,
-    "lineNumber": 127,
+    "lineNumber": 126,
     "undocument": true,
     "unknown": [
       {
@@ -1248,7 +1248,7 @@
     "longname": "src/index.js~Counter#start",
     "access": null,
     "description": "start the countdown",
-    "lineNumber": 134,
+    "lineNumber": 133,
     "params": []
   },
   {
@@ -1260,7 +1260,7 @@
     "longname": "src/index.js~Counter#_interval",
     "access": null,
     "description": null,
-    "lineNumber": 136,
+    "lineNumber": 135,
     "undocument": true,
     "unknown": [
       {
@@ -1285,7 +1285,7 @@
     "longname": "src/index.js~Counter#stop",
     "access": null,
     "description": "pause / stop the countdown",
-    "lineNumber": 143,
+    "lineNumber": 142,
     "params": []
   },
   {
@@ -1299,7 +1299,7 @@
     "longname": "src/index.js~Counter#tick",
     "access": null,
     "description": "handle counter tick",
-    "lineNumber": 150,
+    "lineNumber": 149,
     "params": [],
     "return": {
       "types": [
@@ -1310,6 +1310,28 @@
   {
     "__docId__": 45,
     "kind": "method",
+    "name": "getInitialMinDigits",
+    "memberof": "src/index.js~Counter",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/index.js~Counter#getInitialMinDigits",
+    "access": null,
+    "description": "calculates minimum number of digits for current radix",
+    "lineNumber": 170,
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "number"
+      ],
+      "spread": false,
+      "description": ""
+    }
+  },
+  {
+    "__docId__": 46,
+    "kind": "method",
     "name": "getTimeDiff",
     "memberof": "src/index.js~Counter",
     "generator": false,
@@ -1318,7 +1340,7 @@
     "longname": "src/index.js~Counter#getTimeDiff",
     "access": null,
     "description": "get current amount of time to count from",
-    "lineNumber": 171,
+    "lineNumber": 178,
     "params": [],
     "return": {
       "nullable": null,
@@ -1330,7 +1352,7 @@
     }
   },
   {
-    "__docId__": 46,
+    "__docId__": 47,
     "kind": "method",
     "name": "getPeriods",
     "memberof": "src/index.js~Counter",
@@ -1340,7 +1362,7 @@
     "longname": "src/index.js~Counter#getPeriods",
     "access": null,
     "description": "get an array of periods to create segments for",
-    "lineNumber": 183,
+    "lineNumber": 190,
     "params": [],
     "return": {
       "nullable": null,
@@ -1352,7 +1374,7 @@
     }
   },
   {
-    "__docId__": 47,
+    "__docId__": 48,
     "kind": "method",
     "name": "getCSSClassNames",
     "memberof": "src/index.js~Counter",
@@ -1362,7 +1384,7 @@
     "longname": "src/index.js~Counter#getCSSClassNames",
     "access": null,
     "description": "get CSS classes for main counter",
-    "lineNumber": 194,
+    "lineNumber": 201,
     "params": [],
     "return": {
       "nullable": null,
@@ -1374,7 +1396,7 @@
     }
   },
   {
-    "__docId__": 48,
+    "__docId__": 49,
     "kind": "method",
     "name": "calculateNumbers",
     "memberof": "src/index.js~Counter",
@@ -1384,7 +1406,7 @@
     "longname": "src/index.js~Counter#calculateNumbers",
     "access": null,
     "description": "calculate numbers for each period for a given timestamp",
-    "lineNumber": 204,
+    "lineNumber": 211,
     "params": [
       {
         "nullable": null,
@@ -1407,7 +1429,7 @@
     }
   },
   {
-    "__docId__": 49,
+    "__docId__": 50,
     "kind": "method",
     "name": "calculatePeriodNumber",
     "memberof": "src/index.js~Counter",
@@ -1417,7 +1439,7 @@
     "longname": "src/index.js~Counter#calculatePeriodNumber",
     "access": null,
     "description": "calculate number for given period and timestamp",
-    "lineNumber": 218,
+    "lineNumber": 225,
     "params": [
       {
         "nullable": null,
@@ -1450,7 +1472,7 @@
     }
   },
   {
-    "__docId__": 50,
+    "__docId__": 51,
     "kind": "method",
     "name": "getDigits",
     "memberof": "src/index.js~Counter",
@@ -1460,7 +1482,7 @@
     "longname": "src/index.js~Counter#getDigits",
     "access": null,
     "description": "get correct digits for given number accounting for counter's radix, minDigits and maxDigits",
-    "lineNumber": 232,
+    "lineNumber": 239,
     "params": [
       {
         "nullable": null,
@@ -1483,7 +1505,7 @@
     }
   },
   {
-    "__docId__": 51,
+    "__docId__": 52,
     "kind": "method",
     "name": "render",
     "memberof": "src/index.js~Counter",
@@ -1493,7 +1515,7 @@
     "longname": "src/index.js~Counter#render",
     "access": null,
     "description": "render",
-    "lineNumber": 252,
+    "lineNumber": 259,
     "params": [],
     "return": {
       "nullable": null,
@@ -1505,7 +1527,7 @@
     }
   },
   {
-    "__docId__": 52,
+    "__docId__": 53,
     "kind": "function",
     "name": "validateProps",
     "memberof": "src/index.js",
@@ -1518,7 +1540,7 @@
     "importPath": "rollex",
     "importStyle": null,
     "description": "validate counter's props",
-    "lineNumber": 278,
+    "lineNumber": 285,
     "params": [
       {
         "nullable": null,
@@ -1533,7 +1555,7 @@
     ]
   },
   {
-    "__docId__": 54,
+    "__docId__": 55,
     "kind": "external",
     "name": "Infinity",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Infinity",
@@ -1545,7 +1567,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 55,
+    "__docId__": 56,
     "kind": "external",
     "name": "NaN",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NaN",
@@ -1557,7 +1579,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 56,
+    "__docId__": 57,
     "kind": "external",
     "name": "undefined",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined",
@@ -1569,7 +1591,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 57,
+    "__docId__": 58,
     "kind": "external",
     "name": "null",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null",
@@ -1581,7 +1603,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 58,
+    "__docId__": 59,
     "kind": "external",
     "name": "Object",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object",
@@ -1593,7 +1615,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 59,
+    "__docId__": 60,
     "kind": "external",
     "name": "object",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object",
@@ -1605,7 +1627,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 60,
+    "__docId__": 61,
     "kind": "external",
     "name": "Function",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function",
@@ -1617,7 +1639,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 61,
+    "__docId__": 62,
     "kind": "external",
     "name": "function",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function",
@@ -1629,7 +1651,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 62,
+    "__docId__": 63,
     "kind": "external",
     "name": "Boolean",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean",
@@ -1641,7 +1663,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 63,
+    "__docId__": 64,
     "kind": "external",
     "name": "boolean",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean",
@@ -1653,7 +1675,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 64,
+    "__docId__": 65,
     "kind": "external",
     "name": "Symbol",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol",
@@ -1665,7 +1687,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 65,
+    "__docId__": 66,
     "kind": "external",
     "name": "Error",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error",
@@ -1677,7 +1699,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 66,
+    "__docId__": 67,
     "kind": "external",
     "name": "EvalError",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/EvalError",
@@ -1689,7 +1711,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 67,
+    "__docId__": 68,
     "kind": "external",
     "name": "InternalError",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/InternalError",
@@ -1701,7 +1723,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 68,
+    "__docId__": 69,
     "kind": "external",
     "name": "RangeError",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RangeError",
@@ -1713,7 +1735,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 69,
+    "__docId__": 70,
     "kind": "external",
     "name": "ReferenceError",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ReferenceError",
@@ -1725,7 +1747,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 70,
+    "__docId__": 71,
     "kind": "external",
     "name": "SyntaxError",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SyntaxError",
@@ -1737,7 +1759,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 71,
+    "__docId__": 72,
     "kind": "external",
     "name": "TypeError",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypeError",
@@ -1749,7 +1771,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 72,
+    "__docId__": 73,
     "kind": "external",
     "name": "URIError",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/URIError",
@@ -1761,7 +1783,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 73,
+    "__docId__": 74,
     "kind": "external",
     "name": "Number",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number",
@@ -1773,7 +1795,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 74,
+    "__docId__": 75,
     "kind": "external",
     "name": "number",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number",
@@ -1785,7 +1807,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 75,
+    "__docId__": 76,
     "kind": "external",
     "name": "Date",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date",
@@ -1797,7 +1819,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 76,
+    "__docId__": 77,
     "kind": "external",
     "name": "String",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String",
@@ -1809,7 +1831,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 77,
+    "__docId__": 78,
     "kind": "external",
     "name": "string",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String",
@@ -1821,7 +1843,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 78,
+    "__docId__": 79,
     "kind": "external",
     "name": "RegExp",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp",
@@ -1833,7 +1855,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 79,
+    "__docId__": 80,
     "kind": "external",
     "name": "Array",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array",
@@ -1845,7 +1867,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 80,
+    "__docId__": 81,
     "kind": "external",
     "name": "Int8Array",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int8Array",
@@ -1857,7 +1879,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 81,
+    "__docId__": 82,
     "kind": "external",
     "name": "Uint8Array",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array",
@@ -1869,7 +1891,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 82,
+    "__docId__": 83,
     "kind": "external",
     "name": "Uint8ClampedArray",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8ClampedArray",
@@ -1881,7 +1903,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 83,
+    "__docId__": 84,
     "kind": "external",
     "name": "Int16Array",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int16Array",
@@ -1893,7 +1915,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 84,
+    "__docId__": 85,
     "kind": "external",
     "name": "Uint16Array",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint16Array",
@@ -1905,7 +1927,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 85,
+    "__docId__": 86,
     "kind": "external",
     "name": "Int32Array",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int32Array",
@@ -1917,7 +1939,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 86,
+    "__docId__": 87,
     "kind": "external",
     "name": "Uint32Array",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint32Array",
@@ -1929,7 +1951,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 87,
+    "__docId__": 88,
     "kind": "external",
     "name": "Float32Array",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float32Array",
@@ -1941,7 +1963,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 88,
+    "__docId__": 89,
     "kind": "external",
     "name": "Float64Array",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float64Array",
@@ -1953,7 +1975,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 89,
+    "__docId__": 90,
     "kind": "external",
     "name": "Map",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map",
@@ -1965,7 +1987,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 90,
+    "__docId__": 91,
     "kind": "external",
     "name": "Set",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set",
@@ -1977,7 +1999,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 91,
+    "__docId__": 92,
     "kind": "external",
     "name": "WeakMap",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap",
@@ -1989,7 +2011,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 92,
+    "__docId__": 93,
     "kind": "external",
     "name": "WeakSet",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet",
@@ -2001,7 +2023,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 93,
+    "__docId__": 94,
     "kind": "external",
     "name": "ArrayBuffer",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer",
@@ -2013,7 +2035,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 94,
+    "__docId__": 95,
     "kind": "external",
     "name": "DataView",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView",
@@ -2025,7 +2047,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 95,
+    "__docId__": 96,
     "kind": "external",
     "name": "JSON",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON",
@@ -2037,7 +2059,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 96,
+    "__docId__": 97,
     "kind": "external",
     "name": "Promise",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise",
@@ -2049,7 +2071,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 97,
+    "__docId__": 98,
     "kind": "external",
     "name": "Generator",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator",
@@ -2061,7 +2083,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 98,
+    "__docId__": 99,
     "kind": "external",
     "name": "GeneratorFunction",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/GeneratorFunction",
@@ -2073,7 +2095,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 99,
+    "__docId__": 100,
     "kind": "external",
     "name": "Reflect",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect",
@@ -2085,7 +2107,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 100,
+    "__docId__": 101,
     "kind": "external",
     "name": "Proxy",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy",
@@ -2098,7 +2120,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 102,
+    "__docId__": 103,
     "kind": "external",
     "name": "CanvasRenderingContext2D",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D",
@@ -2110,7 +2132,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 103,
+    "__docId__": 104,
     "kind": "external",
     "name": "DocumentFragment",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment",
@@ -2122,7 +2144,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 104,
+    "__docId__": 105,
     "kind": "external",
     "name": "Element",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Element",
@@ -2134,7 +2156,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 105,
+    "__docId__": 106,
     "kind": "external",
     "name": "Event",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Event",
@@ -2146,7 +2168,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 106,
+    "__docId__": 107,
     "kind": "external",
     "name": "Node",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Node",
@@ -2158,7 +2180,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 107,
+    "__docId__": 108,
     "kind": "external",
     "name": "NodeList",
     "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/NodeList",
@@ -2170,7 +2192,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 108,
+    "__docId__": 109,
     "kind": "external",
     "name": "XMLHttpRequest",
     "externalLink": "https://developer.mozilla.org/en/docs/Web/API/XMLHttpRequest",
@@ -2182,7 +2204,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 109,
+    "__docId__": 110,
     "kind": "external",
     "name": "AudioContext",
     "externalLink": "https://developer.mozilla.org/en/docs/Web/API/AudioContext",

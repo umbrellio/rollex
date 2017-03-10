@@ -1,7 +1,7 @@
 {
-  "coverage": "91.66%",
-  "expectCount": 36,
-  "actualCount": 33,
+  "coverage": "91.89%",
+  "expectCount": 37,
+  "actualCount": 34,
   "files": {
     "src/AbstractCounterDigit.js": {
       "expectCount": 3,
@@ -14,11 +14,11 @@
       "undocumentLines": []
     },
     "src/index.js": {
-      "expectCount": 17,
-      "actualCount": 14,
+      "expectCount": 18,
+      "actualCount": 15,
       "undocumentLines": [
-        123,
-        127,
+        122,
+        126,
         80
       ]
     },
