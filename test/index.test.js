@@ -6,7 +6,7 @@ import CounterSegment from '../src/CounterSegment'
 
 describe('initialization', function () {
   it('throws an error when options are provided incorrectly', function () {
-    const _error = console.error
+    const error = console.error
     console.error = jest.fn(() => null) // disable React PropTypes warnings
 
     expect(
@@ -52,7 +52,7 @@ describe('initialization', function () {
       () => shallow(<Counter to={0} direction='sobaka' />)
     ).toThrowError('"direction" must be either up or down')
 
-    console.error = _error
+    console.error = error
   })
 
   it('initializes when options are correct', function () {
@@ -224,40 +224,46 @@ describe('rendering', function () {
     expect(counterSegments.at(3).props().digitMap).toEqual(digitMap)
   })
 
-  it('passes correct labels to segments', function () {
-    const component = shallow(<Counter to={1} />)
-    const counterSegments = component.find(CounterSegment)
-    expect(counterSegments.at(0).props().label).toEqual('days')
-    expect(counterSegments.at(1).props().label).toEqual('hours')
-    expect(counterSegments.at(2).props().label).toEqual('minutes')
-    expect(counterSegments.at(3).props().label).toEqual('seconds')
+  describe('segment labels', function () {
+    it('passes default labels', function () {
+      const component = shallow(<Counter to={1} />)
+      const counterSegments = component.find(CounterSegment)
+      expect(counterSegments.at(0).props().label).toEqual('days')
+      expect(counterSegments.at(1).props().label).toEqual('hours')
+      expect(counterSegments.at(2).props().label).toEqual('minutes')
+      expect(counterSegments.at(3).props().label).toEqual('seconds')
+    })
 
-    const labelMap = {
-      days: 'DD',
-      hours: 'HH',
-      minutes: 'MM',
-      seconds: 'SS'
-    }
-    const labelMapComponent = shallow(<Counter to={1} labels={labelMap} />)
-    const labelMapCounterSegments = labelMapComponent.find(CounterSegment)
-    expect(labelMapCounterSegments.at(0).props().label).toEqual('DD')
-    expect(labelMapCounterSegments.at(1).props().label).toEqual('HH')
-    expect(labelMapCounterSegments.at(2).props().label).toEqual('MM')
-    expect(labelMapCounterSegments.at(3).props().label).toEqual('SS')
-
-    const labelFunc = function (period, number) {
-      if (number % 10 === 1) {
-        return period.slice(0, -1)
-      } else {
-        return period
+    it('passes labels when given a map', function () {
+      const labelMap = {
+        days: 'DD',
+        hours: 'HH',
+        minutes: 'MM',
+        seconds: 'SS'
       }
-    }
-    const labelFuncComponent = shallow(<Counter seconds={61} labels={labelFunc} />)
-    const labelFuncCounterSegments = labelFuncComponent.find(CounterSegment)
-    expect(labelFuncCounterSegments.at(0).props().label).toEqual('days')
-    expect(labelFuncCounterSegments.at(1).props().label).toEqual('hours')
-    expect(labelFuncCounterSegments.at(2).props().label).toEqual('minute')
-    expect(labelFuncCounterSegments.at(3).props().label).toEqual('second')
+      const component = shallow(<Counter to={1} labels={labelMap} />)
+      const segments = component.find(CounterSegment)
+      expect(segments.at(0).props().label).toEqual('DD')
+      expect(segments.at(1).props().label).toEqual('HH')
+      expect(segments.at(2).props().label).toEqual('MM')
+      expect(segments.at(3).props().label).toEqual('SS')
+    })
+
+    it('passes labels when given a function', function () {
+      const labelFunc = function (period, number) {
+        if (number % 10 === 1) {
+          return period.slice(0, -1)
+        } else {
+          return period
+        }
+      }
+      const component = shallow(<Counter seconds={61} labels={labelFunc} />)
+      const segments = component.find(CounterSegment)
+      expect(segments.at(0).props().label).toEqual('days')
+      expect(segments.at(1).props().label).toEqual('hours')
+      expect(segments.at(2).props().label).toEqual('minute')
+      expect(segments.at(3).props().label).toEqual('second')
+    })
   })
 })
 
