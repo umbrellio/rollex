@@ -16,6 +16,7 @@ exports[`rendering matches snapshot 1`] = `
     direction="down"
     easingDuration={300}
     easingFunction={null}
+    label="days"
     period="days"
     radix={10}
   />
@@ -31,6 +32,7 @@ exports[`rendering matches snapshot 1`] = `
     direction="down"
     easingDuration={300}
     easingFunction={null}
+    label="hours"
     period="hours"
     radix={10}
   />
@@ -46,6 +48,7 @@ exports[`rendering matches snapshot 1`] = `
     direction="down"
     easingDuration={300}
     easingFunction={null}
+    label="minutes"
     period="minutes"
     radix={10}
   />
@@ -61,6 +64,7 @@ exports[`rendering matches snapshot 1`] = `
     direction="down"
     easingDuration={300}
     easingFunction={null}
+    label="seconds"
     period="seconds"
     radix={10}
   />

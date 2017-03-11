@@ -1,7 +1,7 @@
 import React from 'react'
 import CounterSegment from './CounterSegment'
 import GlobalIntervals from './globalIntervals'
-const { number, string, bool, objectOf, any, func } = React.PropTypes
+const { number, string, bool, objectOf, object, oneOfType, oneOf, func } = React.PropTypes
 
 /**
  * @type {string[]}
@@ -59,13 +59,15 @@ export default class Counter extends React.Component {
    * @property {number} radix - numeral base to use
    * @property {Object} digitMap - a map to use when transforming digit symbols
    * @property {function(digit: number)} digitWrapper - a wrapping function for mapped digits
+   * @property {Map<string, string>|function(period: string, number: number)} labels - a map or a
+   * function that returns labels for given period and number
    */
   static propTypes = {
     from: number,
     to: number,
     seconds: number,
     interval: number,
-    direction: string,
+    direction: oneOf(['up', 'down']),
     minDigits: number,
     maxDigits: number,
     minPeriod: string,
@@ -75,8 +77,9 @@ export default class Counter extends React.Component {
     easingFunction: string,
     easingDuration: number,
     radix: number,
-    digitMap: objectOf(any),
-    digitWrapper: func
+    digitMap: object,
+    digitWrapper: func,
+    labels: oneOfType([objectOf(string), func])
   }
 
   static defaultProps = {
@@ -113,7 +116,7 @@ export default class Counter extends React.Component {
      * @type {object}
      * @property {number} timeDiff - current amount of time to count from in milliseconds
      * @property {number} minDigits - minimum number of digits per segment
-     * @property {Object} numbers - a map from periods to their corresponding numbers
+     * @property {Map<string, number>} numbers - a map from periods to their corresponding numbers
      * @property {number} startTime - a timestamp of current moment
      * @property {string[]} periods - an array of periods to create segments for
      */
@@ -237,7 +240,7 @@ export default class Counter extends React.Component {
   /**
    * Calculates numbers for each period for a given timestamp.
    * @param {number} timeDiff - timestamp to calculate numbers for
-   * @return {Object} numbers - a map from periods to corresponding numbers
+   * @return {Map<string, number>} numbers - a map from periods to corresponding numbers
    */
   calculateNumbers (timeDiff) {
     var numbers = {}
@@ -287,6 +290,22 @@ export default class Counter extends React.Component {
   }
 
   /**
+   * Gets a label for given period and number.
+   * @param {string} period
+   * @param {number} number
+   * @return {string} label
+   */
+  getLabel (period, number) {
+    if (!this.props.labels) {
+      return period
+    } else if (typeof this.props.labels === 'function') {
+      return this.props.labels(period, number)
+    } else {
+      return this.props.labels[period]
+    }
+  }
+
+  /**
    * Renders the counter.
    * @return {ReactElement} counter
    */
@@ -303,6 +322,7 @@ export default class Counter extends React.Component {
         easingDuration={this.props.easingDuration}
         digitMap={this.props.digitMap}
         digitWrapper={this.props.digitWrapper}
+        label={this.getLabel(period, numbers[period])}
       />)
     })
     return (

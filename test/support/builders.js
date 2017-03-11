@@ -23,11 +23,12 @@ export class CounterSegmentBuilder extends AbstractBuilder {
     easingFunction = null,
     easingDuration = 300,
     digitMap = {},
-    digitWrapper = (digit) => <span>{digit}</span>
+    digitWrapper = (digit) => <span>{digit}</span>,
+    label = 'seconds'
   } = {}) {
     return React.createElement(
       CounterSegment,
-      { digits, period, radix, direction, easingFunction, easingDuration, digitMap, digitWrapper }
+      { digits, period, radix, direction, easingFunction, easingDuration, digitMap, digitWrapper, label }
     )
   }
 }
