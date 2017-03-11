@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 import AnimatedCounterDigit from './AnimatedCounterDigit'
 import StaticCounterDigit from './StaticCounterDigit'
-const { arrayOf, objectOf, number, string, any, func } = React.PropTypes
+const { arrayOf, object, number, string, func } = React.PropTypes
 
 /**
  * @type {Object}
@@ -38,6 +38,7 @@ class CounterSegment extends React.Component {
    * @property {number} easingDuration - duration of digit transitions
    * @property {Object} digitMap - a map for transforming particular digits
    * @property {function(digit: number)} digitWrapper - a function for wrapping mapped digits
+   * @property {string} label
    */
   static propTypes = {
     digits: arrayOf(string).isRequired,
@@ -46,8 +47,9 @@ class CounterSegment extends React.Component {
     direction: string.isRequired,
     easingFunction: string,
     easingDuration: number.isRequired,
-    digitMap: objectOf(any).isRequired,
-    digitWrapper: func.isRequired
+    digitMap: object.isRequired,
+    digitWrapper: func.isRequired,
+    label: string.isRequired
   }
 
   /**
@@ -142,7 +144,7 @@ class CounterSegment extends React.Component {
           {this.buildDigits()}
         </div>
         <div className='rollex-label'>
-          {this.props.period}
+          {this.props.label}
         </div>
       </div>
     )
