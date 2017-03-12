@@ -6,7 +6,9 @@ it('decorates the digit', function () {
     digit: '0',
     digitWrapper: (digit) => <a href='#'>{digit}</a>
   })
-  expect(componentWithWrapper.html()).toBe('<div class="rollex-digit"><a href="#">0</a></div>')
+  expect(componentWithWrapper.html()).toBe(
+    '<div class="rollex-digit" style="float:left;"><a href="#">0</a></div>'
+  )
 
   const componentWithWrapperAndMap = Builder.shallow({
     digit: '0',
@@ -15,5 +17,7 @@ it('decorates the digit', function () {
     },
     digitWrapper: (digit) => <div>{digit}</div>
   })
-  expect(componentWithWrapperAndMap.html()).toBe('<div class="rollex-digit"><div>o</div></div>')
+  expect(componentWithWrapperAndMap.html()).toBe(
+    '<div class="rollex-digit" style="float:left;"><div>o</div></div>'
+  )
 })

@@ -1,7 +1,7 @@
 import { shallowToJson } from 'enzyme-to-json'
 import { CounterSegmentBuilder as Builder } from './support/builders'
-import AnimatedCounterDigit from '../src/AnimatedCounterDigit'
-import StaticCounterDigit from '../src/StaticCounterDigit'
+import AnimatedCounterDigit from '../../src/AnimatedCounterDigit'
+import StaticCounterDigit from '../../src/StaticCounterDigit'
 
 describe('snaphots', function () {
   var staticComponent, animatedComponent
