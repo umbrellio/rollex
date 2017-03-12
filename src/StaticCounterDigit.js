@@ -20,7 +20,7 @@ class StaticCounterDigit extends AbstractCounterDigit {
    */
   render () {
     return (
-      <div className='rollex-digit'>
+      <div className='rollex-digit' style={{ float: 'left' }}>
         {this.decorateDigit(this.props.digit)}
       </div>
     )

@@ -11,8 +11,7 @@ export default {
     loaders: [
       {
         test: /\.js$/,
-        loaders: ['babel-loader'],
-        include: /src/
+        loaders: ['babel-loader']
       }
     ]
   }

@@ -1,13 +1,13 @@
 import React from 'react'
 import { shallow, mount } from 'enzyme'
 import { shallowToJson } from 'enzyme-to-json'
-import Counter from '../src/'
-import CounterSegment from '../src/CounterSegment'
+import Counter from '../../src/'
+import CounterSegment from '../../src/CounterSegment'
 
 describe('initialization', function () {
   it('throws an error when options are provided incorrectly', function () {
-    const error = console.error
-    console.error = jest.fn(() => null) // disable React PropTypes warnings
+    const originalError = console.error
+    console.error = () => {} // disable React PropTypes warnings
 
     expect(
       () => shallow(<Counter />)
@@ -21,6 +21,9 @@ describe('initialization', function () {
     expect(
       () => shallow(<Counter from={0} seconds={2} />)
     ).toThrowError('cannot use "to" and "from" with "seconds"')
+    expect(
+      () => shallow(<Counter seconds={2} syncTime />)
+    ).toThrowError('"syncTime" must be used with "to"')
     expect(
       () => shallow(<Counter to={0} seconds={2} />)
     ).toThrowError('cannot use "to" and "from" with "seconds"')
@@ -52,7 +55,7 @@ describe('initialization', function () {
       () => shallow(<Counter to={0} direction='sobaka' />)
     ).toThrowError('"direction" must be either up or down')
 
-    console.error = error
+    console.error = originalError
   })
 
   it('initializes when options are correct', function () {
@@ -79,9 +82,6 @@ describe('initialization', function () {
     ).not.toThrow()
     expect(
       () => shallow(<Counter from={0} to={1} syncTime />)
-    ).not.toThrow()
-    expect(
-      () => shallow(<Counter seconds={0} syncTime />)
     ).not.toThrow()
     expect(
       () => shallow(<Counter seconds={0} radix={12} />)

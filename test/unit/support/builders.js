@@ -1,8 +1,8 @@
 import React from 'react'
 import { shallow, mount } from 'enzyme'
-import CounterSegment from '../../src/CounterSegment'
-import StaticCounterDigit from '../../src/StaticCounterDigit'
-import AnimatedCounterDigit from '../../src/AnimatedCounterDigit'
+import CounterSegment from '../../../src/CounterSegment'
+import StaticCounterDigit from '../../../src/StaticCounterDigit'
+import AnimatedCounterDigit from '../../../src/AnimatedCounterDigit'
 
 class AbstractBuilder {
   static shallow = function (params = {}) {

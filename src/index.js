@@ -142,7 +142,7 @@ export default class Counter extends React.Component {
   }
 
   componentWillUnmount () {
-    if (!this.props.frozen) this.stop()
+    if (!this.props.frozen && !this.state.stopped) this.stop()
   }
 
   /**
@@ -165,6 +165,7 @@ export default class Counter extends React.Component {
   start () {
     GlobalIntervals.ensureExistence(this.props.interval)
     GlobalIntervals.subscribe(this.props.interval, this.boundTick)
+    this.setState({ stopped: false })
   }
 
   /**
@@ -173,6 +174,7 @@ export default class Counter extends React.Component {
   stop () {
     GlobalIntervals.unsubscribe(this.props.interval, this.boundTick)
     GlobalIntervals.cleanup(this.props.interval)
+    this.setState({ stopped: true })
   }
 
   /**
@@ -357,6 +359,9 @@ function validateProps (props) {
   }
   if (props.maxPeriod && PERIODS.indexOf(props.maxPeriod + 's') < 0) {
     throw new Error('"maxPeriod" must be one of: day, hour, minute, second')
+  }
+  if (props.syncTime && props.to === undefined) {
+    throw new Error('"syncTime" must be used with "to"')
   }
   if (props.radix < 2 || props.radix > 36) {
     throw new Error('"radix" must be between 2 and 36')
