@@ -56,3 +56,23 @@ describe('custom labels', function () {
     expect(component).toHaveLabels(['DAYS', 'HOURS', 'MINUTES', 'SECONDS'])
   })
 })
+
+describe('separators', function () {
+  it('works with jsx', function () {
+    const separator = <a href='#'>l0l</a>
+    const component = render(<Counter seconds={10} separator={separator} />)
+    expect(component).toHaveSeparators(['l0l', 'l0l', 'l0l'])
+  })
+
+  it('works with numbers', function () {
+    const separator = 420
+    const component = render(<Counter seconds={10} separator={separator} />)
+    expect(component).toHaveSeparators(['420', '420', '420'])
+  })
+
+  it('works with strings', function () {
+    const separator = 'ur mum'
+    const component = render(<Counter seconds={10} separator={separator} />)
+    expect(component).toHaveSeparators(['ur mum', 'ur mum', 'ur mum'])
+  })
+})

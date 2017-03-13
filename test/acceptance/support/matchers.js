@@ -2,10 +2,7 @@ export default {
   toDisplayDigits (util, customEqualityTesters) {
     return {
       compare (object, expected) {
-        const actual = Array.prototype.slice.call(object.querySelectorAll('span'))
-          .filter((el) => isVisible(el))
-          .map((el) => el.textContent)
-          .join('')
+        const actual = getChildrenTextContents(object, 'span', true).join('')
         const pass = util.equals(actual, expected, customEqualityTesters)
 
         if (pass) {
@@ -21,8 +18,7 @@ export default {
   toHaveLabels (util, customEqualityTesters) {
     return {
       compare (object, expected) {
-        const actual = Array.prototype.slice.call(object.querySelectorAll('.rollex-label'))
-          .map((el) => el.textContent)
+        const actual = getChildrenTextContents(object, '.rollex-label')
         const pass = util.equals(actual, expected, customEqualityTesters)
 
         if (pass) {
@@ -34,7 +30,36 @@ export default {
         return { pass, message }
       }
     }
+  },
+  toHaveSeparators (util, customEqualityTesters) {
+    return {
+      compare (object, expected) {
+        const actual = getChildrenTextContents(object, '.rollex-separator')
+        const pass = util.equals(actual, expected, customEqualityTesters)
+
+        if (pass) {
+          var message = `Expected ${object} not to have separators: ${expected}`
+        } else {
+          var message = `Expected ${object} to have separators: ${expected}, but got: ${actual}`
+        }
+
+        return { pass, message }
+      }
+    }
   }
+}
+
+/**
+ * Gets text contents of children with given selector.
+ * @param {!Element} object
+ * @param {!string} selector
+ * @param {?boolean} onlyVisible - if true, will only return text contents of children that are visible
+ * @return {string[]} text contents
+ */
+function getChildrenTextContents (object, selector, onlyVisible = false) {
+  var children = Array.prototype.slice.call(object.querySelectorAll(selector))
+  if (onlyVisible) children = children.filter((el) => isVisible(el))
+  return children.map((el) => el.textContent)
 }
 
 /**

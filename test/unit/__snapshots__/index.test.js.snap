@@ -4,69 +4,80 @@ exports[`rendering matches snapshot 1`] = `
 <div
   className="rollex rollex-static"
 >
-  <CounterSegment
-    digitMap={Object {}}
-    digitWrapper={[Function]}
-    digits={
-      Array [
-        "0",
-        "0",
-      ]
-    }
-    direction="down"
-    easingDuration={300}
-    easingFunction={null}
-    label="days"
-    period="days"
-    radix={10}
-  />
-  <CounterSegment
-    digitMap={Object {}}
-    digitWrapper={[Function]}
-    digits={
-      Array [
-        "0",
-        "0",
-      ]
-    }
-    direction="down"
-    easingDuration={300}
-    easingFunction={null}
-    label="hours"
-    period="hours"
-    radix={10}
-  />
-  <CounterSegment
-    digitMap={Object {}}
-    digitWrapper={[Function]}
-    digits={
-      Array [
-        "0",
-        "0",
-      ]
-    }
-    direction="down"
-    easingDuration={300}
-    easingFunction={null}
-    label="minutes"
-    period="minutes"
-    radix={10}
-  />
-  <CounterSegment
-    digitMap={Object {}}
-    digitWrapper={[Function]}
-    digits={
-      Array [
-        "0",
-        "0",
-      ]
-    }
-    direction="down"
-    easingDuration={300}
-    easingFunction={null}
-    label="seconds"
-    period="seconds"
-    radix={10}
-  />
+  <div>
+    <CounterSegment
+      digitMap={Object {}}
+      digitWrapper={[Function]}
+      digits={
+        Array [
+          "0",
+          "0",
+        ]
+      }
+      direction="down"
+      easingDuration={300}
+      easingFunction={null}
+      label="days"
+      period="days"
+      radix={10}
+    />
+    <CounterSegmentSeparator />
+  </div>
+  <div>
+    <CounterSegment
+      digitMap={Object {}}
+      digitWrapper={[Function]}
+      digits={
+        Array [
+          "0",
+          "0",
+        ]
+      }
+      direction="down"
+      easingDuration={300}
+      easingFunction={null}
+      label="hours"
+      period="hours"
+      radix={10}
+    />
+    <CounterSegmentSeparator />
+  </div>
+  <div>
+    <CounterSegment
+      digitMap={Object {}}
+      digitWrapper={[Function]}
+      digits={
+        Array [
+          "0",
+          "0",
+        ]
+      }
+      direction="down"
+      easingDuration={300}
+      easingFunction={null}
+      label="minutes"
+      period="minutes"
+      radix={10}
+    />
+    <CounterSegmentSeparator />
+  </div>
+  <div>
+    <CounterSegment
+      digitMap={Object {}}
+      digitWrapper={[Function]}
+      digits={
+        Array [
+          "0",
+          "0",
+        ]
+      }
+      direction="down"
+      easingDuration={300}
+      easingFunction={null}
+      label="seconds"
+      period="seconds"
+      radix={10}
+    />
+  </div>
 </div>
 `;
