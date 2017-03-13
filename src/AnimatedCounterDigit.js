@@ -123,8 +123,11 @@ class AnimatedCounterDigit extends AbstractCounterDigit {
    * @return {ReactElement} digit
    */
   render () {
+    const transform = `translateY(${this.getDigitPositionY()}px)`
     const style = {
-      transform: `translateY(${this.getDigitPositionY()}px)`,
+      transform: transform,
+      WebkitTransform: transform,
+      MsTransform: transform,
       transitionTimingFunction: this.props.easingFunction,
       transitionDuration: `${this.props.easingDuration}ms`,
       transitionProperty: 'transform',

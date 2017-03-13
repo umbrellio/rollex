@@ -6,6 +6,8 @@ exports[`matches snapshot 1`] = `
   onTransitionEnd={[Function]}
   style={
     Object {
+      "MsTransform": "translateY(0px)",
+      "WebkitTransform": "translateY(0px)",
       "display": "inline-block",
       "transform": "translateY(0px)",
       "transitionDuration": "300ms",
