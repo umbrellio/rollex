@@ -2,8 +2,6 @@
   "parser": "babel-eslint",
   "extends": ["standard", "standard-react"],
   "env": {
-    "jasmine": true,
-    "jest": true,
     "browser": true
   },
   "rules": {
