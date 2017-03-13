@@ -44,6 +44,7 @@ class AnimatedCounterDigit extends AbstractCounterDigit {
   constructor (props) {
     super(props)
 
+    // e.x.: 0..9 and another 0 => 9+2 = 11 digits total (see reset method)
     const singleDigitHeight = 100 / (this.props.maxValue + 2)
     const upperZeroPosition = -singleDigitHeight * (this.props.radix - this.props.maxValue - 1)
     const lowerZeroPosition = -singleDigitHeight * this.props.radix
