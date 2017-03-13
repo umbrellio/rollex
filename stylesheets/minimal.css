@@ -1,0 +1,7 @@
+.rollex-static .rollex-digit {
+  float: left;
+}
+
+.rollex-animated .rollex-digit {
+  display: inline-block;
+}
