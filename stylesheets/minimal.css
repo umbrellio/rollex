@@ -5,3 +5,11 @@
 .rollex-animated .rollex-digit {
   display: inline-block;
 }
+
+.rollex-animated .rollex-digit-lane-label {
+  height: 18px;
+}
+
+.rollex-animated .rollex-digits {
+  height: 18px;
+}

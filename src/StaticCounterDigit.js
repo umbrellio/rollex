@@ -7,7 +7,6 @@ import AbstractCounterDigit from './AbstractCounterDigit'
  * @example
  * <StaticCounterDigit
  *   digit='5'
- *   height={18}
  *   radix={10}
  *   digitMap={{}}
  *   digitWrapper={(digit) => digit}

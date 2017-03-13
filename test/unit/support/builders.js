@@ -36,14 +36,13 @@ export class CounterSegmentBuilder extends AbstractBuilder {
 export class StaticCounterDigitBuilder extends AbstractBuilder {
   static build = function ({
     digit = '0',
-    height = 18,
     radix = 10,
     digitMap = {},
     digitWrapper = (digit) => <span>{digit}</span>
   } = {}) {
     return React.createElement(
       StaticCounterDigit,
-      { digit, height, radix, digitMap, digitWrapper }
+      { digit, radix, digitMap, digitWrapper }
     )
   }
 }
@@ -51,7 +50,6 @@ export class StaticCounterDigitBuilder extends AbstractBuilder {
 export class AnimatedCounterDigitBuilder extends AbstractBuilder {
   static build = function ({
     digit = '0',
-    height = 18,
     radix = 10,
     direction = 'down',
     digitMap = {},
@@ -62,7 +60,7 @@ export class AnimatedCounterDigitBuilder extends AbstractBuilder {
   } = {}) {
     return React.createElement(
       AnimatedCounterDigit,
-      { digit, height, radix, direction, digitMap, digitWrapper, maxValue, easingFunction, easingDuration }
+      { digit, radix, direction, digitMap, digitWrapper, maxValue, easingFunction, easingDuration }
     )
   }
 }

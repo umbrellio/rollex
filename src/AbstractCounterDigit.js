@@ -7,14 +7,12 @@ const { objectOf, any, number, string, func } = React.PropTypes
 class AbstractCounterDigit extends React.Component {
   /**
    * @property {string} digit - digit to display
-   * @property {number} height - digit height in pixels
    * @property {number} radix
    * @property {Object} digitMap - a map for transforming particular digits
    * @property {function(digit: number)} digitWrapper - a function for wrapping mapped digits
    */
   static propTypes = {
     digit: string.isRequired,
-    height: number.isRequired,
     radix: number.isRequired,
     digitMap: objectOf(any).isRequired,
     digitWrapper: func.isRequired
