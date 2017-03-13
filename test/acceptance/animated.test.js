@@ -143,16 +143,8 @@ describe('digit map and digit wrapper', function () {
 })
 
 describe('radix', function () {
-  /**
-   * Radix is important here: digit height is calculated as a percentage.
-   * The formula is: (100 / (maxValue + 2)).
-   * Here, 9 is chosen because percentages for the two digits will be "12.5" and "10".
-   * The problem is in isVisible() function used in the custom matcher.
-   * Even though both Chrome and Firefox display digits normally, the function goes mad when it
-   * meets crazy percentages like 12.22222 (for radix 8, for example).
-   */
   it('displays numbers in given radix', function () {
-    const component = renderAnimatedTenSecondCounter({ radix: 9 })
-    expect(component).toDisplayDigits('11')
+    const component = renderAnimatedTenSecondCounter({ radix: 8 })
+    expect(component).toDisplayDigits('12')
   })
 })
