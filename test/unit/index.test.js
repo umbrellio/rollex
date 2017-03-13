@@ -3,6 +3,7 @@ import { shallow, mount } from 'enzyme'
 import { shallowToJson } from 'enzyme-to-json'
 import Counter from '../../src/'
 import CounterSegment from '../../src/CounterSegment'
+import CounterSegmentSeparator from '../../src/CounterSegmentSeparator'
 
 describe('initialization', function () {
   it('throws an error when options are provided incorrectly', function () {
@@ -265,6 +266,15 @@ describe('rendering', function () {
       expect(segments.at(3).props().label).toEqual('second')
     })
   })
+
+  test('separator', function () {
+    const component = shallow(<Counter seconds={10} separator=':' />)
+    const separators = component.find(CounterSegmentSeparator)
+    expect(separators.at(0).props().content).toEqual(':')
+    expect(separators.at(1).props().content).toEqual(':')
+    expect(separators.at(2).props().content).toEqual(':')
+    expect(separators.at(3).props().content).toEqual(undefined)
+  })
 })
 
 describe('state and props', function () {
@@ -320,6 +330,7 @@ describe('state and props', function () {
         syncTime radix={8} direction='up'
         easingFunction='myEasingFn' easingDuration={123}
         digitMap={{ '0': 'o' }} digitWrapper={digitWrapper}
+        separator=':'
       />
     )
     expect(component.props()).toEqual({
@@ -337,7 +348,8 @@ describe('state and props', function () {
       frozen: false,
       direction: 'up',
       digitMap: { '0': 'o' },
-      digitWrapper: digitWrapper
+      digitWrapper: digitWrapper,
+      separator: ':'
     })
   })
 })

@@ -1,7 +1,8 @@
 import React from 'react'
 import CounterSegment from './CounterSegment'
+import CounterSegmentSeparator from './CounterSegmentSeparator'
 import GlobalIntervals from './globalIntervals'
-const { number, string, bool, objectOf, object, oneOfType, oneOf, func } = React.PropTypes
+const { number, string, bool, objectOf, object, oneOfType, oneOf, func, any } = React.PropTypes
 
 /**
  * @type {string[]}
@@ -61,6 +62,7 @@ export default class Counter extends React.Component {
    * @property {function(digit: number)} digitWrapper - a wrapping function for mapped digits
    * @property {Map<string, string>|function(period: string, number: number)} labels - a map or a
    * function that returns labels for given period and number
+   * @property separator - what to separate segments with
    */
   static propTypes = {
     from: number,
@@ -79,7 +81,8 @@ export default class Counter extends React.Component {
     radix: number,
     digitMap: object,
     digitWrapper: func,
-    labels: oneOfType([objectOf(string), func])
+    labels: oneOfType([objectOf(string), func]),
+    separator: any
   }
 
   static defaultProps = {
@@ -315,18 +318,23 @@ export default class Counter extends React.Component {
   render () {
     const numbers = this.state.numbers
     const segments = this.state.periods.map((period, index) => {
-      return (<CounterSegment
-        period={period}
-        key={index}
-        digits={this.getDigits(numbers[period])}
-        radix={this.props.radix}
-        direction={this.props.direction}
-        easingFunction={this.props.easingFunction}
-        easingDuration={this.props.easingDuration}
-        digitMap={this.props.digitMap}
-        digitWrapper={this.props.digitWrapper}
-        label={this.getLabel(period, numbers[period])}
-      />)
+      const separator = index < this.state.periods.length - 1
+        ? <CounterSegmentSeparator content={this.props.separator} />
+        : null
+      return (<div key={index}>
+        <CounterSegment
+          period={period}
+          digits={this.getDigits(numbers[period])}
+          radix={this.props.radix}
+          direction={this.props.direction}
+          easingFunction={this.props.easingFunction}
+          easingDuration={this.props.easingDuration}
+          digitMap={this.props.digitMap}
+          digitWrapper={this.props.digitWrapper}
+          label={this.getLabel(period, numbers[period])}
+        />
+        {separator}
+      </div>)
     })
     return (
       <div className={this.state.cssClasses}>
