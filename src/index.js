@@ -126,7 +126,8 @@ export default class Counter extends React.Component {
       startTime,
       from,
       initialTimeDiff: timeDiff,
-      periods: this.getPeriods()
+      periods: this.getPeriods(),
+      cssClasses: this.getCSSClassNames()
     }
     this.state.numbers = this.calculateNumbers(timeDiff)
 
@@ -279,7 +280,7 @@ export default class Counter extends React.Component {
     const { maxDigits, radix } = this.props
     const minDigits = this.state.minDigits
 
-    if (maxDigits && maxDigits > 0 && number >= Math.pow(radix, maxDigits)) {
+    if (maxDigits && number >= Math.pow(radix, maxDigits)) {
       var nineArray = []
       for (let i = 0; i < maxDigits; i++) nineArray.push((radix - 1).toString())
       return nineArray
@@ -313,7 +314,7 @@ export default class Counter extends React.Component {
    */
   render () {
     const numbers = this.state.numbers
-    const segments = this.getPeriods().map((period, index) => {
+    const segments = this.state.periods.map((period, index) => {
       return (<CounterSegment
         period={period}
         key={index}
@@ -328,7 +329,7 @@ export default class Counter extends React.Component {
       />)
     })
     return (
-      <div className={this.getCSSClassNames()}>
+      <div className={this.state.cssClasses}>
         {segments}
       </div>
     )

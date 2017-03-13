@@ -64,7 +64,7 @@ class CounterSegment extends React.Component {
      */
     const testDigit = document.createElement('div')
     testDigit.innerHTML = ReactDOMServer.renderToString(this.props.digitWrapper('0'))
-    document.getElementsByTagName('body')[0].appendChild(testDigit)
+    document.body.appendChild(testDigit)
 
     /**
      * @type {Object}
@@ -77,6 +77,9 @@ class CounterSegment extends React.Component {
   }
 
   /**
+   * OPTIMIZE: this probably shouldn't be done in buildDigits. Perhaps we could perform calculations
+   * for each possible index it in the constructor, but only for animated counters.
+   *
    * Gets maximum value for period's digit with account for radix.
    * Used for building digit lanes in {@link AnimatedCounterDigit}.
    * @param {number} index - digit's index in number

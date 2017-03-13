@@ -269,15 +269,21 @@ describe('rendering', function () {
 
 describe('state and props', function () {
   test('default state', function () {
-    const from = (new Date()).getTime()
-    const to = from +
+    jest.spyOn(Date.prototype, 'getTime').mockReturnValue(1234)
+    const to = 1234 +
       (1000 * 60 * 60 * 24 * 2) +
       (1000 * 60 * 60 * 6) +
       (1000 * 60 * 35) +
       (1000 * 54)
-    const component = shallow(<Counter from={from} to={to} />)
-    expect(component.state()).toMatchObject({
-      timeDiff: to - from,
+    const component = shallow(<Counter to={to} />)
+    expect(component.state()).toEqual({
+      timeDiff: to - 1234,
+      minDigits: 2,
+      startTime: 1234,
+      from: 1234,
+      initialTimeDiff: to - 1234,
+      periods: ['days', 'hours', 'minutes', 'seconds'],
+      cssClasses: 'rollex rollex-static',
       numbers: {
         days: 2,
         hours: 6,
@@ -289,7 +295,7 @@ describe('state and props', function () {
 
   test('default props', function () {
     const component = mount(<Counter from={0} to={1} />)
-    expect(component.props()).toMatchObject({
+    expect(component.props()).toEqual({
       from: 0,
       to: 1,
       interval: 1000,
@@ -299,7 +305,9 @@ describe('state and props', function () {
       direction: 'down',
       frozen: false,
       easingFunction: null,
-      easingDuration: 300
+      easingDuration: 300,
+      digitMap: {},
+      digitWrapper: expect.any(Function)
     })
   })
 
@@ -359,7 +367,7 @@ describe('counting', function () {
   })
 
   it('works without "from" prop', function () {
-    jest.spyOn(Date.prototype, 'getTime').mockImplementation(() => 78781234)
+    jest.spyOn(Date.prototype, 'getTime').mockReturnValue(78781234)
     const to = new Date().getTime() + 10000
     const component = mount(<Counter to={to} />)
     expect(component.state().timeDiff).toBe(10000)
@@ -431,7 +439,7 @@ describe('counting', function () {
   it('syncs time when syncTime is set', function () {
     const component = mount(<Counter from={0} to={10000} syncTime />)
     const newDate = component.state().startTime + 7000
-    jest.spyOn(Date.prototype, 'getTime').mockImplementation(() => newDate)
+    jest.spyOn(Date.prototype, 'getTime').mockReturnValue(newDate)
     jest.runTimersToTime(5000)
     expect(component.state().timeDiff).toBe(3000)
   })
