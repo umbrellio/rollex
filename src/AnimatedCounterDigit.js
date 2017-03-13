@@ -131,8 +131,7 @@ class AnimatedCounterDigit extends AbstractCounterDigit {
       transitionTimingFunction: this.props.easingFunction,
       transitionDuration: `${this.props.easingDuration}ms`,
       transitionProperty: 'transform',
-      willChange: 'transform',
-      display: 'inline-block'
+      willChange: 'transform'
     }
 
     return (

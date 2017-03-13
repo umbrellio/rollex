@@ -9,8 +9,9 @@ export function bootstrapDOM () {
 }
 
 export function clearDOM () {
-  ReactDOM.unmountComponentAtNode(document.getElementById('root'))
-  document.body.innerHTML = ''
+  const root = document.getElementById('root')
+  ReactDOM.unmountComponentAtNode(root)
+  root.remove()
 }
 
 export function render (component) {

@@ -8,7 +8,6 @@ exports[`matches snapshot 1`] = `
     Object {
       "MsTransform": "translateY(0px)",
       "WebkitTransform": "translateY(0px)",
-      "display": "inline-block",
       "transform": "translateY(0px)",
       "transitionDuration": "300ms",
       "transitionProperty": "transform",

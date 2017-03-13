@@ -6,11 +6,13 @@ module.exports = function (config) {
   config.set({
     browsers: browsers,
     singleRun: true,
-    basePath: 'test/acceptance',
     frameworks: ['jasmine'],
-    files: ['tests.js'],
+    files: [
+      'stylesheets/minimal.css',
+      'test/acceptance/tests.js'
+    ],
     preprocessors: {
-      'tests.js': ['webpack', 'sourcemap']
+      'test/acceptance/tests.js': ['webpack', 'sourcemap']
     },
     reporters: ['dots'],
     webpack: {
