@@ -1,5 +1,5 @@
 import React from 'react'
-import { Counter } from '../../src/'
+import Counter from '../../src/components/Counter'
 import { render, renderTenSecondCounter } from './support/helpers'
 
 describe('ticking', function () {
@@ -94,7 +94,7 @@ describe('time synchronization', function () {
     const to = baseTime + 10000
     var dateSpy = spyOn(Date.prototype, 'getTime').and.returnValue(baseTime)
 
-    const component = render(<Counter to={to} maxPeriod='second' syncTime />)
+    const component = render(<Counter to={to} maxPeriod='seconds' syncTime />)
     jasmine.clock().tick(1000)
     expect(component).toDisplayDigits('10')
 

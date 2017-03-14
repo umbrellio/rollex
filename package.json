@@ -23,8 +23,8 @@
     "test": "yarn run test:unit && yarn run test:acceptance && yarn run lint && yarn run spellcheck",
     "test:acceptance": "karma start",
     "test:acceptance:watch": "WATCH=true yarn run test:acceptance -- --no-single-run",
-    "test:unit": "jest test/unit",
-    "test:unit:watch": "yarn run test:unit -- --watch"
+    "test:unit": "jest",
+    "test:unit:watch": "yarn run test:unit -- --watch --coverage"
   },
   "lint-staged": {
     "*.js": "eslint",
@@ -37,7 +37,11 @@
     "browser": true,
     "collectCoverageFrom": [
       "src/**/*.js",
-      "!src/docs/*"
+      "!src/index.js"
+    ],
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/test/acceptance/"
     ]
   },
   "devDependencies": {

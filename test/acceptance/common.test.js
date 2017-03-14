@@ -1,5 +1,5 @@
 import React from 'react'
-import { Counter } from '../../src/'
+import Counter from '../../src/components/Counter'
 import { render } from './support/helpers'
 
 // We want to get '01234509' on the display (for default props)
@@ -27,18 +27,18 @@ describe('min/max digits', function () {
 
 describe('min/max period', function () {
   it('does not show periods that are smaller than minPeriod', function () {
-    const component = render(<Counter seconds={seconds} minPeriod='minute' />)
+    const component = render(<Counter seconds={seconds} minPeriod='minutes' />)
     expect(component).toDisplayDigits('012345')
     expect(component).toHaveLabels(['days', 'hours', 'minutes'])
   })
 
   it('does not show periods that are bigger than maxPeriod', function () {
-    const component = render(<Counter seconds={seconds} maxPeriod='hour' />)
+    const component = render(<Counter seconds={seconds} maxPeriod='hours' />)
     expect(component).toHaveLabels(['hours', 'minutes', 'seconds'])
   })
 
   it('shows days in hours if maxPeriod is "hours"', function () {
-    const component = render(<Counter seconds={seconds} maxPeriod='hour' />)
+    const component = render(<Counter seconds={seconds} maxPeriod='hours' />)
     expect(component).toDisplayDigits('474509')
   })
 })
