@@ -68,23 +68,26 @@ function getChildrenTextContents (object, selector, onlyVisible = false) {
  * @return {boolean} visible
  */
 function isVisible (element) {
-  if (element.offsetWidth === 0 || element.offsetHeight === 0) return false
-
-  const height = document.documentElement.clientHeight
-  const rects = element.getClientRects()
-
-  function onTop (rect) {
-    for (let x = Math.floor(rect.left); x <= Math.ceil(rect.right); x++) {
-      for (let y = Math.floor(rect.top); y <= Math.ceil(rect.bottom); y++) {
-        if (document.elementFromPoint(x, y) === element) return true
-      }
-    }
+  // Does element have non-zero dimensions?
+  if (element.offsetWidth + element.offsetHeight + element.getBoundingClientRect().height +
+    element.getBoundingClientRect().width === 0) {
     return false
   }
 
-  for (let rect of rects) {
-    const inViewport = rect.top > 0 ? rect.top <= height : (rect.bottom > 0 && rect.bottom <= height)
-    if (inViewport && onTop(rect)) return true
+  // Is the element on the screen?
+  const elementCenter = {
+    x: element.getBoundingClientRect().left + (element.offsetWidth / 2),
+    y: element.getBoundingClientRect().top + (element.offsetHeight / 2)
   }
+  if (elementCenter.x < 0) return false
+  if (elementCenter.x > (document.documentElement.clientWidth || window.innerWidth)) return false
+  if (elementCenter.y < 0) return false
+  if (elementCenter.y > (document.documentElement.clientHeight || window.innerHeight)) return false
+
+  // Try to "hit" our element while traversing its parents
+  let pointContainer = document.elementFromPoint(elementCenter.x, elementCenter.y)
+  do {
+    if (pointContainer === element) return true
+  } while (pointContainer = pointContainer.parentNode) // eslint-disable-line no-cond-assign
   return false
 }

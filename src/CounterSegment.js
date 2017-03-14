@@ -1,5 +1,4 @@
 import React from 'react'
-import ReactDOMServer from 'react-dom/server'
 import AnimatedCounterDigit from './AnimatedCounterDigit'
 import StaticCounterDigit from './StaticCounterDigit'
 const { arrayOf, object, number, string, func } = React.PropTypes
@@ -53,30 +52,6 @@ class CounterSegment extends React.Component {
   }
 
   /**
-   * constructor
-   * @param {Object} props
-   */
-  constructor (props) {
-    super(props)
-
-    /**
-     * Calculates height of a single digit.
-     */
-    const testDigit = document.createElement('div')
-    testDigit.innerHTML = ReactDOMServer.renderToString(this.props.digitWrapper('0'))
-    document.body.appendChild(testDigit)
-
-    /**
-     * @type {Object}
-     * @property {number} digitHeight - height of a single digit
-     */
-    this.state = {
-      digitHeight: testDigit.clientHeight
-    }
-    testDigit.remove()
-  }
-
-  /**
    * OPTIMIZE: this probably shouldn't be done in buildDigits. Perhaps we could perform calculations
    * for each possible index it in the constructor, but only for animated counters.
    *
@@ -112,7 +87,6 @@ class CounterSegment extends React.Component {
             direction={this.props.direction}
             easingFunction={this.props.easingFunction}
             easingDuration={this.props.easingDuration}
-            height={this.state.digitHeight}
             digitMap={this.props.digitMap}
             digitWrapper={this.props.digitWrapper}
           />
@@ -123,7 +97,6 @@ class CounterSegment extends React.Component {
             key={index}
             digit={digit}
             radix={this.props.radix}
-            height={this.state.digitHeight}
             digitMap={this.props.digitMap}
             digitWrapper={this.props.digitWrapper}
           />
@@ -137,13 +110,9 @@ class CounterSegment extends React.Component {
    * @return {ReactElement} counter segment
    */
   render () {
-    const style = {
-      overflow: 'hidden',
-      height: `${this.state.digitHeight}px`
-    }
     return (
       <div className='rollex-segment'>
-        <div className='rollex-digits' style={style}>
+        <div className='rollex-digits' style={{ overflow: 'hidden' }}>
           {this.buildDigits()}
         </div>
         <div className='rollex-label'>

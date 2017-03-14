@@ -17,7 +17,6 @@ function forceReflow (element) {
  * @example
  * <AnimatedCounterDigit
  *   digit='5'
- *   height={18}
  *   radix={10}
  *   direction='down'
  *   digitMap={{}}
@@ -45,8 +44,10 @@ class AnimatedCounterDigit extends AbstractCounterDigit {
   constructor (props) {
     super(props)
 
-    const upperZeroPosition = -this.props.height * (this.props.radix - this.props.maxValue - 1)
-    const lowerZeroPosition = -this.props.height * this.props.radix
+    // e.x.: 0..9 and another 0 => 9+2 = 11 digits total (see reset method)
+    const singleDigitHeight = 100 / (this.props.maxValue + 2)
+    const upperZeroPosition = -singleDigitHeight * (this.props.radix - this.props.maxValue - 1)
+    const lowerZeroPosition = -singleDigitHeight * this.props.radix
     const initialZeroPosition = (this.props.direction === 'down')
       ? lowerZeroPosition : upperZeroPosition
     const finalZeroPosition = (this.props.direction === 'down')
@@ -54,7 +55,9 @@ class AnimatedCounterDigit extends AbstractCounterDigit {
 
     this.state = {
       initialZeroPosition,
-      finalZeroPosition
+      finalZeroPosition,
+      singleDigitHeight,
+      digitLane: this.buildDigitLane()
     }
   }
 
@@ -70,7 +73,7 @@ class AnimatedCounterDigit extends AbstractCounterDigit {
   reset = (event) => {
     if (this.props.digit === '0') {
       event.target.style.transitionProperty = 'none'
-      event.target.style.transform = `translateY(${this.state.initialZeroPosition}px)`
+      event.target.style.transform = `translateY(${this.state.initialZeroPosition}%)`
       forceReflow(event.target)
       event.target.style.transitionProperty = ''
     }
@@ -84,7 +87,7 @@ class AnimatedCounterDigit extends AbstractCounterDigit {
    */
   buildDigitDiv (digit, key) {
     return (
-      <div key={key || digit} className='rollex-digit-lane-label' style={{ height: this.props.height }}>
+      <div key={key || digit} className='rollex-digit-lane-label'>
         {this.decorateDigit(digit)}
       </div>
     )
@@ -97,12 +100,12 @@ class AnimatedCounterDigit extends AbstractCounterDigit {
    * @return {ReactElement[]}
    */
   buildDigitLane () {
-    var digitDivs = []
+    var digitLane = []
     for (let i = 0; i <= this.props.maxValue; i++) {
-      digitDivs.push(this.buildDigitDiv(i))
+      digitLane.push(this.buildDigitDiv(i))
     }
-    digitDivs.push(this.buildDigitDiv(0, this.props.radix + 1))
-    return digitDivs
+    digitLane.push(this.buildDigitDiv(0, this.props.radix + 1))
+    return digitLane
   }
 
   /**
@@ -114,7 +117,7 @@ class AnimatedCounterDigit extends AbstractCounterDigit {
     if (digitIndex === 0) {
       return this.state.finalZeroPosition
     } else {
-      return -this.props.height * (digitIndex + (this.props.radix - this.props.maxValue - 1))
+      return -this.state.singleDigitHeight * (digitIndex + (this.props.radix - this.props.maxValue - 1))
     }
   }
 
@@ -123,7 +126,7 @@ class AnimatedCounterDigit extends AbstractCounterDigit {
    * @return {ReactElement} digit
    */
   render () {
-    const transform = `translateY(${this.getDigitPositionY()}px)`
+    const transform = `translateY(${this.getDigitPositionY()}%)`
     const style = {
       transform: transform,
       WebkitTransform: transform,
@@ -136,7 +139,7 @@ class AnimatedCounterDigit extends AbstractCounterDigit {
 
     return (
       <div className='rollex-digit' onTransitionEnd={this.reset} style={style}>
-        {this.buildDigitLane()}
+        {this.state.digitLane}
       </div>
     )
   }
