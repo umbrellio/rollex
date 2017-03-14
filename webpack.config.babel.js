@@ -5,7 +5,14 @@ export default {
   entry: ['babel-polyfill', './'],
   output: {
     path: resolve('dist/'),
-    filename: 'bundle.js'
+    filename: 'rollex.js',
+    library: 'Rollex',
+    libraryTarget: 'umd',
+    umdNamedDefine: true
+  },
+  externals: {
+    'react': 'React',
+    'react-dom': 'ReactDOM'
   },
   module: {
     loaders: [

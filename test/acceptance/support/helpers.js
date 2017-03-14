@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import Counter from '../../../src/'
+import { Counter } from '../../../src/'
 
 export function bootstrapDOM () {
   var root = document.createElement('div')

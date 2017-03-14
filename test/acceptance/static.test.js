@@ -1,5 +1,5 @@
 import React from 'react'
-import Counter from '../../src/'
+import { Counter } from '../../src/'
 import { render, renderTenSecondCounter } from './support/helpers'
 
 describe('ticking', function () {

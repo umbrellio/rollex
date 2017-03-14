@@ -1,7 +1,7 @@
 import React from 'react'
 import { shallow, mount } from 'enzyme'
 import { shallowToJson } from 'enzyme-to-json'
-import Counter from '../../src/'
+import { Counter } from '../../src/'
 import CounterSegment from '../../src/CounterSegment'
 import CounterSegmentSeparator from '../../src/CounterSegmentSeparator'
 

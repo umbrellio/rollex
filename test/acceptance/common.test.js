@@ -1,5 +1,5 @@
 import React from 'react'
-import Counter from '../../src/'
+import { Counter } from '../../src/'
 import { render } from './support/helpers'
 
 // We want to get '01234509' on the display (for default props)
