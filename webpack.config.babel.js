@@ -2,7 +2,7 @@ import { resolve } from 'path'
 
 export default {
   context: resolve('src'),
-  entry: './',
+  entry: ['babel-polyfill', './'],
   output: {
     path: resolve('dist/'),
     filename: 'bundle.js'
