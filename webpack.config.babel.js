@@ -2,10 +2,17 @@ import { resolve } from 'path'
 
 export default {
   context: resolve('src'),
-  entry: ['babel-polyfill', './'],
+  entry: './',
   output: {
     path: resolve('dist/'),
-    filename: 'bundle.js'
+    filename: 'rollex.js',
+    library: 'Rollex',
+    libraryTarget: 'umd',
+    umdNamedDefine: true
+  },
+  externals: {
+    'react': 'React',
+    'react-dom': 'ReactDOM'
   },
   module: {
     loaders: [

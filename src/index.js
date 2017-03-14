@@ -41,7 +41,7 @@ const PERIOD_DURATION_FUNCTIONS = {
  * @example
  * <Counter seconds={98} />
  */
-export default class Counter extends React.Component {
+export class Counter extends React.Component {
   /**
    * @property {number} from - timestamp to count from
    * @property {number} to - timestamp to count to
