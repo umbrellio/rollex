@@ -2,7 +2,7 @@ import { resolve } from 'path'
 
 export default {
   context: resolve('src'),
-  entry: ['babel-polyfill', './'],
+  entry: './',
   output: {
     path: resolve('dist/'),
     filename: 'rollex.js',
