@@ -73,7 +73,7 @@ class AnimatedCounterDigit extends AbstractCounterDigit {
   reset = (event) => {
     if (this.props.digit === '0') {
       event.target.style.transitionProperty = 'none'
-      event.target.style.transform = `translateY(${this.state.initialZeroPosition}%)`
+      event.target.style.transform = `translate3D(0, ${this.state.initialZeroPosition}%, 0)`
       forceReflow(event.target)
       event.target.style.transitionProperty = ''
     }
@@ -126,7 +126,7 @@ class AnimatedCounterDigit extends AbstractCounterDigit {
    * @return {ReactElement} digit
    */
   render () {
-    const transform = `translateY(${this.getDigitPositionY()}%)`
+    const transform = `translate3D(0, ${this.getDigitPositionY()}%, 0)`
     const style = {
       transform: transform,
       WebkitTransform: transform,
