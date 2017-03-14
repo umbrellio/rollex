@@ -87,7 +87,7 @@ class AnimatedCounterDigit extends AbstractCounterDigit {
    */
   buildDigitDiv (digit, key) {
     return (
-      <div key={key || digit} className='rollex-digit-lane-label' style={{ height: this.props.height }}>
+      <div key={key || digit} className='rollex-digit-lane-label'>
         {this.decorateDigit(digit)}
       </div>
     )

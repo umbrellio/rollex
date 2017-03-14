@@ -18,11 +18,6 @@ exports[`matches snapshot 1`] = `
 >
   <div
     className="rollex-digit-lane-label"
-    style={
-      Object {
-        "height": undefined,
-      }
-    }
   >
     <span>
       0
@@ -30,11 +25,6 @@ exports[`matches snapshot 1`] = `
   </div>
   <div
     className="rollex-digit-lane-label"
-    style={
-      Object {
-        "height": undefined,
-      }
-    }
   >
     <span>
       1
@@ -42,11 +32,6 @@ exports[`matches snapshot 1`] = `
   </div>
   <div
     className="rollex-digit-lane-label"
-    style={
-      Object {
-        "height": undefined,
-      }
-    }
   >
     <span>
       2
@@ -54,11 +39,6 @@ exports[`matches snapshot 1`] = `
   </div>
   <div
     className="rollex-digit-lane-label"
-    style={
-      Object {
-        "height": undefined,
-      }
-    }
   >
     <span>
       3
@@ -66,11 +46,6 @@ exports[`matches snapshot 1`] = `
   </div>
   <div
     className="rollex-digit-lane-label"
-    style={
-      Object {
-        "height": undefined,
-      }
-    }
   >
     <span>
       4
@@ -78,11 +53,6 @@ exports[`matches snapshot 1`] = `
   </div>
   <div
     className="rollex-digit-lane-label"
-    style={
-      Object {
-        "height": undefined,
-      }
-    }
   >
     <span>
       5
@@ -90,11 +60,6 @@ exports[`matches snapshot 1`] = `
   </div>
   <div
     className="rollex-digit-lane-label"
-    style={
-      Object {
-        "height": undefined,
-      }
-    }
   >
     <span>
       6
@@ -102,11 +67,6 @@ exports[`matches snapshot 1`] = `
   </div>
   <div
     className="rollex-digit-lane-label"
-    style={
-      Object {
-        "height": undefined,
-      }
-    }
   >
     <span>
       7
@@ -114,11 +74,6 @@ exports[`matches snapshot 1`] = `
   </div>
   <div
     className="rollex-digit-lane-label"
-    style={
-      Object {
-        "height": undefined,
-      }
-    }
   >
     <span>
       8
@@ -126,11 +81,6 @@ exports[`matches snapshot 1`] = `
   </div>
   <div
     className="rollex-digit-lane-label"
-    style={
-      Object {
-        "height": undefined,
-      }
-    }
   >
     <span>
       9
@@ -138,11 +88,6 @@ exports[`matches snapshot 1`] = `
   </div>
   <div
     className="rollex-digit-lane-label"
-    style={
-      Object {
-        "height": undefined,
-      }
-    }
   >
     <span>
       0
