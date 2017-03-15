@@ -63,32 +63,26 @@ const CounterBuilder = {
    */
   buildInitialState (counter) {
     this.counter = counter
-    const props = counter.props
-    const timeProps = this.buildTimeProps(props)
-    const periods = this.buildPeriods(props)
-    const minAndMaxDigits = this.buildMinAndMaxDigits(props, periods)
-    const timestamp = (props.direction === 'down') ? this.initialTimeDiff : 0
-    return {
-      ...timeProps,
-      ...minAndMaxDigits,
-      periods,
-      cssClasses: this.buildCSSClasses(props),
-      numbers: NumberCalculator.calculateNumbers(periods, timestamp)
-    }
+    this.props = counter.props
+    this.state = {}
+    this.buildTimeProps()
+    this.buildPeriods()
+    this.buildMinAndMaxDigits()
+    this.buildCSSClasses()
+    this.buildInitialNumbers()
+    return this.state
   },
   /**
-   * Calculates initial time parameters.
-   * @param {object} props
-   * @return {object} state properties related to time
+   * Sets initial time parameters.
    */
-  buildTimeProps (props) {
+  buildTimeProps () {
     const startTime = new Date().getTime()
-    const from = (props.from === undefined) ? startTime : props.from
-    const timeDiff = (props.seconds === undefined)
-      ? (props.to - from)
-      : (props.seconds * 1000)
-    this.initialTimeDiff = timeDiff // For internal use in later build stage
-    return {
+    const from = (this.props.from === undefined) ? startTime : this.props.from
+    const timeDiff = (this.props.seconds === undefined)
+      ? (this.props.to - from)
+      : (this.props.seconds * 1000)
+    this.state = {
+      ...this.state,
       startTime,
       from,
       timeDiff,
@@ -97,55 +91,56 @@ const CounterBuilder = {
   },
   /**
    * Gets an array of periods to create segments for.
-   * @param {object} props
-   * @return {string[]} periods
    */
-  buildPeriods (props) {
-    return PERIODS.slice(
-      PERIODS.indexOf(props.maxPeriod),
-      PERIODS.indexOf(props.minPeriod) + 1
+  buildPeriods () {
+    const periods = PERIODS.slice(
+      PERIODS.indexOf(this.props.maxPeriod),
+      PERIODS.indexOf(this.props.minPeriod) + 1
     )
+    this.state = {
+      ...this.state,
+      periods
+    }
   },
   /**
    * Gets CSS classes for main counter.
-   * @param {object} props
-   * @return {string} class names
    */
-  buildCSSClasses (props) {
-    const type = props.easingFunction ? 'animated' : 'static'
-    var classNames = `rollex rollex-${type}`
-    if (props.frozen) classNames += ' rollex-frozen'
-    return classNames
+  buildCSSClasses () {
+    const type = this.props.easingFunction ? 'animated' : 'static'
+    var cssClasses = `rollex rollex-${type}`
+    if (this.props.frozen) cssClasses += ' rollex-frozen'
+    this.state = {
+      ...this.state,
+      cssClasses
+    }
   },
   /**
    * Builds minDigits and maxDigits state properties.
-   * @param {object} props
-   * @param {string[]} periods - all periods available to the counter
-   * @return {object} minDigits and maxDigits
    */
-  buildMinAndMaxDigits (props, periods) {
-    var [minDigits, maxDigits] = this.getMinAndMaxDigitsFromProps(props, periods)
-    return this.normalizeMinAndMaxDigits(minDigits, maxDigits, props, periods)
+  buildMinAndMaxDigits () {
+    var [minDigits, maxDigits] = this.getMinAndMaxDigitsFromProps()
+    this.state = {
+      ...this.state,
+      ...this.normalizeMinAndMaxDigits(minDigits, maxDigits)
+    }
   },
   /**
    * Gets minDigits and maxDigits from props specified by the user.
-   * @param {object} props
-   * @param {string[]} periods
    * @return {array}
    */
-  getMinAndMaxDigitsFromProps (props, periods) {
+  getMinAndMaxDigitsFromProps () {
     var minDigits = {}
     var maxDigits = {}
 
-    if (typeof props.minDigits === 'number') {
-      for (let period of periods) minDigits[period] = props.minDigits
-    } else if (typeof props.minDigits === 'object') {
-      minDigits = props.minDigits
+    if (typeof this.props.minDigits === 'number') {
+      for (let period of this.state.periods) minDigits[period] = this.props.minDigits
+    } else if (typeof this.props.minDigits === 'object') {
+      minDigits = this.props.minDigits
     }
-    if (typeof props.maxDigits === 'number') {
-      for (let period of periods) maxDigits[period] = props.maxDigits
-    } else if (typeof props.maxDigits === 'object') {
-      maxDigits = props.maxDigits
+    if (typeof this.props.maxDigits === 'number') {
+      for (let period of this.state.periods) maxDigits[period] = this.props.maxDigits
+    } else if (typeof this.props.maxDigits === 'object') {
+      maxDigits = this.props.maxDigits
     }
     return [minDigits, maxDigits]
   },
@@ -153,13 +148,11 @@ const CounterBuilder = {
    * Normalizes minDigits and maxDigits and sets default values where user did not specify them.
    * @param {number|object} minDigits
    * @param {number|object} maxDigits
-   * @param {object} props
-   * @param {string[]} periods
    * @return {object}
    */
-  normalizeMinAndMaxDigits (minDigits, maxDigits, props, periods) {
-    for (let period of periods) {
-      const minSegmentSize = this.getMinSegmentSize(props, period)
+  normalizeMinAndMaxDigits (minDigits, maxDigits) {
+    for (let period of this.state.periods) {
+      const minSegmentSize = this.getMinSegmentSize(period)
       const minDigitsProvided = minDigits[period] !== undefined
       const maxDigitsProvided = maxDigits[period] !== undefined
       if (!minDigitsProvided) minDigits[period] = minSegmentSize
@@ -186,15 +179,16 @@ const CounterBuilder = {
    * @param {string} period - period to calculate minDigits for
    * @return {number}
    */
-  getMinSegmentSize (props, period) {
-    const maxValue = this.getPeriodMaxValue(props, period)
-    return (maxValue).toString(props.radix).length
+  getMinSegmentSize (period) {
+    const maxValue = this.getPeriodMaxValue(period)
+    return (maxValue).toString(this.props.radix).length
   },
   /**
    * Calculates maximum value for given period.
+   * @param {string} period
    * @return {number}
    */
-  getPeriodMaxValue (props, period) {
+  getPeriodMaxValue (period) {
     switch (period) {
       case 'seconds':
       case 'minutes':
@@ -202,12 +196,24 @@ const CounterBuilder = {
       case 'hours':
         return 23
       default:
-        if (period === props.minPeriod) {
+        if (period === this.props.minPeriod) {
           // max number possible for this period during the countdown
-          return NumberCalculator.getPeriodNumberAt(period, props.maxPeriod, this.initialTimeDiff)
+          return NumberCalculator.getPeriodNumberAt(
+            period, this.props.maxPeriod, this.state.initialTimeDiff
+          )
         } else {
-          return this.getPeriodMaxValue(props, props.minPeriod)
+          return this.getPeriodMaxValue(this.props.minPeriod)
         }
+    }
+  },
+  /**
+   * Calculates initial numbers for all periods.
+   */
+  buildInitialNumbers () {
+    const timestamp = (this.props.direction === 'down') ? this.state.initialTimeDiff : 0
+    this.state = {
+      ...this.state,
+      numbers: NumberCalculator.calculateNumbers(this.state.periods, timestamp)
     }
   }
 }
