@@ -88,7 +88,7 @@ export default class Counter extends React.Component {
      * @property {string[]} periods - an array of periods to create segments for
      * @property {string} cssClasses - CSS classes for the component
      */
-    this.state = CounterBuilder.buildInitialState(this)
+    this.state = new CounterBuilder(this).buildInitialState()
 
     /**
      * Creates a function bound to "this"
