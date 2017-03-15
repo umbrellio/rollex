@@ -32,7 +32,6 @@ export default class CounterBuilder {
     this.buildTimeProps()
     this.buildPeriods()
     this.buildDigitLimits()
-    this.buildCSSClasses()
     this.buildInitialNumbers()
     return this.state
   }
@@ -66,19 +65,6 @@ export default class CounterBuilder {
     this.state = {
       ...this.state,
       periods
-    }
-  }
-
-  /**
-   * Gets CSS classes for main counter.
-   */
-  buildCSSClasses () {
-    const type = this.props.easingFunction ? 'animated' : 'static'
-    var cssClasses = `rollex rollex-${type}`
-    if (this.props.frozen) cssClasses += ' rollex-frozen'
-    this.state = {
-      ...this.state,
-      cssClasses
     }
   }
 

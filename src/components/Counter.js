@@ -86,7 +86,6 @@ export default class Counter extends React.Component {
      * @property {number} startTime - a timestamp of current moment
      * @property {number} from - timestamp to count from
      * @property {string[]} periods - an array of periods to create segments for
-     * @property {string} cssClasses - CSS classes for the component
      */
     this.state = new CounterBuilder(this).buildInitialState()
 
@@ -213,6 +212,17 @@ export default class Counter extends React.Component {
   }
 
   /**
+   * Gets CSS classes for the counter.
+   * @return {string} cssClasses
+   */
+  getCSSClasses () {
+    const type = this.props.easingFunction ? 'animated' : 'static'
+    var cssClasses = `rollex rollex-${type}`
+    if (this.props.frozen) cssClasses += ' rollex-frozen'
+    return cssClasses
+  }
+
+  /**
    * Renders the counter.
    * @return {ReactElement} counter
    */
@@ -237,7 +247,7 @@ export default class Counter extends React.Component {
       </div>)
     })
     return (
-      <div className={this.state.cssClasses}>
+      <div className={this.getCSSClasses()}>
         {segments}
       </div>
     )

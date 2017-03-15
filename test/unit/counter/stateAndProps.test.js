@@ -29,7 +29,6 @@ describe('state and props', function () {
       from: 1234,
       initialTimeDiff: to - 1234,
       periods: ['days', 'hours', 'minutes', 'seconds'],
-      cssClasses: 'rollex rollex-static',
       numbers: {
         days: 2,
         hours: 6,
