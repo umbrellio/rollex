@@ -190,7 +190,7 @@ export default class CounterBuilder {
     } else if (!minProvided && maxProvided) {
       return [(minSegmentSize > max) ? max : minSegmentSize, max]
     } else {
-      return [minSegmentSize, maxProvided ? max : minSegmentSize]
+      return [minSegmentSize, minSegmentSize]
     }
   }
 

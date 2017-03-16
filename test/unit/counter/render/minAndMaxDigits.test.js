@@ -94,6 +94,16 @@ describe('min/max normalization', function () {
       () => shallow(<Counter from={0} to={to} minDigits={3} maxDigits={1} />)
     ).toThrowError('conflict: minDigits (3) > maxDigits (1)')
   })
+
+  it('does not change minDigits and maxDigits when they are provided and max > min', function () {
+    expect(<Counter from={0} to={to} minDigits={1} maxDigits={3} />)
+      .toHaveDigits([
+        ['2', '0', '0'],
+        ['6'],
+        ['3', '5'],
+        ['5', '4']
+      ])
+  })
 })
 
 describe('with numeric argument', function () {
