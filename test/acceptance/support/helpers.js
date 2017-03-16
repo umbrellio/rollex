@@ -11,7 +11,7 @@ export function bootstrapDOM () {
 export function clearDOM () {
   const root = document.getElementById('root')
   ReactDOM.unmountComponentAtNode(root)
-  root.remove()
+  root.parentNode.removeChild(root)
 }
 
 export function render (component) {
