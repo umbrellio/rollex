@@ -145,10 +145,11 @@ export default class CounterBuilder {
   /**
    * Calculates minimum number of digits for current radix and given period.
    * @param {string} period - period to calculate minDigits for
+   * @param {boolean} limited
    * @return {number}
    */
-  getMinSegmentSize (period) {
-    const maxValue = this.getPeriodMaxValue(period)
+  getMinSegmentSize (period, limited) {
+    const maxValue = this.getPeriodMaxValue(period, limited)
     return (maxValue).toString(this.props.radix).length
   }
 
@@ -163,10 +164,12 @@ export default class CounterBuilder {
     var normalizedMaxDigits = {}
 
     for (let period of this.state.periods) {
-      const minSegmentSize = this.getMinSegmentSize(period);
-      [normalizedMinDigits[period], normalizedMaxDigits[period]] = this.normalizeDigitLimitsForPeriod(
-        minDigits[period], maxDigits[period], minSegmentSize
-      )
+      const limited = maxDigits[period] !== 0
+      const minSegmentSize = this.getMinSegmentSize(period, limited);
+      [
+        normalizedMinDigits[period],
+        normalizedMaxDigits[period]
+      ] = this.normalizeDigitLimitsForPeriod(minDigits[period], maxDigits[period], minSegmentSize)
     }
     return {
       minDigits: normalizedMinDigits,
@@ -174,6 +177,13 @@ export default class CounterBuilder {
     }
   }
 
+  /**
+   * Normalizes minDigits and maxDigits for a single period.
+   * @param {?number} min
+   * @param {?number} max
+   * @param {number} minSegmentSize
+   * @return {number[]}
+   */
   normalizeDigitLimitsForPeriod (min, max, minSegmentSize) {
     const minProvided = min !== undefined
     const maxProvided = max !== undefined
@@ -197,9 +207,15 @@ export default class CounterBuilder {
   /**
    * Calculates maximum value for given period.
    * @param {string} period
+   * @param {boolean} limited
    * @return {number}
    */
-  getPeriodMaxValue (period) {
+  getPeriodMaxValue (period, limited) {
+    if (!limited && period === this.props.maxPeriod) {
+      return NumberCalculator.getPeriodNumberAt(
+        period, this.props.maxPeriod, this.state.initialTimeDiff
+      )
+    }
     switch (period) {
       case 'seconds':
       case 'minutes':
@@ -207,14 +223,7 @@ export default class CounterBuilder {
       case 'hours':
         return 23
       case 'days':
-        if (period === this.props.minPeriod) {
-          // max number possible for this period during the countdown
-          return NumberCalculator.getPeriodNumberAt(
-            period, this.props.maxPeriod, this.state.initialTimeDiff
-          )
-        } else {
-          return this.getPeriodMaxValue(this.props.minPeriod)
-        }
+        return Math.pow(this.props.radix, 2) - 1 // 99 for decimal
     }
   }
 

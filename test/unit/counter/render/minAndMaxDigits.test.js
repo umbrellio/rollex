@@ -1,6 +1,7 @@
 import React from 'react'
-import { shallow } from 'enzyme'
+import { shallow, mount } from 'enzyme'
 import Counter from '../../../../src/components/Counter'
+import CounterSegment from '../../../../src/components/CounterSegment'
 import { toHaveDigits } from '../../support/matchers'
 
 const to =
@@ -38,22 +39,22 @@ describe('defaults', function () {
   test('radix = 2', function () {
     expect(<Counter from={0} to={to} radix={2} />)
       .toHaveDigits([
-        '111111'.split(''),
+        '11'.split(''),
         '00110'.split(''),
         '100011'.split(''),
         '110110'.split('')
       ])
   })
 
-  describe('takes maximum value possible when minPeriod = maxPeriod', function () {
+  describe('limits max period by default', function () {
     test('days', function () {
       expect(<Counter from={0} to={to} minPeriod='days' />)
-        .toHaveDigits([['2', '0', '0']])
+        .toHaveDigits([['9', '9']])
     })
 
     test('days and direction is "up"', function () {
       expect(<Counter from={0} to={to} minPeriod='days' direction='up' />)
-        .toHaveDigits([['0', '0', '0']])
+        .toHaveDigits([['0', '0']])
     })
 
     test('hours', function () {
@@ -69,6 +70,36 @@ describe('defaults', function () {
 })
 
 describe('min/max normalization', function () {
+  describe('maxDigits = 0', function () {
+    it('removes limit from maxPeriod', function () {
+      expect(<Counter from={0} to={to} maxDigits={0} />)
+        .toHaveDigits([
+          ['2', '0', '0'],
+          ['0', '6'],
+          ['3', '5'],
+          ['5', '4']
+        ])
+    })
+
+    it('removes limit from maxPeriod when it is set to minutes', function () {
+      // 7200 seconds = 2 hours = 120 minutes
+      expect(<Counter seconds={7200} maxDigits={0} maxPeriod='minutes' />)
+        .toHaveDigits([
+          ['1', '2', '0'],
+          ['0', '0']
+        ])
+    })
+
+    it('preserves a constant number of digits per segment', function () {
+      jest.useFakeTimers()
+      const component = mount(<Counter seconds={100} maxDigits={0} maxPeriod='seconds' />)
+      const segments = component.find(CounterSegment)
+      expect(segments.at(0).props().digits).toEqual(['1', '0', '0'])
+      jest.runTimersToTime(2 * 1000)
+      expect(segments.at(0).props().digits).toEqual(['0', '9', '8'])
+    })
+  })
+
   test('maxDigits = minDigits if minDigits > maxDigits, minDigits is set, maxDigits isnt', () => {
     expect(<Counter from={0} to={to} minDigits={4} />)
       .toHaveDigits([
