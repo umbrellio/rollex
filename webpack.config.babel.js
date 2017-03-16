@@ -1,11 +1,13 @@
 import { resolve } from 'path'
 
+const minify = process.argv.indexOf('-p') !== -1
+
 export default {
   context: resolve('src'),
   entry: './',
   output: {
     path: resolve('dist/'),
-    filename: 'rollex.js',
+    filename: minify ? 'rollex.min.js' : 'rollex.js',
     library: 'Rollex',
     libraryTarget: 'umd',
     umdNamedDefine: true

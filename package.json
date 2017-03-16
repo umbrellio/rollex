@@ -1,6 +1,6 @@
 {
   "name": "rollex",
-  "version": "0.0.1",
+  "version": "1.0.0-rc.1",
   "description": "A counter React component",
   "main": "src/index.js",
   "repository": "umbrellio/rollex",
@@ -11,8 +11,9 @@
     "react-dom": "^15.4.2"
   },
   "scripts": {
+    "prepublish": "yarn run test && yarn run build",
     "prebuild": "rimraf dist",
-    "build": "webpack -p",
+    "build": "webpack && webpack -p",
     "build:dev": "webpack",
     "build:watch": "yarn run build:dev -- --watch",
     "preesdoc": "rimraf docs",
