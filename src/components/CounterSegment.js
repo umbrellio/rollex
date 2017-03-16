@@ -48,7 +48,7 @@ class CounterSegment extends React.Component {
     easingDuration: number.isRequired,
     digitMap: object.isRequired,
     digitWrapper: func.isRequired,
-    label: string.isRequired
+    label: string
   }
 
   /**
