@@ -21,11 +21,6 @@ const sauceLaunchers = {
     browserName: 'firefox',
     version: '51'
   },
-  sl_opera: {
-    base: 'SauceLabs',
-    browserName: 'opera',
-    version: '12.15'
-  },
   sl_ie_11: {
     base: 'SauceLabs',
     browserName: 'internet explorer',
