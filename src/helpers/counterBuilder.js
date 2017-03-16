@@ -16,6 +16,48 @@ const PERIODS = [
  */
 export default class CounterBuilder {
   /**
+   * Validates counter's props.
+   * @param {Object} props - props to validate
+   */
+  static validateProps (props) {
+    if (props.seconds !== undefined) {
+      if (props.to !== undefined || props.from !== undefined) {
+        throw new Error('cannot use "to" and "from" with "seconds"')
+      } else if (props.seconds < 0) {
+        throw new Error('"seconds" must be greater than or equal to zero')
+      }
+    } else if (props.to === undefined) {
+      throw new Error('provide either "seconds" or "to"')
+    } else if (props.to < props.from) {
+      throw new Error('"to" must be bigger than "from"')
+    }
+    if (props.minDigits !== undefined && props.minDigits < 1) {
+      throw new Error('"minDigits" must be positive')
+    }
+    if (props.minPeriod && PERIODS.indexOf(props.minPeriod) < 0) {
+      throw new Error(`"minPeriod" must be one of: ${PERIODS.join(', ')}'`)
+    }
+    if (props.maxPeriod && PERIODS.indexOf(props.maxPeriod) < 0) {
+      throw new Error(`"maxPeriod" must be one of: ${PERIODS.join(', ')}`)
+    }
+    if (props.syncTime && props.to === undefined) {
+      throw new Error('"syncTime" must be used with "to"')
+    }
+    if (props.radix < 2 || props.radix > 36) {
+      throw new Error('"radix" must be between 2 and 36')
+    }
+    if (typeof props.digitWrapper !== 'function') {
+      throw new Error('"digitWrapper" must be a function')
+    }
+    if (typeof props.digitMap !== 'object') {
+      throw new Error('"digitMap" must be an object')
+    }
+    if (props.direction !== 'up' && props.direction !== 'down') {
+      throw new Error('"direction" must be either up or down')
+    }
+  }
+
+  /**
    * @param {Counter} counter
    */
   constructor (counter) {
@@ -139,11 +181,13 @@ export default class CounterBuilder {
       throw new Error(`conflict: minDigits (${min}) > maxDigits (${max})`)
     }
 
-    if (minProvided && max) {
+    if (max === 0) {
+      return [minProvided ? min : minSegmentSize, 0]
+    } else if (minProvided && maxProvided) {
       return (min > max) ? throwError() : [min, max]
     } else if (minProvided && !maxProvided) {
       return [min, (min > minSegmentSize) ? min : minSegmentSize]
-    } else if (!minProvided && max) {
+    } else if (!minProvided && maxProvided) {
       return [(minSegmentSize > max) ? max : minSegmentSize, max]
     } else {
       return [minSegmentSize, maxProvided ? max : minSegmentSize]
@@ -162,7 +206,7 @@ export default class CounterBuilder {
         return 59
       case 'hours':
         return 23
-      default:
+      case 'days':
         if (period === this.props.minPeriod) {
           // max number possible for this period during the countdown
           return NumberCalculator.getPeriodNumberAt(
@@ -182,48 +226,6 @@ export default class CounterBuilder {
     this.state = {
       ...this.state,
       numbers: NumberCalculator.calculateNumbers(this.state.periods, timestamp)
-    }
-  }
-
-  /**
-   * Validates counter's props.
-   * @param {Object} props - props to validate
-   */
-  static validateProps (props) {
-    if (props.seconds !== undefined) {
-      if (props.to !== undefined || props.from !== undefined) {
-        throw new Error('cannot use "to" and "from" with "seconds"')
-      } else if (props.seconds < 0) {
-        throw new Error('"seconds" must be greater than or equal to zero')
-      }
-    } else if (props.to === undefined) {
-      throw new Error('provide either "seconds" or "to"')
-    } else if (props.to < props.from) {
-      throw new Error('"to" must be bigger than "from"')
-    }
-    if (props.minDigits !== undefined && props.minDigits < 1) {
-      throw new Error('"minDigits" must be positive')
-    }
-    if (props.minPeriod && PERIODS.indexOf(props.minPeriod) < 0) {
-      throw new Error('"minPeriod" must be one of: days, hours, minutes, seconds')
-    }
-    if (props.maxPeriod && PERIODS.indexOf(props.maxPeriod) < 0) {
-      throw new Error('"maxPeriod" must be one of: days, hours, minutes, seconds')
-    }
-    if (props.syncTime && props.to === undefined) {
-      throw new Error('"syncTime" must be used with "to"')
-    }
-    if (props.radix < 2 || props.radix > 36) {
-      throw new Error('"radix" must be between 2 and 36')
-    }
-    if (typeof props.digitWrapper !== 'function') {
-      throw new Error('"digitWrapper" must be a function')
-    }
-    if (typeof props.digitMap !== 'object') {
-      throw new Error('"digitMap" must be an object')
-    }
-    if (props.direction !== 'up' && props.direction !== 'down') {
-      throw new Error('"direction" must be either up or down')
     }
   }
 }
