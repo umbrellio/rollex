@@ -13,13 +13,7 @@ describe('state and props', function () {
     const component = shallow(<Counter to={to} />)
     expect(component.state()).toEqual({
       timeDiff: to - 1234,
-      minDigits: {
-        days: 2,
-        hours: 2,
-        minutes: 2,
-        seconds: 2
-      },
-      maxDigits: {
+      digits: {
         days: 2,
         hours: 2,
         minutes: 2,
@@ -60,7 +54,7 @@ describe('state and props', function () {
     const digitWrapper = (digit) => <div>{digit}</div>
     const component = mount(
       <Counter from={10} to={20} interval={897}
-        minDigits={3} maxDigits={4}
+        digits={3}
         minPeriod='minutes' maxPeriod='hours'
         syncTime radix={8} direction='up'
         easingFunction='myEasingFn' easingDuration={123}
@@ -72,8 +66,7 @@ describe('state and props', function () {
       from: 10,
       to: 20,
       interval: 897,
-      minDigits: 3,
-      maxDigits: 4,
+      digits: 3,
       minPeriod: 'minutes',
       maxPeriod: 'hours',
       syncTime: true,

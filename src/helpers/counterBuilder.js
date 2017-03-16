@@ -31,8 +31,8 @@ export default class CounterBuilder {
     } else if (props.to < props.from) {
       throw new Error('"to" must be bigger than "from"')
     }
-    if (props.minDigits !== undefined && props.minDigits < 1) {
-      throw new Error('"minDigits" must be positive')
+    if (props.digits !== undefined && props.digits < 0) {
+      throw new Error('"digits" must not be negative')
     }
     if (props.minPeriod && PERIODS.indexOf(props.minPeriod) < 0) {
       throw new Error(`"minPeriod" must be one of: ${PERIODS.join(', ')}'`)
@@ -111,97 +111,59 @@ export default class CounterBuilder {
   }
 
   /**
-   * Builds minDigits and maxDigits state properties.
+   * Builds "digits" state property.
    */
   buildDigitLimits () {
-    var [minDigits, maxDigits] = this.getDigitLimitsFromProps()
+    var digits = this.getDigitLimitsFromProps()
     this.state = {
       ...this.state,
-      ...this.normalizeDigitLimits(minDigits, maxDigits)
+      ...this.normalizeDigitLimits(digits)
     }
   }
 
   /**
-   * Gets minDigits and maxDigits from props specified by the user.
-   * @return {array}
+   * Gets digit limits from props specified by the user.
+   * @return {Map<string, number>}
    */
   getDigitLimitsFromProps () {
-    var minDigits = {}
-    var maxDigits = {}
+    var digits = {}
 
-    if (typeof this.props.minDigits === 'number') {
-      for (let period of this.state.periods) minDigits[period] = this.props.minDigits
-    } else if (typeof this.props.minDigits === 'object') {
-      minDigits = this.props.minDigits
+    if (typeof this.props.digits === 'number') {
+      for (let period of this.state.periods) digits[period] = this.props.digits
+    } else if (typeof this.props.digits === 'object') {
+      digits = this.props.digits
     }
-    if (typeof this.props.maxDigits === 'number') {
-      for (let period of this.state.periods) maxDigits[period] = this.props.maxDigits
-    } else if (typeof this.props.maxDigits === 'object') {
-      maxDigits = this.props.maxDigits
-    }
-    return [minDigits, maxDigits]
+    return digits
   }
 
   /**
-   * Calculates minimum number of digits for current radix and given period.
-   * @param {string} period - period to calculate minDigits for
+   * Normalizes "digits" property.
+   * @param {object} digits
+   * @return {object}
+   */
+  normalizeDigitLimits (digits) {
+    var normalizedDigits = {}
+
+    for (let period of this.state.periods) {
+      if (digits[period]) {
+        normalizedDigits[period] = digits[period]
+      } else {
+        const limited = digits[period] === undefined
+        normalizedDigits[period] = this.getMinSegmentSize(period, limited)
+      }
+    }
+    return { digits: normalizedDigits }
+  }
+
+  /**
+   * Calculates number of digits for current radix and given period.
+   * @param {string} period - period to calculate digits for
    * @param {boolean} limited
    * @return {number}
    */
   getMinSegmentSize (period, limited) {
     const maxValue = this.getPeriodMaxValue(period, limited)
     return (maxValue).toString(this.props.radix).length
-  }
-
-  /**
-   * Normalizes minDigits and maxDigits and sets default values where user did not specify them.
-   * @param {number|object} minDigits
-   * @param {number|object} maxDigits
-   * @return {object}
-   */
-  normalizeDigitLimits (minDigits, maxDigits) {
-    var normalizedMinDigits = {}
-    var normalizedMaxDigits = {}
-
-    for (let period of this.state.periods) {
-      const limited = maxDigits[period] !== 0
-      const minSegmentSize = this.getMinSegmentSize(period, limited);
-      [
-        normalizedMinDigits[period],
-        normalizedMaxDigits[period]
-      ] = this.normalizeDigitLimitsForPeriod(minDigits[period], maxDigits[period], minSegmentSize)
-    }
-    return {
-      minDigits: normalizedMinDigits,
-      maxDigits: normalizedMaxDigits
-    }
-  }
-
-  /**
-   * Normalizes minDigits and maxDigits for a single period.
-   * @param {?number} min
-   * @param {?number} max
-   * @param {number} minSegmentSize
-   * @return {number[]}
-   */
-  normalizeDigitLimitsForPeriod (min, max, minSegmentSize) {
-    const minProvided = min !== undefined
-    const maxProvided = max !== undefined
-    function throwError () {
-      throw new Error(`conflict: minDigits (${min}) > maxDigits (${max})`)
-    }
-
-    if (max === 0) {
-      return [minProvided ? min : minSegmentSize, 0]
-    } else if (minProvided && maxProvided) {
-      return (min > max) ? throwError() : [min, max]
-    } else if (minProvided && !maxProvided) {
-      return [min, (min > minSegmentSize) ? min : minSegmentSize]
-    } else if (!minProvided && maxProvided) {
-      return [(minSegmentSize > max) ? max : minSegmentSize, max]
-    } else {
-      return [minSegmentSize, minSegmentSize]
-    }
   }
 
   /**

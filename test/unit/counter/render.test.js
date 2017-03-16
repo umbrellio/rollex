@@ -58,19 +58,19 @@ describe('rendering', function () {
   })
 
   test('maxPeriod', function () {
-    var component = shallow(<Counter from={0} to={to} maxPeriod='hours' maxDigits={0} />)
+    var component = shallow(<Counter from={0} to={to} maxPeriod='hours' digits={0} />)
     var counterSegments = component.find(CounterSegment)
     expect(counterSegments.length).toBe(3)
     expect(counterSegments.at(0).props().period).toBe('hours')
     expect(counterSegments.at(0).props().digits).toEqual(['4', '8', '0', '6'])
 
-    var component = shallow(<Counter from={0} to={to} maxPeriod='minutes' maxDigits={0} />)
+    var component = shallow(<Counter from={0} to={to} maxPeriod='minutes' digits={0} />)
     var counterSegments = component.find(CounterSegment)
     expect(counterSegments.length).toBe(2)
     expect(counterSegments.at(0).props().period).toBe('minutes')
     expect(counterSegments.at(0).props().digits).toEqual(['2', '8', '8', '3', '9', '5'])
 
-    var component = shallow(<Counter from={0} to={to} maxPeriod='seconds' maxDigits={0} />)
+    var component = shallow(<Counter from={0} to={to} maxPeriod='seconds' digits={0} />)
     var counterSegments = component.find(CounterSegment)
     expect(counterSegments.length).toBe(1)
     expect(counterSegments.at(0).props().period).toBe('seconds')

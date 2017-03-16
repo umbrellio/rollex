@@ -18,8 +18,7 @@ export default class Counter extends React.Component {
    * @property {number} seconds - a number of seconds to count
    * @property {number} interval - update interval
    * @property {string} direction - direction to count in
-   * @property {number|object} minDigits - minimum number of digits per segment
-   * @property {number|object} maxDigits - maximum number of digits per segment
+   * @property {number|object} digits - number of digits per segment
    * @property {string} minPeriod - smallest period to create a segment for
    * @property {string} maxPeriod - largest period to create a segment for
    * @property {boolean} frozen - determines if counter is frozen
@@ -40,8 +39,7 @@ export default class Counter extends React.Component {
     seconds: number,
     interval: number,
     direction: oneOf(['up', 'down']),
-    minDigits: oneOfType([number, object]),
-    maxDigits: oneOfType([number, object]),
+    digits: oneOfType([number, object]),
     minPeriod: string,
     maxPeriod: string,
     frozen: bool,
@@ -80,8 +78,7 @@ export default class Counter extends React.Component {
      * @type {object}
      * @property {number} timeDiff - current amount of time to count from in milliseconds
      * @property {number} initialTimeDiff - original time diff
-     * @property {number} minDigits - minimum number of digits per segment
-     * @property {number} maxDigits - maximum number of digits per segment
+     * @property {Map<string, number>} digits - a map from periods to theis segment sizes
      * @property {Map<string, number>} numbers - a map from periods to their corresponding numbers
      * @property {number} startTime - a timestamp of current moment
      * @property {number} from - timestamp to count from
@@ -173,25 +170,24 @@ export default class Counter extends React.Component {
   }
 
   /**
-   * Gets correct digits for given period accounting for counter's radix, minDigits and maxDigits.
+   * Gets correct digits for given period accounting for counter's radix and periods's segment size.
    * @param {string} period
    * @return {string[]} digits
    */
   getDigits (period) {
     var number = this.state.numbers[period]
-    const minDigits = this.state.minDigits[period]
-    const maxDigits = this.state.maxDigits[period]
+    const digits = this.state.digits[period]
     const radix = this.props.radix
 
-    if (maxDigits && number >= Math.pow(radix, maxDigits)) {
+    if (digits && number >= Math.pow(radix, digits)) {
       var maxValueArray = []
-      for (let i = 0; i < maxDigits; i++) maxValueArray.push((radix - 1).toString())
+      for (let i = 0; i < digits; i++) maxValueArray.push((radix - 1).toString())
       return maxValueArray
     }
 
     number = number.toString(radix)
     var zeroArray = []
-    for (let i = 0; i < minDigits - number.length; i++) zeroArray.push('0')
+    for (let i = 0; i < digits - number.length; i++) zeroArray.push('0')
     return (zeroArray.join('') + number).split('')
   }
 

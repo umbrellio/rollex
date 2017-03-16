@@ -10,17 +10,12 @@ const seconds = (60 * 60 * 24 * 1) + // 1 day
 
 describe('min/max digits', function () {
   it('adds zeros to supply desired minimum number of digits', function () {
-    const component = render(<Counter seconds={seconds} minDigits={3} />)
+    const component = render(<Counter seconds={seconds} digits={3} />)
     expect(component).toDisplayDigits('001023045009')
   })
 
-  it('shows minimal possible number of digits when minDigits is small', function () {
-    const component = render(<Counter seconds={seconds} minDigits={1} />)
-    expect(component).toDisplayDigits('123459')
-  })
-
-  it('caps numbers at 9 when maxDigits is small', function () {
-    const component = render(<Counter seconds={seconds} maxDigits={1} />)
+  it('caps numbers at 9 when "digits" is small', function () {
+    const component = render(<Counter seconds={seconds} digits={1} />)
     expect(component).toDisplayDigits('1999')
   })
 })

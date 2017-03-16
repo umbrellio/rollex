@@ -31,8 +31,8 @@ it('throws an error when options are provided incorrectly', function () {
     () => shallow(<Counter seconds={-1} />)
   ).toThrowError('"seconds" must be greater than or equal to zero')
   expect(
-    () => shallow(<Counter seconds={0} minDigits={0} />)
-  ).toThrowError('"minDigits" must be positive')
+    () => shallow(<Counter seconds={0} digits={-1} />)
+  ).toThrowError('"digits" must not be negative')
   expect(
     () => shallow(<Counter seconds={0} minPeriod='sobaka' />)
   ).toThrowError('"minPeriod" must be one of: days, hours, minutes, seconds')
@@ -66,10 +66,10 @@ it('initializes when options are correct', function () {
     () => shallow(<Counter seconds={2} />)
   ).not.toThrow()
   expect(
-    () => shallow(<Counter seconds={2} minDigits={3} />)
+    () => shallow(<Counter seconds={2} digits={0} />)
   ).not.toThrow()
   expect(
-    () => shallow(<Counter seconds={2} maxDigits={3} />)
+    () => shallow(<Counter seconds={2} digits={3} />)
   ).not.toThrow()
   expect(
     () => shallow(<Counter seconds={2} minPeriod='minutes' />)
