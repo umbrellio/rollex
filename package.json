@@ -11,7 +11,7 @@
     "react-dom": "^15.4.2"
   },
   "scripts": {
-    "prepublish": "yarn run test && yarn run build",
+    "prepublishOnly": "yarn run test && yarn run build",
     "prebuild": "rimraf dist",
     "build": "webpack && webpack -p",
     "build:dev": "webpack",
