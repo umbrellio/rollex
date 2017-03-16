@@ -1,5 +1,5 @@
 import React from 'react'
-import { Counter } from '../../src/'
+import Counter from '../../src/components/Counter'
 import { render } from './support/helpers'
 
 // We want to get '01234509' on the display (for default props)
@@ -10,35 +10,30 @@ const seconds = (60 * 60 * 24 * 1) + // 1 day
 
 describe('min/max digits', function () {
   it('adds zeros to supply desired minimum number of digits', function () {
-    const component = render(<Counter seconds={seconds} minDigits={3} />)
+    const component = render(<Counter seconds={seconds} digits={3} />)
     expect(component).toDisplayDigits('001023045009')
   })
 
-  it('shows minimal possible number of digits when minDigits is small', function () {
-    const component = render(<Counter seconds={seconds} minDigits={1} />)
-    expect(component).toDisplayDigits('123459')
-  })
-
-  it('caps numbers at 9 when maxDigits is small', function () {
-    const component = render(<Counter seconds={seconds} maxDigits={1} />)
+  it('caps numbers at 9 when "digits" is small', function () {
+    const component = render(<Counter seconds={seconds} digits={1} />)
     expect(component).toDisplayDigits('1999')
   })
 })
 
 describe('min/max period', function () {
   it('does not show periods that are smaller than minPeriod', function () {
-    const component = render(<Counter seconds={seconds} minPeriod='minute' />)
+    const component = render(<Counter seconds={seconds} minPeriod='minutes' />)
     expect(component).toDisplayDigits('012345')
     expect(component).toHaveLabels(['days', 'hours', 'minutes'])
   })
 
   it('does not show periods that are bigger than maxPeriod', function () {
-    const component = render(<Counter seconds={seconds} maxPeriod='hour' />)
+    const component = render(<Counter seconds={seconds} maxPeriod='hours' />)
     expect(component).toHaveLabels(['hours', 'minutes', 'seconds'])
   })
 
   it('shows days in hours if maxPeriod is "hours"', function () {
-    const component = render(<Counter seconds={seconds} maxPeriod='hour' />)
+    const component = render(<Counter seconds={seconds} maxPeriod='hours' />)
     expect(component).toDisplayDigits('474509')
   })
 })

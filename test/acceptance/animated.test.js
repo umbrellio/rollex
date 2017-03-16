@@ -1,5 +1,5 @@
 import React from 'react'
-import { Counter } from '../../src/'
+import Counter from '../../src/components/Counter'
 import { render, renderAnimatedTenSecondCounter } from './support/helpers'
 
 // Unmocked setTimeout
@@ -32,7 +32,7 @@ describe('ticking', function () {
     }
 
     const component = render(
-      <Counter seconds={10} maxPeriod='second' easingFunction='ease-in' easingDuration={50} />
+      <Counter seconds={10} maxPeriod='seconds' easingFunction='ease-in' easingDuration={50} />
     )
     expect(component).toDisplayDigits('10')
     jasmine.clock().tick(5000)
@@ -117,7 +117,7 @@ describe('time synchronization', function () {
     var dateSpy = spyOn(Date.prototype, 'getTime').and.returnValue(baseTime)
 
     const component = render(
-      <Counter to={to} maxPeriod='second' easingFunction='ease-in' easingDuration={0} syncTime />
+      <Counter to={to} maxPeriod='seconds' easingFunction='ease-in' easingDuration={0} syncTime />
     )
     jasmine.clock().tick(1000)
     expect(component).toDisplayDigits('10')

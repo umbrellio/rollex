@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { Counter } from '../../../src/'
+import Counter from '../../../src/components/Counter'
 
 export function bootstrapDOM () {
   var root = document.createElement('div')
@@ -21,7 +21,7 @@ export function render (component) {
 
 export function renderTenSecondCounter (params = {}) {
   const ref = ReactDOM.render(
-    <Counter seconds={10} maxPeriod='second' {...params} />,
+    <Counter seconds={10} maxPeriod='seconds' {...params} />,
     document.getElementById('root')
   )
   return ReactDOM.findDOMNode(ref)
@@ -29,7 +29,7 @@ export function renderTenSecondCounter (params = {}) {
 
 export function renderAnimatedTenSecondCounter (params = {}) {
   const ref = ReactDOM.render(
-    <Counter seconds={10} maxPeriod='second' easingFunction='ease-in' easingDuration={0} {...params} />,
+    <Counter seconds={10} maxPeriod='seconds' easingFunction='ease-in' easingDuration={0} {...params} />,
     document.getElementById('root')
   )
   return ReactDOM.findDOMNode(ref)
