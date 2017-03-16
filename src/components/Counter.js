@@ -227,7 +227,7 @@ export default class Counter extends React.Component {
       const separator = index < this.state.periods.length - 1
         ? <CounterSegmentSeparator content={this.props.separator} />
         : null
-      return (<div key={index}>
+      return (<div key={index} className='rollex-segment-wrapper'>
         <CounterSegment
           period={period}
           digits={this.getDigits(period)}

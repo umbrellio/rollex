@@ -4,7 +4,9 @@ exports[`rendering matches snapshot 1`] = `
 <div
   className="rollex rollex-static"
 >
-  <div>
+  <div
+    className="rollex-segment-wrapper"
+  >
     <CounterSegment
       digitMap={Object {}}
       digitWrapper={[Function]}
@@ -23,7 +25,9 @@ exports[`rendering matches snapshot 1`] = `
     />
     <CounterSegmentSeparator />
   </div>
-  <div>
+  <div
+    className="rollex-segment-wrapper"
+  >
     <CounterSegment
       digitMap={Object {}}
       digitWrapper={[Function]}
@@ -42,7 +46,9 @@ exports[`rendering matches snapshot 1`] = `
     />
     <CounterSegmentSeparator />
   </div>
-  <div>
+  <div
+    className="rollex-segment-wrapper"
+  >
     <CounterSegment
       digitMap={Object {}}
       digitWrapper={[Function]}
@@ -61,7 +67,9 @@ exports[`rendering matches snapshot 1`] = `
     />
     <CounterSegmentSeparator />
   </div>
-  <div>
+  <div
+    className="rollex-segment-wrapper"
+  >
     <CounterSegment
       digitMap={Object {}}
       digitWrapper={[Function]}
