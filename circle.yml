@@ -1,0 +1,13 @@
+machine:
+  node:
+    version: 7
+  environment:
+    PATH: "${PATH}:${HOME}/${CIRCLE_PROJECT_REPONAME}/node_modules/.bin"
+
+dependencies:
+  override:
+    - yarn
+
+test:
+  override:
+    - yarn run test
