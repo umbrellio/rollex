@@ -64,14 +64,14 @@ describe('rendering', function () {
     expect(counterSegments.at(0).props().period).toBe('hours')
     expect(counterSegments.at(0).props().digits).toEqual(['4', '8', '0', '6'])
 
-    var component = shallow(<Counter from={0} to={to} maxPeriod='minutes' digits={0} />)
-    var counterSegments = component.find(CounterSegment)
+    component = shallow(<Counter from={0} to={to} maxPeriod='minutes' digits={0} />)
+    counterSegments = component.find(CounterSegment)
     expect(counterSegments.length).toBe(2)
     expect(counterSegments.at(0).props().period).toBe('minutes')
     expect(counterSegments.at(0).props().digits).toEqual(['2', '8', '8', '3', '9', '5'])
 
-    var component = shallow(<Counter from={0} to={to} maxPeriod='seconds' digits={0} />)
-    var counterSegments = component.find(CounterSegment)
+    component = shallow(<Counter from={0} to={to} maxPeriod='seconds' digits={0} />)
+    counterSegments = component.find(CounterSegment)
     expect(counterSegments.length).toBe(1)
     expect(counterSegments.at(0).props().period).toBe('seconds')
     expect(counterSegments.at(0).props().digits).toEqual(['1', '7', '3', '0', '3', '7', '5', '4'])

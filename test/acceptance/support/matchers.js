@@ -5,10 +5,11 @@ export default {
         const actual = getChildrenTextContents(object, 'span', true).join('')
         const pass = util.equals(actual, expected, customEqualityTesters)
 
+        var message
         if (pass) {
-          var message = `Expected ${object} not to display ${expected}`
+          message = `Expected ${object} not to display ${expected}`
         } else {
-          var message = `Expected ${object} to display ${expected}, but it displayed ${actual}`
+          message = `Expected ${object} to display ${expected}, but it displayed ${actual}`
         }
 
         return { pass, message }
@@ -21,10 +22,11 @@ export default {
         const actual = getChildrenTextContents(object, '.rollex-label')
         const pass = util.equals(actual, expected, customEqualityTesters)
 
+        var message
         if (pass) {
-          var message = `Expected ${object} not to have labels: ${expected}`
+          message = `Expected ${object} not to have labels: ${expected}`
         } else {
-          var message = `Expected ${object} to have labels: ${expected}, but got: ${actual}`
+          message = `Expected ${object} to have labels: ${expected}, but got: ${actual}`
         }
 
         return { pass, message }
@@ -37,10 +39,11 @@ export default {
         const actual = getChildrenTextContents(object, '.rollex-separator')
         const pass = util.equals(actual, expected, customEqualityTesters)
 
+        var message
         if (pass) {
-          var message = `Expected ${object} not to have separators: ${expected}`
+          message = `Expected ${object} not to have separators: ${expected}`
         } else {
-          var message = `Expected ${object} to have separators: ${expected}, but got: ${actual}`
+          message = `Expected ${object} to have separators: ${expected}, but got: ${actual}`
         }
 
         return { pass, message }
