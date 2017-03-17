@@ -39,7 +39,7 @@ describe('ticking', function () {
     timeout(function () {
       expect(component).toDisplayDigits('05')
       done()
-    }, 100) // extra 50 ms for consistency
+    }, 350) // extra 300 ms for consistency
   })
 })
 

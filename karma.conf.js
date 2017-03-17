@@ -59,8 +59,8 @@ module.exports = function (config) {
     },
     browsers: browsers,
     concurrency: (ci || sauce) ? 2 : Infinity,
-    captureTimeout: ci ? 120000 : 300000,
-    browserNoActivityTimeout: ci ? 120000 : 300000,
+    captureTimeout: 300000,
+    browserNoActivityTimeout: 300000,
     customLaunchers: sauceLaunchers
   })
 }
