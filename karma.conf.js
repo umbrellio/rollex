@@ -1,10 +1,27 @@
 const webpack = require('webpack')
-// Travis only comes with Firefox
-const browsers = process.env.TRAVIS ? ['Firefox'] : ['Chrome', 'Firefox']
+const sauceLaunchers = require('./sauceLaunchers.config')
+
+var browsers
+if (process.env.TRAVIS) {
+  // Travis only comes with Firefox
+  browsers = ['Firefox']
+} else if (process.env.SAUCE) {
+  if (!process.env.SAUCE_USERNAME || !process.env.SAUCE_ACCESS_KEY) {
+    console.error('SAUCE_USERNAME and SAUCE_ACCESS_KEY environment variables must be set!')
+    process.exit(1)
+  }
+  browsers = Object.keys(sauceLaunchers)
+} else if (process.platform === 'darwin') {
+  browsers = ['Chrome', 'Firefox', 'Safari']
+} else {
+  browsers = ['Chrome', 'Firefox']
+}
 
 module.exports = function (config) {
+  const ci = process.env.CI
+  const sauce = process.env.SAUCE
+
   config.set({
-    browsers: browsers,
     singleRun: true,
     frameworks: ['jasmine'],
     files: [
@@ -14,7 +31,7 @@ module.exports = function (config) {
     preprocessors: {
       'test/acceptance/tests.js': ['webpack', 'sourcemap']
     },
-    reporters: ['dots'],
+    reporters: ['dots', 'saucelabs'],
     webpack: {
       module: {
         loaders: [
@@ -36,6 +53,14 @@ module.exports = function (config) {
     },
     webpackMiddleware: {
       stats: 'errors-only'
-    }
+    },
+    sauceLabs: {
+      testName: ci ? 'Rollex acceptance tests (CI)' : 'Rollex acceptance tests'
+    },
+    browsers: browsers,
+    concurrency: (ci || sauce) ? 2 : Infinity,
+    captureTimeout: ci ? 120000 : 300000,
+    browserNoActivityTimeout: ci ? 120000 : 300000,
+    customLaunchers: sauceLaunchers
   })
 }
