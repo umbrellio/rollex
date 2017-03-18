@@ -98,7 +98,7 @@ export default class Counter extends React.Component {
   }
 
   componentWillUnmount () {
-    if (!this.props.frozen && !this.state.stopped) this.stop()
+    if (!this.props.frozen && !this.stopped) this.stop()
   }
 
   /**
@@ -119,18 +119,17 @@ export default class Counter extends React.Component {
    * Starts the countdown.
    */
   start () {
-    GlobalIntervals.ensureExistence(this.props.interval)
-    GlobalIntervals.subscribe(this.props.interval, this.boundTick)
-    this.setState({ stopped: false })
+    this.unsubscribe = GlobalIntervals.subscribe(this.props.interval, this.boundTick)
+    this.stopped = false
   }
 
   /**
    * Pauses the countdown.
    */
   stop () {
-    GlobalIntervals.unsubscribe(this.props.interval, this.boundTick)
-    GlobalIntervals.cleanup(this.props.interval)
-    this.setState({ stopped: true })
+    if (!this.unsubscribe) return
+    this.unsubscribe()
+    this.stopped = true
   }
 
   /**
