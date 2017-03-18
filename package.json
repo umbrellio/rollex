@@ -2,10 +2,17 @@
   "name": "rollex",
   "version": "1.0.0-rc.1",
   "description": "A counter React component",
-  "main": "src/index.js",
+  "main": "lib/index.js",
   "repository": "umbrellio/rollex",
   "author": "Alexander Komarov <ak@akxcv.com>",
   "license": "MIT",
+  "keywords": [
+    "react",
+    "counter",
+    "component",
+    "time",
+    "animated"
+  ],
   "dependencies": {
     "react": "^15.4.2",
     "react-dom": "^15.4.2"
@@ -13,8 +20,10 @@
   "scripts": {
     "prepublishOnly": "yarn run test && yarn run build",
     "prebuild": "rimraf dist",
-    "build": "webpack && webpack -p",
+    "build": "yarn run build:lib && yarn run build:vendor",
     "build:dev": "webpack",
+    "build:lib": "babel src --out-dir lib",
+    "build:vendor": "webpack && webpack -p",
     "build:watch": "yarn run build:dev -- --watch",
     "preesdoc": "rimraf docs",
     "esdoc": "esdoc",
