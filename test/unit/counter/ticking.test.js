@@ -6,7 +6,7 @@ describe('counting', function () {
   beforeEach(function () {
     jest.clearAllTimers()
     jest.useFakeTimers()
-    delete (window.rollexIntervals)
+    window.rollexIntervals = {}
     // FIXME: the following line is required. It shouldn't be. Something's wrong with global state.
     mount(<Counter seconds={10000} />)
   })
