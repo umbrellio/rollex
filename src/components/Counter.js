@@ -84,7 +84,7 @@ export default class Counter extends React.Component {
      * @property {number} from - timestamp to count from
      * @property {string[]} periods - an array of periods to create segments for
      */
-    this.state = new CounterBuilder(this).buildInitialState()
+    this.state = new CounterBuilder(props).buildInitialState()
 
     /**
      * Creates a function bound to "this"
