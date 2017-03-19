@@ -58,11 +58,10 @@ export default class CounterBuilder {
   }
 
   /**
-   * @param {Counter} counter
+   * @param {object} props
    */
-  constructor (counter) {
-    this.counter = counter
-    this.props = counter.props
+  constructor (props) {
+    this.props = props
     this.state = {}
   }
 

@@ -14,18 +14,6 @@ export function clearDOM () {
   root.parentNode.removeChild(root)
 }
 
-export function applyIEPolyfill () {
-  function CustomEvent (event, params) {
-    params = params || { bubbles: false, cancelable: false, detail: undefined }
-    var evt = document.createEvent('CustomEvent')
-    evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail)
-    return evt
-  }
-
-  CustomEvent.prototype = window.Event.prototype
-  window.CustomEvent = CustomEvent
-}
-
 export function render (component) {
   const ref = ReactDOM.render(component, document.getElementById('root'))
   return ReactDOM.findDOMNode(ref)

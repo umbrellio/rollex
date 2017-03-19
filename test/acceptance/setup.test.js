@@ -1,9 +1,8 @@
-import { bootstrapDOM, clearDOM, applyIEPolyfill } from './support/helpers'
+import { bootstrapDOM, clearDOM } from './support/helpers'
 import matchers from './support/matchers'
 
 beforeAll(function () {
   jasmine.addMatchers(matchers)
-  applyIEPolyfill()
 })
 
 beforeEach(function () {

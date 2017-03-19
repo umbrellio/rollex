@@ -13,7 +13,9 @@ const GlobalIntervals = {
         callbacks: []
       }
       intervalsObj.interval = setInterval(function () {
-        this.callbacks.forEach((cb) => cb())
+        this.callbacks.forEach(
+          (cb) => cb()
+        )
       }.bind(intervalsObj), duration, false)
     }
     return this.intervals[duration]
