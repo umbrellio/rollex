@@ -15,6 +15,29 @@ const PERIOD_LIMITS = {
 }
 
 /**
+ * @property {string[]} digits - digits to display
+ * @property {string} period
+ * @property {number} radix
+ * @property {string} direction - counting direction
+ * @property {string} easingFunction - easing function to use for digit transitions
+ * @property {number} easingDuration - duration of digit transitions
+ * @property {Object} digitMap - a map for transforming particular digits
+ * @property {function(digit: number)} digitWrapper - a function for wrapping mapped digits
+ * @property {string} label
+ */
+CounterSegment.propTypes = {
+  digits: arrayOf(string).isRequired,
+  period: string.isRequired,
+  radix: number.isRequired,
+  direction: string.isRequired,
+  easingFunction: string,
+  easingDuration: number.isRequired,
+  digitMap: object.isRequired,
+  digitWrapper: func.isRequired,
+  label: string
+}
+
+/**
  * Counter segment component.
  * @example
  * <CounterSegment
@@ -27,68 +50,42 @@ const PERIOD_LIMITS = {
  *   digitWrapper={(digit) => digit}
  * />
  */
-class CounterSegment extends React.Component {
+export default function CounterSegment (props) {
   /**
-   * @property {string[]} digits - digits to display
-   * @property {string} period
-   * @property {number} radix
-   * @property {string} direction - counting direction
-   * @property {string} easingFunction - easing function to use for digit transitions
-   * @property {number} easingDuration - duration of digit transitions
-   * @property {Object} digitMap - a map for transforming particular digits
-   * @property {function(digit: number)} digitWrapper - a function for wrapping mapped digits
-   * @property {string} label
-   */
-  static propTypes = {
-    digits: arrayOf(string).isRequired,
-    period: string.isRequired,
-    radix: number.isRequired,
-    direction: string.isRequired,
-    easingFunction: string,
-    easingDuration: number.isRequired,
-    digitMap: object.isRequired,
-    digitWrapper: func.isRequired,
-    label: string
-  }
-
-  /**
-   * OPTIMIZE: this probably shouldn't be done in buildDigits. Perhaps we could perform calculations
-   * for each possible index it in the constructor, but only for animated counters.
-   *
    * Gets maximum value for period's digit with account for radix.
    * Used for building digit lanes in {@link AnimatedCounterDigit}.
    * @param {number} index - digit's index in number
    * @return {number} maxValue
    */
-  getMaxValue (index) {
-    const maxValue = PERIOD_LIMITS[this.props.period]
-    if (!maxValue) return this.props.radix - 1
+  function getMaxValue (index) {
+    const maxValue = PERIOD_LIMITS[props.period]
+    if (!maxValue) return props.radix - 1
 
-    const maxValueString = maxValue.toString(this.props.radix)
+    const maxValueString = maxValue.toString(props.radix)
     const maxDigitPos = maxValueString.length
-    return (index === this.props.digits.length - maxDigitPos)
+    return (index === props.digits.length - maxDigitPos)
       ? parseInt(maxValueString[0])
-      : this.props.radix - 1
+      : props.radix - 1
   }
 
   /**
    * Maps digits to corresponding components according to easing function.
    * @return {ReactElement[]}
    */
-  buildDigits () {
-    return this.props.digits.map((digit, index) => {
-      if (this.props.easingFunction) {
+  function buildDigits () {
+    return props.digits.map((digit, index) => {
+      if (props.easingFunction) {
         return (
           <AnimatedCounterDigit
             key={index}
             digit={digit}
-            maxValue={this.getMaxValue(index)}
-            radix={this.props.radix}
-            direction={this.props.direction}
-            easingFunction={this.props.easingFunction}
-            easingDuration={this.props.easingDuration}
-            digitMap={this.props.digitMap}
-            digitWrapper={this.props.digitWrapper}
+            maxValue={getMaxValue(index)}
+            radix={props.radix}
+            direction={props.direction}
+            easingFunction={props.easingFunction}
+            easingDuration={props.easingDuration}
+            digitMap={props.digitMap}
+            digitWrapper={props.digitWrapper}
           />
         )
       } else {
@@ -96,31 +93,23 @@ class CounterSegment extends React.Component {
           <StaticCounterDigit
             key={index}
             digit={digit}
-            radix={this.props.radix}
-            digitMap={this.props.digitMap}
-            digitWrapper={this.props.digitWrapper}
+            radix={props.radix}
+            digitMap={props.digitMap}
+            digitWrapper={props.digitWrapper}
           />
         )
       }
     })
   }
 
-  /**
-   * Renders the segment.
-   * @return {ReactElement} counter segment
-   */
-  render () {
-    return (
-      <div className='rollex-segment'>
-        <div className='rollex-digits' style={{ overflow: 'hidden' }}>
-          {this.buildDigits()}
-        </div>
-        <div className='rollex-label'>
-          {this.props.label}
-        </div>
+  return (
+    <div className='rollex-segment'>
+      <div className='rollex-digits' style={{ overflow: 'hidden' }}>
+        {buildDigits()}
       </div>
-    )
-  }
+      <div className='rollex-label'>
+        {props.label}
+      </div>
+    </div>
+  )
 }
-
-export default CounterSegment
