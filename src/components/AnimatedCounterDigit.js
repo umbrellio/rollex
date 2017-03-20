@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import AbstractCounterDigit from './AbstractCounterDigit'
+import { digitPropTypes, decorateDigit } from '../helpers/counterDigitHelper'
 const { number, string } = React.PropTypes
 
 /**
@@ -26,15 +26,19 @@ function forceReflow (element) {
  *   easingDuration={200}
  * />
  */
-class AnimatedCounterDigit extends AbstractCounterDigit {
+class AnimatedCounterDigit extends React.Component {
   /**
+   * @property {string} digit - digit to display
+   * @property {number} radix
+   * @property {Object} digitMap - a map for transforming particular digits
+   * @property {function(digit: number)} digitWrapper - a function for wrapping mapped digits
    * @property {string} direction - counting direction
    * @property {number} maxValue - maximum value used to build a digit lane
    * @property {string} easingFunction - easing function for transitions
    * @property {number} easingDuration - duration for digit transitions in milliseconds
    */
   static propTypes = {
-    ...AbstractCounterDigit.propTypes,
+    ...digitPropTypes,
     direction: string.isRequired,
     maxValue: number.isRequired,
     easingFunction: string.isRequired,
@@ -45,12 +49,12 @@ class AnimatedCounterDigit extends AbstractCounterDigit {
     super(props)
 
     // e.x.: 0..9 and another 0 => 9+2 = 11 digits total (see reset method)
-    const singleDigitHeight = 100 / (this.props.maxValue + 2)
-    const upperZeroPosition = -singleDigitHeight * (this.props.radix - this.props.maxValue - 1)
-    const lowerZeroPosition = -singleDigitHeight * this.props.radix
-    const initialZeroPosition = (this.props.direction === 'down')
+    const singleDigitHeight = 100 / (props.maxValue + 2)
+    const upperZeroPosition = -singleDigitHeight * (props.radix - props.maxValue - 1)
+    const lowerZeroPosition = -singleDigitHeight * props.radix
+    const initialZeroPosition = (props.direction === 'down')
       ? lowerZeroPosition : upperZeroPosition
-    const finalZeroPosition = (this.props.direction === 'down')
+    const finalZeroPosition = (props.direction === 'down')
       ? upperZeroPosition : lowerZeroPosition
 
     this.state = {
@@ -88,7 +92,7 @@ class AnimatedCounterDigit extends AbstractCounterDigit {
   buildDigitDiv (digit, key) {
     return (
       <div key={key || digit} className='rollex-digit-lane-label'>
-        {this.decorateDigit(digit)}
+        {decorateDigit(digit, this.props)}
       </div>
     )
   }

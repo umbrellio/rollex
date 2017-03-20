@@ -1,5 +1,13 @@
 import React from 'react'
-import AbstractCounterDigit from './AbstractCounterDigit'
+import { digitPropTypes, decorateDigit } from '../helpers/counterDigitHelper'
+
+/**
+ * @property {string} digit - digit to display
+ * @property {number} radix
+ * @property {Object} digitMap - a map for transforming particular digits
+ * @property {function(digit: number)} digitWrapper - a function for wrapping mapped digits
+ */
+StaticCounterDigit.propTypes = digitPropTypes
 
 /**
  * Static digit component.
@@ -12,18 +20,10 @@ import AbstractCounterDigit from './AbstractCounterDigit'
  *   digitWrapper={(digit) => digit}
  * />
  */
-class StaticCounterDigit extends AbstractCounterDigit {
-  /**
-   * Renders the digit.
-   * @return {ReactElement} digit
-   */
-  render () {
-    return (
-      <div className='rollex-digit'>
-        {this.decorateDigit(this.props.digit)}
-      </div>
-    )
-  }
+export default function StaticCounterDigit (props) {
+  return (
+    <div className='rollex-digit'>
+      {decorateDigit(props.digit, props)}
+    </div>
+  )
 }
-
-export default StaticCounterDigit
