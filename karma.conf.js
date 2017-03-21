@@ -11,10 +11,8 @@ if (process.env.TRAVIS) {
     process.exit(1)
   }
   browsers = Object.keys(sauceLaunchers)
-} else if (process.platform === 'darwin') {
-  browsers = ['Chrome', 'Firefox', 'Safari']
 } else {
-  browsers = ['Chrome', 'Firefox']
+  browsers = ['Chrome']
 }
 
 module.exports = function (config) {
