@@ -80,4 +80,22 @@ describe('state and props', function () {
       separator: ':'
     })
   })
+
+  describe('sets timeDiff to zero when its negative', function () {
+    test('from and to', function () {
+      const component = mount(<Counter from={10000} to={0} />)
+      expect(component.state()).toMatchObject({
+        timeDiff: 0,
+        initialTimeDiff: 0
+      })
+    })
+
+    test('seconds', function () {
+      const component = mount(<Counter seconds={-10000} />)
+      expect(component.state()).toMatchObject({
+        timeDiff: 0,
+        initialTimeDiff: 0
+      })
+    })
+  })
 })
