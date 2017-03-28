@@ -49,7 +49,7 @@ export class StaticCounterDigitBuilder extends AbstractBuilder {
 
 export class AnimatedCounterDigitBuilder extends AbstractBuilder {
   static build = function ({
-    digit = '0',
+    digit = '1',
     radix = 10,
     direction = 'down',
     digitMap = {},

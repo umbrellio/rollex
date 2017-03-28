@@ -38,6 +38,30 @@ describe('rendering', function () {
       ])
   })
 
+  describe('renders zeros when time diff is negative', function () {
+    test('from and to', function () {
+      const component = <Counter from={1000} to={0} />
+      expect(component)
+        .toHaveDigits([
+          ['0', '0'],
+          ['0', '0'],
+          ['0', '0'],
+          ['0', '0']
+        ])
+    })
+
+    test('seconds', function () {
+      const component = <Counter seconds={-10000} />
+      expect(component)
+        .toHaveDigits([
+          ['0', '0'],
+          ['0', '0'],
+          ['0', '0'],
+          ['0', '0']
+        ])
+    })
+  })
+
   it('works with "up" direction', function () {
     expect(<Counter from={0} to={to} direction='up' />)
       .toHaveDigits([

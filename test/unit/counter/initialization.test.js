@@ -25,12 +25,6 @@ it('throws an error when options are provided incorrectly', function () {
     () => shallow(<Counter to={0} seconds={2} />)
   ).toThrowError('cannot use "to" and "from" with "seconds"')
   expect(
-    () => shallow(<Counter from={1} to={0} />)
-  ).toThrowError('"to" must be bigger than "from"')
-  expect(
-    () => shallow(<Counter seconds={-1} />)
-  ).toThrowError('"seconds" must be greater than or equal to zero')
-  expect(
     () => shallow(<Counter seconds={0} digits={-1} />)
   ).toThrowError('"digits" must not be negative')
   expect(
@@ -63,7 +57,13 @@ it('initializes when options are correct', function () {
     () => shallow(<Counter from={0} to={1} />)
   ).not.toThrow()
   expect(
+    () => shallow(<Counter from={1} to={0} />)
+  ).not.toThrow()
+  expect(
     () => shallow(<Counter seconds={2} />)
+  ).not.toThrow()
+  expect(
+    () => shallow(<Counter seconds={-1} />)
   ).not.toThrow()
   expect(
     () => shallow(<Counter seconds={2} digits={0} />)

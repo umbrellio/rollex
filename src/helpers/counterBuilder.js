@@ -23,13 +23,9 @@ export default class CounterBuilder {
     if (props.seconds !== undefined) {
       if (props.to !== undefined || props.from !== undefined) {
         throw new Error('cannot use "to" and "from" with "seconds"')
-      } else if (props.seconds < 0) {
-        throw new Error('"seconds" must be greater than or equal to zero')
       }
     } else if (props.to === undefined) {
       throw new Error('provide either "seconds" or "to"')
-    } else if (props.to < props.from) {
-      throw new Error('"to" must be bigger than "from"')
     }
     if (props.digits !== undefined && props.digits < 0) {
       throw new Error('"digits" must not be negative')
@@ -83,9 +79,12 @@ export default class CounterBuilder {
   buildTimeProps () {
     const startTime = new Date().getTime()
     const from = (this.props.from === undefined) ? startTime : this.props.from
-    const timeDiff = (this.props.seconds === undefined)
+
+    var timeDiff = (this.props.seconds === undefined)
       ? (this.props.to - from)
       : (this.props.seconds * 1000)
+    if (timeDiff < 0) timeDiff = 0
+
     this.state = {
       ...this.state,
       startTime,
