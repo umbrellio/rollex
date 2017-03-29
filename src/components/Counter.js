@@ -1,10 +1,11 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import CounterSegment from './CounterSegment'
 import CounterSegmentSeparator from './CounterSegmentSeparator'
 import GlobalIntervals from '../helpers/globalIntervals'
 import CounterBuilder from '../helpers/counterBuilder'
 import NumberCalculator from '../helpers/numberCalculator'
-const { number, string, bool, objectOf, object, oneOfType, oneOf, func, any } = React.PropTypes
+const { number, string, bool, objectOf, object, oneOfType, oneOf, func, any } = PropTypes
 
 /**
  * Main counter component.

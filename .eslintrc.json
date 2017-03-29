@@ -3,5 +3,8 @@
   "extends": ["standard", "standard-react"],
   "env": {
     "browser": true
+  },
+  "rules": {
+    "react/no-unused-prop-types": "off"
   }
 }

@@ -1,7 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import PropTypes from 'prop-types'
 import { digitPropTypes, decorateDigit } from '../helpers/counterDigitHelper'
-const { number, string } = React.PropTypes
+const { number, string } = PropTypes
 
 /**
  * Forces reflow of a given element.

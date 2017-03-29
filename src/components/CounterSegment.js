@@ -1,7 +1,8 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import AnimatedCounterDigit from './AnimatedCounterDigit'
 import StaticCounterDigit from './StaticCounterDigit'
-const { arrayOf, object, number, string, func } = React.PropTypes
+const { arrayOf, object, number, string, func } = PropTypes
 
 /**
  * @type {Object}
