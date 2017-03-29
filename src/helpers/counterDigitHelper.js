@@ -1,5 +1,5 @@
-import React from 'react'
-const { objectOf, any, number, string, func } = React.PropTypes
+import PropTypes from 'prop-types'
+const { objectOf, any, number, string, func } = PropTypes
 
 /**
  * @property {string} digit - digit to display
