@@ -2,7 +2,6 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import { digitPropTypes, decorateDigit } from '../helpers/counterDigitHelper'
-const { number, string } = PropTypes
 
 /**
  * Forces reflow of a given element.
@@ -40,10 +39,10 @@ class AnimatedCounterDigit extends React.Component {
    */
   static propTypes = {
     ...digitPropTypes,
-    direction: string.isRequired,
-    maxValue: number.isRequired,
-    easingFunction: string.isRequired,
-    easingDuration: number.isRequired
+    direction: PropTypes.string.isRequired,
+    maxValue: PropTypes.number.isRequired,
+    easingFunction: PropTypes.string.isRequired,
+    easingDuration: PropTypes.number.isRequired
   }
 
   constructor (props) {
