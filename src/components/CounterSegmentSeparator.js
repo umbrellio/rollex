@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-const { any } = PropTypes
 
 /**
  * Separator between {@link CounterSegment} elements.
@@ -12,7 +11,7 @@ class CounterSegmentSeparator extends React.Component {
    * @property content
    */
   static propTypes = {
-    content: any
+    content: PropTypes.any
   }
 
   /**

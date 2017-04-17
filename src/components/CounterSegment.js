@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import AnimatedCounterDigit from './AnimatedCounterDigit'
 import StaticCounterDigit from './StaticCounterDigit'
-const { arrayOf, object, number, string, func } = PropTypes
 
 /**
  * @type {Object}
@@ -27,15 +26,15 @@ const PERIOD_LIMITS = {
  * @property {string} label
  */
 CounterSegment.propTypes = {
-  digits: arrayOf(string).isRequired,
-  period: string.isRequired,
-  radix: number.isRequired,
-  direction: string.isRequired,
-  easingFunction: string,
-  easingDuration: number.isRequired,
-  digitMap: object.isRequired,
-  digitWrapper: func.isRequired,
-  label: string
+  digits: PropTypes.arrayOf(PropTypes.string).isRequired,
+  period: PropTypes.string.isRequired,
+  radix: PropTypes.number.isRequired,
+  direction: PropTypes.string.isRequired,
+  easingFunction: PropTypes.string,
+  easingDuration: PropTypes.number.isRequired,
+  digitMap: PropTypes.object.isRequired,
+  digitWrapper: PropTypes.func.isRequired,
+  label: PropTypes.string
 }
 
 /**

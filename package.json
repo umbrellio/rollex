@@ -19,10 +19,10 @@
   },
   "scripts": {
     "prepublishOnly": "yarn run test && yarn run build",
-    "prebuild": "rimraf dist",
     "build": "yarn run build:lib && yarn run build:vendor",
     "build:dev": "webpack",
-    "build:lib": "babel src --out-dir lib",
+    "prebuild:lib": "rimraf dist && rimraf build",
+    "build:lib": "yarn run babel src -- --out-dir lib",
     "build:vendor": "webpack && webpack -p",
     "build:watch": "yarn run build:dev -- --watch",
     "preesdoc": "rimraf docs",
@@ -55,11 +55,13 @@
     ]
   },
   "devDependencies": {
+    "babel-cli": "^6.24.1",
     "babel-core": "^6.23.1",
     "babel-eslint": "^7.1.1",
     "babel-loader": "^6.3.2",
     "babel-plugin-transform-class-properties": "^6.23.0",
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
+    "babel-plugin-transform-react-remove-prop-types": "^0.4.1",
     "babel-polyfill": "^6.23.0",
     "babel-preset-es2015": "^6.22.0",
     "babel-preset-react": "^6.23.0",

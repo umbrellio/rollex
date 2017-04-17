@@ -1,5 +1,4 @@
 import PropTypes from 'prop-types'
-const { objectOf, any, number, string, func } = PropTypes
 
 /**
  * @property {string} digit - digit to display
@@ -8,10 +7,10 @@ const { objectOf, any, number, string, func } = PropTypes
  * @property {function(digit: number)} digitWrapper - a function for wrapping mapped digits
  */
 export const digitPropTypes = {
-  digit: string.isRequired,
-  radix: number.isRequired,
-  digitMap: objectOf(any).isRequired,
-  digitWrapper: func.isRequired
+  digit: PropTypes.string.isRequired,
+  radix: PropTypes.number.isRequired,
+  digitMap: PropTypes.objectOf(PropTypes.any).isRequired,
+  digitWrapper: PropTypes.func.isRequired
 }
 
 /**

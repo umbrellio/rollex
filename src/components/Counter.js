@@ -5,7 +5,6 @@ import CounterSegmentSeparator from './CounterSegmentSeparator'
 import GlobalIntervals from '../helpers/globalIntervals'
 import CounterBuilder from '../helpers/counterBuilder'
 import NumberCalculator from '../helpers/numberCalculator'
-const { number, string, bool, objectOf, object, oneOfType, oneOf, func, any } = PropTypes
 
 /**
  * Main counter component.
@@ -35,23 +34,23 @@ export default class Counter extends React.Component {
    * @property separator - what to separate segments with
    */
   static propTypes = {
-    from: number,
-    to: number,
-    seconds: number,
-    interval: number,
-    direction: oneOf(['up', 'down']),
-    digits: oneOfType([number, object]),
-    minPeriod: string,
-    maxPeriod: string,
-    frozen: bool,
-    syncTime: bool,
-    easingFunction: string,
-    easingDuration: number,
-    radix: number,
-    digitMap: object,
-    digitWrapper: func,
-    labels: oneOfType([objectOf(string), func]),
-    separator: any
+    from: PropTypes.number,
+    to: PropTypes.number,
+    seconds: PropTypes.number,
+    interval: PropTypes.number,
+    direction: PropTypes.oneOf(['up', 'down']),
+    digits: PropTypes.oneOfType([PropTypes.number, PropTypes.object]),
+    minPeriod: PropTypes.string,
+    maxPeriod: PropTypes.string,
+    frozen: PropTypes.bool,
+    syncTime: PropTypes.bool,
+    easingFunction: PropTypes.string,
+    easingDuration: PropTypes.number,
+    radix: PropTypes.number,
+    digitMap: PropTypes.object,
+    digitWrapper: PropTypes.func,
+    labels: PropTypes.oneOfType([PropTypes.objectOf(PropTypes.string), PropTypes.func]),
+    separator: PropTypes.any
   }
 
   static defaultProps = {
