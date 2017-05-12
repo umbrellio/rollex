@@ -19,6 +19,6 @@ export const digitPropTypes = {
  * @return {string} decoratedDigit
  */
 export function decorateDigit (digit, props) {
-  const digitString = (digit).toString(props.radix)
+  const digitString = digit.toString(props.radix)
   return props.digitWrapper(props.digitMap[digitString] || digitString)
 }

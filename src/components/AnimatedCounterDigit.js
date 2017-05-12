@@ -50,12 +50,15 @@ class AnimatedCounterDigit extends React.Component {
 
     // e.x.: 0..9 and another 0 => 9+2 = 11 digits total (see reset method)
     const singleDigitHeight = 100 / (props.maxValue + 2)
-    const upperZeroPosition = -singleDigitHeight * (props.radix - props.maxValue - 1)
+    const upperZeroPosition =
+      -singleDigitHeight * (props.radix - props.maxValue - 1)
     const lowerZeroPosition = -singleDigitHeight * props.radix
-    const initialZeroPosition = (props.direction === 'down')
-      ? lowerZeroPosition : upperZeroPosition
-    const finalZeroPosition = (props.direction === 'down')
-      ? upperZeroPosition : lowerZeroPosition
+    const initialZeroPosition = props.direction === 'down'
+      ? lowerZeroPosition
+      : upperZeroPosition
+    const finalZeroPosition = props.direction === 'down'
+      ? upperZeroPosition
+      : lowerZeroPosition
 
     this.state = {
       initialZeroPosition,
@@ -74,7 +77,7 @@ class AnimatedCounterDigit extends React.Component {
    * In a lane like [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0] goes from first zero to last zero instantly.
    * @param {SyntheticEvent} event
    */
-  reset = (event) => {
+  reset = event => {
     if (this.props.digit === '0') {
       event.target.style.transitionProperty = 'none'
       event.target.style.transform = `translate3D(0, ${this.state.initialZeroPosition}%, 0)`
@@ -121,7 +124,10 @@ class AnimatedCounterDigit extends React.Component {
     if (digitIndex === 0) {
       return this.state.finalZeroPosition
     } else {
-      return -this.state.singleDigitHeight * (digitIndex + (this.props.radix - this.props.maxValue - 1))
+      return (
+        -this.state.singleDigitHeight *
+        (digitIndex + (this.props.radix - this.props.maxValue - 1))
+      )
     }
   }
 

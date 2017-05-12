@@ -9,14 +9,16 @@ const GlobalIntervals = {
    */
   getInterval (duration) {
     if (!this.intervals[duration]) {
-      var intervalsObj = this.intervals[duration] = {
+      var intervalsObj = (this.intervals[duration] = {
         callbacks: []
-      }
-      intervalsObj.interval = setInterval(function () {
-        this.callbacks.forEach(
-          (cb) => cb()
-        )
-      }.bind(intervalsObj), duration, false)
+      })
+      intervalsObj.interval = setInterval(
+        function () {
+          this.callbacks.forEach(cb => cb())
+        }.bind(intervalsObj),
+        duration,
+        false
+      )
     }
     return this.intervals[duration]
   },
@@ -25,7 +27,7 @@ const GlobalIntervals = {
    */
   removeIntervalWithDuration (duration) {
     clearInterval(this.intervals[duration].interval)
-    delete (this.intervals[duration])
+    delete this.intervals[duration]
   },
   /**
    * Adds a listener to an interval.
@@ -45,6 +47,7 @@ const GlobalIntervals = {
    */
   removeListener (duration, cb) {
     var interval = this.intervals[duration]
+    if (!interval) return
     var callbacks = interval.callbacks
 
     if (callbacks.length > 1) {

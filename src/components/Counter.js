@@ -49,7 +49,10 @@ export default class Counter extends React.Component {
     radix: PropTypes.number,
     digitMap: PropTypes.object,
     digitWrapper: PropTypes.func,
-    labels: PropTypes.oneOfType([PropTypes.objectOf(PropTypes.string), PropTypes.func]),
+    labels: PropTypes.oneOfType([
+      PropTypes.objectOf(PropTypes.string),
+      PropTypes.func
+    ]),
     separator: PropTypes.any
   }
 
@@ -63,7 +66,7 @@ export default class Counter extends React.Component {
     easingDuration: 300,
     radix: 10,
     digitMap: {},
-    digitWrapper: (digit) => <span>{digit}</span>
+    digitWrapper: digit => <span>{digit}</span>
   }
 
   /**
@@ -119,7 +122,10 @@ export default class Counter extends React.Component {
    * Starts the countdown.
    */
   start () {
-    this.unsubscribe = GlobalIntervals.subscribe(this.props.interval, this.boundTick)
+    this.unsubscribe = GlobalIntervals.subscribe(
+      this.props.interval,
+      this.boundTick
+    )
     this.stopped = false
   }
 
@@ -141,7 +147,7 @@ export default class Counter extends React.Component {
       return this.stop()
     }
 
-    const timestamp = (this.props.direction === 'down')
+    const timestamp = this.props.direction === 'down'
       ? newTimeDiff
       : this.state.initialTimeDiff - newTimeDiff
 
@@ -162,7 +168,12 @@ export default class Counter extends React.Component {
    */
   getTimeDiff () {
     if (this.props.syncTime) {
-      return this.props.to - this.state.from - new Date().getTime() + this.state.startTime
+      return (
+        this.props.to -
+        this.state.from -
+        new Date().getTime() +
+        this.state.startTime
+      )
     } else {
       return this.state.timeDiff - this.props.interval
     }
@@ -180,13 +191,13 @@ export default class Counter extends React.Component {
 
     if (digits && number >= Math.pow(radix, digits)) {
       var maxValueArray = []
-      for (let i = 0; i < digits; i++) maxValueArray.push((radix - 1).toString())
+      for (let i = 0; i < digits; i++) { maxValueArray.push((radix - 1).toString()) }
       return maxValueArray
     }
 
     number = number.toString(radix)
     var zeroArray = []
-    for (let i = 0; i < digits - number.length; i++) zeroArray.push('0')
+    for (let i = 0; i < digits - number.length; i++) { zeroArray.push('0') }
     return (zeroArray.join('') + number).split('')
   }
 
@@ -226,20 +237,22 @@ export default class Counter extends React.Component {
       const separator = index < this.state.periods.length - 1
         ? <CounterSegmentSeparator content={this.props.separator} />
         : null
-      return (<div key={index} className='rollex-segment-wrapper'>
-        <CounterSegment
-          period={period}
-          digits={this.getDigits(period)}
-          radix={this.props.radix}
-          direction={this.props.direction}
-          easingFunction={this.props.easingFunction}
-          easingDuration={this.props.easingDuration}
-          digitMap={this.props.digitMap}
-          digitWrapper={this.props.digitWrapper}
-          label={this.getLabel(period, this.state.numbers[period])}
-        />
-        {separator}
-      </div>)
+      return (
+        <div key={index} className='rollex-segment-wrapper'>
+          <CounterSegment
+            period={period}
+            digits={this.getDigits(period)}
+            radix={this.props.radix}
+            direction={this.props.direction}
+            easingFunction={this.props.easingFunction}
+            easingDuration={this.props.easingDuration}
+            digitMap={this.props.digitMap}
+            digitWrapper={this.props.digitWrapper}
+            label={this.getLabel(period, this.state.numbers[period])}
+          />
+          {separator}
+        </div>
+      )
     })
     return (
       <div className={this.getCSSClasses()}>

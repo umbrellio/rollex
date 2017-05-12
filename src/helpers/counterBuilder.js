@@ -4,12 +4,7 @@ import NumberCalculator from './numberCalculator'
  * @type {string[]}
  * Names for available periods.
  */
-const PERIODS = [
-  'days',
-  'hours',
-  'minutes',
-  'seconds'
-]
+const PERIODS = ['days', 'hours', 'minutes', 'seconds']
 
 /**
  * Handles much of Counter initialization
@@ -78,11 +73,11 @@ export default class CounterBuilder {
    */
   buildTimeProps () {
     const startTime = new Date().getTime()
-    const from = (this.props.from === undefined) ? startTime : this.props.from
+    const from = this.props.from === undefined ? startTime : this.props.from
 
-    var timeDiff = (this.props.seconds === undefined)
-      ? (this.props.to - from)
-      : (this.props.seconds * 1000)
+    var timeDiff = this.props.seconds === undefined
+      ? this.props.to - from
+      : this.props.seconds * 1000
     if (timeDiff < 0) timeDiff = 0
 
     this.state = {
@@ -127,7 +122,7 @@ export default class CounterBuilder {
     var digits = {}
 
     if (typeof this.props.digits === 'number') {
-      for (let period of this.state.periods) digits[period] = this.props.digits
+      for (let period of this.state.periods) { digits[period] = this.props.digits }
     } else if (typeof this.props.digits === 'object') {
       digits = this.props.digits
     }
@@ -161,7 +156,7 @@ export default class CounterBuilder {
    */
   getMinSegmentSize (period, limited) {
     const maxValue = this.getPeriodMaxValue(period, limited)
-    return (maxValue).toString(this.props.radix).length
+    return maxValue.toString(this.props.radix).length
   }
 
   /**
@@ -173,7 +168,9 @@ export default class CounterBuilder {
   getPeriodMaxValue (period, limited) {
     if (!limited && period === this.props.maxPeriod) {
       return NumberCalculator.getPeriodNumberAt(
-        period, this.props.maxPeriod, this.state.initialTimeDiff
+        period,
+        this.props.maxPeriod,
+        this.state.initialTimeDiff
       )
     }
     switch (period) {
@@ -191,7 +188,9 @@ export default class CounterBuilder {
    * Calculates initial numbers for all periods.
    */
   buildInitialNumbers () {
-    const timestamp = (this.props.direction === 'down') ? this.state.initialTimeDiff : 0
+    const timestamp = this.props.direction === 'down'
+      ? this.state.initialTimeDiff
+      : 0
     this.state = {
       ...this.state,
       numbers: NumberCalculator.calculateNumbers(this.state.periods, timestamp)
