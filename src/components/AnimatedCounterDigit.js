@@ -42,7 +42,7 @@ class AnimatedCounterDigit extends React.Component {
     direction: PropTypes.string.isRequired,
     maxValue: PropTypes.number.isRequired,
     easingFunction: PropTypes.string.isRequired,
-    easingDuration: PropTypes.number.isRequired
+    easingDuration: PropTypes.number.isRequired,
   }
 
   constructor (props) {
@@ -64,7 +64,7 @@ class AnimatedCounterDigit extends React.Component {
       initialZeroPosition,
       finalZeroPosition,
       singleDigitHeight,
-      digitLane: this.buildDigitLane()
+      digitLane: this.buildDigitLane(),
     }
   }
 
@@ -107,8 +107,8 @@ class AnimatedCounterDigit extends React.Component {
    * @return {ReactElement[]}
    */
   buildDigitLane () {
-    var digitLane = []
-    for (let i = 0; i <= this.props.maxValue; i++) {
+    const digitLane = []
+    for (let i = 0; i <= this.props.maxValue; i += 1) {
       digitLane.push(this.buildDigitDiv(i))
     }
     digitLane.push(this.buildDigitDiv(0, this.props.radix + 1))
@@ -138,13 +138,13 @@ class AnimatedCounterDigit extends React.Component {
   render () {
     const transform = `translate3D(0, ${this.getDigitPositionY()}%, 0)`
     const style = {
-      transform: transform,
+      transform,
       WebkitTransform: transform,
       MsTransform: transform,
       transitionTimingFunction: this.props.easingFunction,
       transitionDuration: `${this.props.easingDuration}ms`,
       transitionProperty: 'transform',
-      willChange: 'transform'
+      willChange: 'transform',
     }
 
     return (

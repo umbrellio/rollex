@@ -3,10 +3,10 @@
  * Durations for available periods (in milliseconds).
  */
 const PERIOD_DURATIONS = {
-  'days': 86400000,
-  'hours': 3600000,
-  'minutes': 60000,
-  'seconds': 1000
+  days: 86400000,
+  hours: 3600000,
+  minutes: 60000,
+  seconds: 1000,
 }
 
 /**
@@ -14,9 +14,9 @@ const PERIOD_DURATIONS = {
  * Time calculation functions for available periods.
  */
 const PERIOD_DURATION_FUNCTIONS = {
-  'hours': 'getUTCHours',
-  'minutes': 'getMinutes',
-  'seconds': 'getSeconds'
+  hours: 'getUTCHours',
+  minutes: 'getMinutes',
+  seconds: 'getSeconds',
 }
 
 /**
@@ -30,11 +30,14 @@ const NumberCalculator = {
    * @return {Map<string, number>} numbers - a map from periods to corresponding numbers
    */
   calculateNumbers (periods, timestamp) {
-    var numbers = {}
+    let numbers = {}
     const maxPeriod = periods[0]
-    for (let period of periods) {
-      numbers = { ...numbers, [period]: this.getPeriodNumberAt(period, maxPeriod, timestamp) }
-    }
+    periods.forEach(period => {
+      numbers = {
+        ...numbers,
+        [period]: this.getPeriodNumberAt(period, maxPeriod, timestamp),
+      }
+    })
     return numbers
   },
   /**
@@ -51,7 +54,7 @@ const NumberCalculator = {
     } else {
       return date[PERIOD_DURATION_FUNCTIONS[period]]()
     }
-  }
+  },
 }
 
 export default NumberCalculator

@@ -75,7 +75,7 @@ export default class CounterBuilder {
     const startTime = new Date().getTime()
     const from = this.props.from === undefined ? startTime : this.props.from
 
-    var timeDiff = this.props.seconds === undefined
+    let timeDiff = this.props.seconds === undefined
       ? this.props.to - from
       : this.props.seconds * 1000
     if (timeDiff < 0) timeDiff = 0
@@ -85,7 +85,7 @@ export default class CounterBuilder {
       startTime,
       from,
       timeDiff,
-      initialTimeDiff: timeDiff
+      initialTimeDiff: timeDiff,
     }
   }
 
@@ -99,7 +99,7 @@ export default class CounterBuilder {
     )
     this.state = {
       ...this.state,
-      periods
+      periods,
     }
   }
 
@@ -107,10 +107,10 @@ export default class CounterBuilder {
    * Builds "digits" state property.
    */
   buildDigitLimits () {
-    var digits = this.getDigitLimitsFromProps()
+    const digits = this.getDigitLimitsFromProps()
     this.state = {
       ...this.state,
-      ...this.normalizeDigitLimits(digits)
+      ...this.normalizeDigitLimits(digits),
     }
   }
 
@@ -119,10 +119,12 @@ export default class CounterBuilder {
    * @return {Map<string, number>}
    */
   getDigitLimitsFromProps () {
-    var digits = {}
+    let digits = {}
 
     if (typeof this.props.digits === 'number') {
-      for (let period of this.state.periods) { digits[period] = this.props.digits }
+      this.state.periods.forEach(period => {
+        digits[period] = this.props.digits
+      })
     } else if (typeof this.props.digits === 'object') {
       digits = this.props.digits
     }
@@ -135,16 +137,16 @@ export default class CounterBuilder {
    * @return {object}
    */
   normalizeDigitLimits (digits) {
-    var normalizedDigits = {}
+    const normalizedDigits = {}
 
-    for (let period of this.state.periods) {
+    this.state.periods.forEach(period => {
       if (digits[period]) {
         normalizedDigits[period] = digits[period]
       } else {
         const limited = digits[period] === undefined
         normalizedDigits[period] = this.getMinSegmentSize(period, limited)
       }
-    }
+    })
     return { digits: normalizedDigits }
   }
 
@@ -193,7 +195,7 @@ export default class CounterBuilder {
       : 0
     this.state = {
       ...this.state,
-      numbers: NumberCalculator.calculateNumbers(this.state.periods, timestamp)
+      numbers: NumberCalculator.calculateNumbers(this.state.periods, timestamp),
     }
   }
 }

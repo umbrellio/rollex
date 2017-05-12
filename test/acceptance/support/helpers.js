@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import Counter from '../../../src/components/Counter'
 
 export function bootstrapDOM () {
-  var root = document.createElement('div')
+  const root = document.createElement('div')
   root.id = 'root'
   document.body.appendChild(root)
 }
@@ -29,7 +29,13 @@ export function renderTenSecondCounter (params = {}) {
 
 export function renderAnimatedTenSecondCounter (params = {}) {
   const ref = ReactDOM.render(
-    <Counter seconds={10} maxPeriod='seconds' easingFunction='ease-in' easingDuration={0} {...params} />,
+    <Counter
+      seconds={10}
+      maxPeriod='seconds'
+      easingFunction='ease-in'
+      easingDuration={0}
+      {...params}
+    />,
     document.getElementById('root')
   )
   return ReactDOM.findDOMNode(ref)

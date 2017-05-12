@@ -9,8 +9,8 @@ const GlobalIntervals = {
    */
   getInterval (duration) {
     if (!this.intervals[duration]) {
-      var intervalsObj = (this.intervals[duration] = {
-        callbacks: []
+      const intervalsObj = (this.intervals[duration] = {
+        callbacks: [],
       })
       intervalsObj.interval = setInterval(
         function () {
@@ -36,7 +36,7 @@ const GlobalIntervals = {
    * @return {function} unsubscribe
    */
   subscribe (duration, callback) {
-    var callbacks = this.getInterval(duration).callbacks
+    const callbacks = this.getInterval(duration).callbacks
     callbacks.push(callback)
     return () => this.removeListener(duration, callback)
   },
@@ -46,9 +46,9 @@ const GlobalIntervals = {
    * @param {!function} cb - listener
    */
   removeListener (duration, cb) {
-    var interval = this.intervals[duration]
+    const interval = this.intervals[duration]
     if (!interval) return
-    var callbacks = interval.callbacks
+    const callbacks = interval.callbacks
 
     if (callbacks.length > 1) {
       callbacks.splice(callbacks.indexOf(cb))
@@ -59,7 +59,7 @@ const GlobalIntervals = {
   /**
    * Stores global intervals
    */
-  intervals: {}
+  intervals: {},
 }
 
 export default GlobalIntervals

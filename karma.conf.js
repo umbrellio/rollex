@@ -1,13 +1,15 @@
 const webpack = require('webpack')
 const sauceLaunchers = require('./sauceLaunchers.config')
 
-var browsers
+let browsers
 if (process.env.TRAVIS) {
   // Travis only comes with Firefox
   browsers = ['Firefox']
 } else if (process.env.SAUCE) {
   if (!process.env.SAUCE_USERNAME || !process.env.SAUCE_ACCESS_KEY) {
-    console.error('SAUCE_USERNAME and SAUCE_ACCESS_KEY environment variables must be set!')
+    console.error(
+      'SAUCE_USERNAME and SAUCE_ACCESS_KEY environment variables must be set!'
+    )
     process.exit(1)
   }
   browsers = Object.keys(sauceLaunchers)
@@ -22,12 +24,9 @@ module.exports = function (config) {
   config.set({
     singleRun: true,
     frameworks: ['jasmine'],
-    files: [
-      'stylesheets/minimal.css',
-      'test/acceptance/tests.js'
-    ],
+    files: ['stylesheets/minimal.css', 'test/acceptance/tests.js'],
     preprocessors: {
-      'test/acceptance/tests.js': ['webpack', 'sourcemap']
+      'test/acceptance/tests.js': ['webpack', 'sourcemap'],
     },
     reporters: ['dots', 'saucelabs'],
     webpack: {
@@ -36,30 +35,30 @@ module.exports = function (config) {
           {
             test: /\.js$/,
             loaders: ['babel-loader'],
-            exclude: /node_modules/
-          }
-        ]
+            exclude: /node_modules/,
+          },
+        ],
       },
       plugins: [
         new webpack.DefinePlugin({
           'process.env': {
             NODE_ENV: JSON.stringify(process.env.NODE_ENV),
-            WATCH: process.env.WATCH
-          }
-        })
+            WATCH: process.env.WATCH,
+          },
+        }),
       ],
-      devtool: 'inline-source-map'
+      devtool: 'inline-source-map',
     },
     webpackMiddleware: {
-      stats: 'errors-only'
+      stats: 'errors-only',
     },
     sauceLabs: {
-      testName: ci ? 'Rollex acceptance tests (CI)' : 'Rollex acceptance tests'
+      testName: ci ? 'Rollex acceptance tests (CI)' : 'Rollex acceptance tests',
     },
-    browsers: browsers,
-    concurrency: (ci || sauce) ? 2 : Infinity,
+    browsers,
+    concurrency: ci || sauce ? 2 : Infinity,
     captureTimeout: 300000,
     browserNoActivityTimeout: 300000,
-    customLaunchers: sauceLaunchers
+    customLaunchers: sauceLaunchers,
   })
 }

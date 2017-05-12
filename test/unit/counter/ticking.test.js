@@ -5,26 +5,26 @@ import Counter from '../../../src/components/Counter'
 /**
  * Stores component instance. Useful for unmounting the component after each test.
  */
-var component
+let component
 
-describe('counting', function () {
-  beforeEach(function () {
+describe('counting', () => {
+  beforeEach(() => {
     jest.useFakeTimers()
   })
 
-  afterEach(function () {
+  afterEach(() => {
     component.unmount()
     jest.clearAllTimers()
   })
 
-  it('starts to count when mounted', function () {
+  it('starts to count when mounted', () => {
     component = mount(<Counter from={0} to={10000} />)
     jest.runTimersToTime(5000)
     expect(component.state().timeDiff).toBe(5000)
     expect(component.state().numbers.seconds).toBe(5)
   })
 
-  it('works with "seconds" prop', function () {
+  it('works with "seconds" prop', () => {
     component = mount(<Counter seconds={10} />)
     expect(component.state().numbers.seconds).toBe(10)
     jest.runTimersToTime(5000)
@@ -32,7 +32,7 @@ describe('counting', function () {
     expect(component.state().numbers.seconds).toBe(5)
   })
 
-  it('works without "from" prop', function () {
+  it('works without "from" prop', () => {
     jest.spyOn(Date.prototype, 'getTime').mockReturnValue(78781234)
     const to = new Date().getTime() + 10000
     component = mount(<Counter to={to} />)
@@ -41,7 +41,7 @@ describe('counting', function () {
     expect(component.state().timeDiff).toBe(5000)
   })
 
-  it('stops to count when stopped', function () {
+  it('stops to count when stopped', () => {
     component = mount(<Counter from={0} to={10000} />)
     jest.runTimersToTime(5000)
     expect(component.state().numbers.seconds).toBe(5)
@@ -52,7 +52,7 @@ describe('counting', function () {
     expect(component.state().numbers.seconds).toBe(5)
   })
 
-  it('stops to count when reached zero', function () {
+  it('stops to count when reached zero', () => {
     component = mount(<Counter from={0} to={10000} />)
     jest.runTimersToTime(10000)
     expect(component.state().timeDiff).toBe(0)
@@ -63,7 +63,7 @@ describe('counting', function () {
     expect(component.state().numbers.seconds).toBe(0)
   })
 
-  it('syncs time when syncTime is set', function () {
+  it('syncs time when syncTime is set', () => {
     component = mount(<Counter from={0} to={10000} syncTime />)
     const newDate = component.state().startTime + 7000
     jest.spyOn(Date.prototype, 'getTime').mockReturnValue(newDate)
@@ -71,7 +71,7 @@ describe('counting', function () {
     expect(component.state().timeDiff).toBe(3000)
   })
 
-  it('works with "up" direction', function () {
+  it('works with "up" direction', () => {
     component = mount(<Counter seconds={10} direction='up' />)
     expect(component.state().timeDiff).toBe(10000)
     expect(component.state().numbers.seconds).toBe(0)
@@ -86,48 +86,60 @@ describe('counting', function () {
     expect(component.state().numbers.seconds).toBe(10)
   })
 
-  describe('frozen prop', function () {
-    it('does not count when "frozen" is true', function () {
+  describe('frozen prop', () => {
+    it('does not count when "frozen" is true', () => {
       component = mount(<Counter seconds={10} frozen />)
       jest.runTimersToTime(5000)
       expect(component.state().timeDiff).toBe(10000)
       expect(component.state().numbers.seconds).toBe(10)
     })
 
-    it('stops to count if frozen prop is updated to true', function () {
+    it('stops to count if frozen prop is updated to true', () => {
       component = mount(<Counter from={0} to={10000} />)
       component.instance().stop = jest.genMockFunction()
       component.instance().forceUpdate()
-      component.setProps({
-        frozen: true
-      }, () => expect(component.instance().stop.mock.calls.length).toBe(1))
+      component.setProps(
+        {
+          frozen: true,
+        },
+        () => expect(component.instance().stop.mock.calls.length).toBe(1)
+      )
     })
 
-    it('does nothing when component is already frozen', function () {
+    it('does nothing when component is already frozen', () => {
       component = mount(<Counter from={0} to={10000} frozen />)
       component.instance().stop = jest.genMockFunction()
       component.instance().forceUpdate()
-      component.setProps({
-        frozen: true
-      }, () => expect(component.instance().stop.mock.calls.length).toBe(0))
+      component.setProps(
+        {
+          frozen: true,
+        },
+        () => expect(component.instance().stop.mock.calls.length).toBe(0)
+      )
     })
 
-    it('starts to count if frozen prop is updated to false', function () {
+    it('starts to count if frozen prop is updated to false', () => {
       component = mount(<Counter from={0} to={10000} />)
       component.instance().start = jest.genMockFunction()
       component.instance().forceUpdate()
-      component.setProps({
-        frozen: false
-      }, () => expect(component.instance().start.mock.calls.length).toBe(0))
+      component.setProps(
+        {
+          frozen: false,
+        },
+        () => expect(component.instance().start.mock.calls.length).toBe(0)
+      )
     })
 
-    it('does nothing when component is already not frozen', function () {
+    it('does nothing when component is already not frozen', () => {
       component = mount(<Counter from={0} to={10000} frozen />)
       component.instance().start = jest.genMockFunction()
       component.instance().forceUpdate()
-      component.setProps({
-        frozen: false
-      }, () => expect(component.instance().start.mock.calls.length).toBe(1))
+      component.setProps(
+        {
+          frozen: false,
+        },
+        () => expect(component.instance().start.mock.calls.length).toBe(1)
+      )
     })
   })
 })

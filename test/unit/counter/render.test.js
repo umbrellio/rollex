@@ -3,117 +3,133 @@ import { shallow } from 'enzyme'
 import { shallowToJson } from 'enzyme-to-json'
 import Counter from '../../../src/components/Counter'
 import CounterSegment from '../../../src/components/CounterSegment'
-import CounterSegmentSeparator from '../../../src/components/CounterSegmentSeparator'
+import CounterSegmentSeparator
+  from '../../../src/components/CounterSegmentSeparator'
 import { toHaveDigits } from '../support/matchers'
 
-beforeAll(function () {
+beforeAll(() => {
   expect.extend({ toHaveDigits })
 })
 
-describe('rendering', function () {
+describe('rendering', () => {
   const to =
-    (1000 * 60 * 60 * 24 * 200) +
-    (1000 * 60 * 60 * 6) +
-    (1000 * 60 * 35) +
-    (1000 * 54)
+    1000 * 60 * 60 * 24 * 200 + 1000 * 60 * 60 * 6 + 1000 * 60 * 35 + 1000 * 54
 
-  it('matches snapshot', function () {
+  it('matches snapshot', () => {
     const component = shallow(<Counter from={0} to={1} />)
     const tree = shallowToJson(component)
     expect(tree).toMatchSnapshot()
   })
 
-  it('renders a CounterSegment for each segment', function () {
+  it('renders a CounterSegment for each segment', () => {
     const component = shallow(<Counter from={0} to={1} />)
     expect(component.find(CounterSegment).length).toEqual(4)
   })
 
-  it('passes digits correctly', function () {
-    expect(<Counter from={0} to={to} />)
-      .toHaveDigits([
-        ['9', '9'],
-        ['0', '6'],
-        ['3', '5'],
-        ['5', '4']
-      ])
+  it('passes digits correctly', () => {
+    expect(<Counter from={0} to={to} />).toHaveDigits([
+      ['9', '9'],
+      ['0', '6'],
+      ['3', '5'],
+      ['5', '4'],
+    ])
   })
 
-  describe('renders zeros when time diff is negative', function () {
-    test('from and to', function () {
+  describe('renders zeros when time diff is negative', () => {
+    test('from and to', () => {
       const component = <Counter from={1000} to={0} />
-      expect(component)
-        .toHaveDigits([
-          ['0', '0'],
-          ['0', '0'],
-          ['0', '0'],
-          ['0', '0']
-        ])
+      expect(component).toHaveDigits([
+        ['0', '0'],
+        ['0', '0'],
+        ['0', '0'],
+        ['0', '0'],
+      ])
     })
 
-    test('seconds', function () {
+    test('seconds', () => {
       const component = <Counter seconds={-10000} />
-      expect(component)
-        .toHaveDigits([
-          ['0', '0'],
-          ['0', '0'],
-          ['0', '0'],
-          ['0', '0']
-        ])
+      expect(component).toHaveDigits([
+        ['0', '0'],
+        ['0', '0'],
+        ['0', '0'],
+        ['0', '0'],
+      ])
     })
   })
 
-  it('works with "up" direction', function () {
-    expect(<Counter from={0} to={to} direction='up' />)
-      .toHaveDigits([
-        ['0', '0'],
-        ['0', '0'],
-        ['0', '0'],
-        ['0', '0']
-      ])
+  it('works with "up" direction', () => {
+    expect(<Counter from={0} to={to} direction='up' />).toHaveDigits([
+      ['0', '0'],
+      ['0', '0'],
+      ['0', '0'],
+      ['0', '0'],
+    ])
   })
 
-  test('minPeriod', function () {
-    expect(<Counter from={0} to={to} minPeriod='minutes' />)
-      .toHaveDigits([
-        ['9', '9'],
-        ['0', '6'],
-        ['3', '5']
-      ])
+  test('minPeriod', () => {
+    expect(<Counter from={0} to={to} minPeriod='minutes' />).toHaveDigits([
+      ['9', '9'],
+      ['0', '6'],
+      ['3', '5'],
+    ])
   })
 
-  test('maxPeriod', function () {
-    var component = shallow(<Counter from={0} to={to} maxPeriod='hours' digits={0} />)
-    var counterSegments = component.find(CounterSegment)
+  test('maxPeriod', () => {
+    let component = shallow(
+      <Counter from={0} to={to} maxPeriod='hours' digits={0} />
+    )
+    let counterSegments = component.find(CounterSegment)
     expect(counterSegments.length).toBe(3)
     expect(counterSegments.at(0).props().period).toBe('hours')
     expect(counterSegments.at(0).props().digits).toEqual(['4', '8', '0', '6'])
 
-    component = shallow(<Counter from={0} to={to} maxPeriod='minutes' digits={0} />)
+    component = shallow(
+      <Counter from={0} to={to} maxPeriod='minutes' digits={0} />
+    )
     counterSegments = component.find(CounterSegment)
     expect(counterSegments.length).toBe(2)
     expect(counterSegments.at(0).props().period).toBe('minutes')
-    expect(counterSegments.at(0).props().digits).toEqual(['2', '8', '8', '3', '9', '5'])
+    expect(counterSegments.at(0).props().digits).toEqual([
+      '2',
+      '8',
+      '8',
+      '3',
+      '9',
+      '5',
+    ])
 
-    component = shallow(<Counter from={0} to={to} maxPeriod='seconds' digits={0} />)
+    component = shallow(
+      <Counter from={0} to={to} maxPeriod='seconds' digits={0} />
+    )
     counterSegments = component.find(CounterSegment)
     expect(counterSegments.length).toBe(1)
     expect(counterSegments.at(0).props().period).toBe('seconds')
-    expect(counterSegments.at(0).props().digits).toEqual(['1', '7', '3', '0', '3', '7', '5', '4'])
+    expect(counterSegments.at(0).props().digits).toEqual([
+      '1',
+      '7',
+      '3',
+      '0',
+      '3',
+      '7',
+      '5',
+      '4',
+    ])
   })
 
-  test('radix', function () {
-    expect(<Counter from={0} to={to} radix={12} />)
-      .toHaveDigits([
-        ['11', '11'],
-        ['0', '6'],
-        ['2', 'b'],
-        ['4', '6']
-      ])
+  test('radix', () => {
+    expect(<Counter from={0} to={to} radix={12} />).toHaveDigits([
+      ['11', '11'],
+      ['0', '6'],
+      ['2', 'b'],
+      ['4', '6'],
+    ])
   })
 
-  it('passes digitWrapper to segments', function () {
-    const digitWrapper = (digit) => digit + '0'
-    const component = shallow(<Counter from={0} to={to} digitWrapper={digitWrapper} />)
+  it('passes digitWrapper to segments', () => {
+    const digitWrapper = digit => `${digit}0`
+    const component = shallow(
+      <Counter from={0} to={to} digitWrapper={digitWrapper} />
+    )
     const counterSegments = component.find(CounterSegment)
     expect(counterSegments.at(0).props().digitWrapper).toEqual(digitWrapper)
     expect(counterSegments.at(1).props().digitWrapper).toEqual(digitWrapper)
@@ -121,8 +137,8 @@ describe('rendering', function () {
     expect(counterSegments.at(3).props().digitWrapper).toEqual(digitWrapper)
   })
 
-  it('passes digitMap to segments', function () {
-    const digitMap = { '0': 'o' }
+  it('passes digitMap to segments', () => {
+    const digitMap = { 0: 'o' }
     const component = shallow(<Counter from={0} to={to} digitMap={digitMap} />)
     const counterSegments = component.find(CounterSegment)
     expect(counterSegments.at(0).props().digitMap).toEqual(digitMap)
@@ -131,8 +147,8 @@ describe('rendering', function () {
     expect(counterSegments.at(3).props().digitMap).toEqual(digitMap)
   })
 
-  describe('segment labels', function () {
-    it('passes default labels', function () {
+  describe('segment labels', () => {
+    it('passes default labels', () => {
       const component = shallow(<Counter to={1} />)
       const counterSegments = component.find(CounterSegment)
       expect(counterSegments.at(0).props().label).toEqual('days')
@@ -141,12 +157,12 @@ describe('rendering', function () {
       expect(counterSegments.at(3).props().label).toEqual('seconds')
     })
 
-    it('passes labels when given a map', function () {
+    it('passes labels when given a map', () => {
       const labelMap = {
         days: 'DD',
         hours: 'HH',
         minutes: 'MM',
-        seconds: 'SS'
+        seconds: 'SS',
       }
       const component = shallow(<Counter to={1} labels={labelMap} />)
       const segments = component.find(CounterSegment)
@@ -156,7 +172,7 @@ describe('rendering', function () {
       expect(segments.at(3).props().label).toEqual('SS')
     })
 
-    it('passes labels when given a function', function () {
+    it('passes labels when given a function', () => {
       const labelFunc = function (period, number) {
         if (number % 10 === 1) {
           return period.slice(0, -1)
@@ -173,7 +189,7 @@ describe('rendering', function () {
     })
   })
 
-  test('separator', function () {
+  test('separator', () => {
     const component = shallow(<Counter seconds={10} separator=':' />)
     const separators = component.find(CounterSegmentSeparator)
     expect(separators.at(0).props().content).toEqual(':')

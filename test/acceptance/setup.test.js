@@ -1,16 +1,16 @@
 import { bootstrapDOM, clearDOM } from './support/helpers'
 import matchers from './support/matchers'
 
-beforeAll(function () {
+beforeAll(() => {
   jasmine.addMatchers(matchers)
 })
 
-beforeEach(function () {
+beforeEach(() => {
   jasmine.clock().install()
   bootstrapDOM()
 })
 
-afterEach(function () {
+afterEach(() => {
   clearDOM()
   jasmine.clock().uninstall()
 })

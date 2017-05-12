@@ -10,18 +10,18 @@ export default {
     filename: minify ? 'rollex.min.js' : 'rollex.js',
     library: 'Rollex',
     libraryTarget: 'umd',
-    umdNamedDefine: true
+    umdNamedDefine: true,
   },
   externals: {
-    'react': 'React',
-    'react-dom': 'ReactDOM'
+    react: 'React',
+    'react-dom': 'ReactDOM',
   },
   module: {
     loaders: [
       {
         test: /\.js$/,
-        loaders: ['babel-loader']
-      }
-    ]
-  }
+        loaders: ['babel-loader'],
+      },
+    ],
+  },
 }

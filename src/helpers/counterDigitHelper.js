@@ -10,7 +10,7 @@ export const digitPropTypes = {
   digit: PropTypes.string.isRequired,
   radix: PropTypes.number.isRequired,
   digitMap: PropTypes.objectOf(PropTypes.any).isRequired,
-  digitWrapper: PropTypes.func.isRequired
+  digitWrapper: PropTypes.func.isRequired,
 }
 
 /**

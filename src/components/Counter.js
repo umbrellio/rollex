@@ -51,9 +51,9 @@ export default class Counter extends React.Component {
     digitWrapper: PropTypes.func,
     labels: PropTypes.oneOfType([
       PropTypes.objectOf(PropTypes.string),
-      PropTypes.func
+      PropTypes.func,
     ]),
-    separator: PropTypes.any
+    separator: PropTypes.any,
   }
 
   static defaultProps = {
@@ -66,7 +66,7 @@ export default class Counter extends React.Component {
     easingDuration: 300,
     radix: 10,
     digitMap: {},
-    digitWrapper: digit => <span>{digit}</span>
+    digitWrapper: digit => <span>{digit}</span>,
   }
 
   /**
@@ -100,10 +100,6 @@ export default class Counter extends React.Component {
     if (!this.props.frozen) this.start()
   }
 
-  componentWillUnmount () {
-    if (!this.props.frozen && !this.stopped) this.stop()
-  }
-
   /**
    * Handles prop updates.
    * @param {Object} nextProps - new props
@@ -116,6 +112,10 @@ export default class Counter extends React.Component {
         this.start()
       }
     }
+  }
+
+  componentWillUnmount () {
+    if (!this.props.frozen && !this.stopped) this.stop()
   }
 
   /**
@@ -158,7 +158,7 @@ export default class Counter extends React.Component {
      */
     this.setState({
       timeDiff: newTimeDiff,
-      numbers: NumberCalculator.calculateNumbers(this.state.periods, timestamp)
+      numbers: NumberCalculator.calculateNumbers(this.state.periods, timestamp),
     })
   }
 
@@ -185,19 +185,23 @@ export default class Counter extends React.Component {
    * @return {string[]} digits
    */
   getDigits (period) {
-    var number = this.state.numbers[period]
+    let number = this.state.numbers[period]
     const digits = this.state.digits[period]
     const radix = this.props.radix
 
     if (digits && number >= Math.pow(radix, digits)) {
-      var maxValueArray = []
-      for (let i = 0; i < digits; i++) { maxValueArray.push((radix - 1).toString()) }
+      const maxValueArray = []
+      for (let i = 0; i < digits; i += 1) {
+        maxValueArray.push((radix - 1).toString())
+      }
       return maxValueArray
     }
 
     number = number.toString(radix)
-    var zeroArray = []
-    for (let i = 0; i < digits - number.length; i++) { zeroArray.push('0') }
+    const zeroArray = []
+    for (let i = 0; i < digits - number.length; i += 1) {
+      zeroArray.push('0')
+    }
     return (zeroArray.join('') + number).split('')
   }
 
@@ -223,7 +227,7 @@ export default class Counter extends React.Component {
    */
   getCSSClasses () {
     const type = this.props.easingFunction ? 'animated' : 'static'
-    var cssClasses = `rollex rollex-${type}`
+    let cssClasses = `rollex rollex-${type}`
     if (this.props.frozen) cssClasses += ' rollex-frozen'
     return cssClasses
   }

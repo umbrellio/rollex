@@ -2,8 +2,8 @@ import React from 'react'
 import Counter from '../../src/components/Counter'
 import { render, renderTenSecondCounter } from './support/helpers'
 
-describe('ticking', function () {
-  it('changes as time passes', function () {
+describe('ticking', () => {
+  it('changes as time passes', () => {
     const component = renderTenSecondCounter()
     expect(component).toDisplayDigits('10')
     jasmine.clock().tick(1000)
@@ -12,7 +12,7 @@ describe('ticking', function () {
     expect(component).toDisplayDigits('06')
   })
 
-  it('stops when reaches zero', function () {
+  it('stops when reaches zero', () => {
     const component = renderTenSecondCounter()
     jasmine.clock().tick(10000)
     expect(component).toDisplayDigits('00')
@@ -21,8 +21,8 @@ describe('ticking', function () {
   })
 })
 
-describe('ticking in up direction', function () {
-  it('changes as time passes', function () {
+describe('ticking in up direction', () => {
+  it('changes as time passes', () => {
     const component = renderTenSecondCounter({ direction: 'up' })
     expect(component).toDisplayDigits('00')
     jasmine.clock().tick(1000)
@@ -31,7 +31,7 @@ describe('ticking in up direction', function () {
     expect(component).toDisplayDigits('04')
   })
 
-  it('stops when reaches target', function () {
+  it('stops when reaches target', () => {
     const component = renderTenSecondCounter({ direction: 'up' })
     jasmine.clock().tick(10000)
     expect(component).toDisplayDigits('10')
@@ -40,14 +40,14 @@ describe('ticking in up direction', function () {
   })
 })
 
-describe('freezing', function () {
-  it('does not tick when frozen', function () {
+describe('freezing', () => {
+  it('does not tick when frozen', () => {
     const component = renderTenSecondCounter({ frozen: true })
     jasmine.clock().tick(10000)
     expect(component).toDisplayDigits('10')
   })
 
-  it('stops when set to frozen', function () {
+  it('stops when set to frozen', () => {
     const component = renderTenSecondCounter()
     jasmine.clock().tick(1000)
     expect(component).toDisplayDigits('09')
@@ -57,7 +57,7 @@ describe('freezing', function () {
     expect(component).toDisplayDigits('09')
   })
 
-  it('starts when unfrozen', function () {
+  it('starts when unfrozen', () => {
     const component = renderTenSecondCounter({ frozen: true })
     jasmine.clock().tick(10000)
     expect(component).toDisplayDigits('10')
@@ -68,8 +68,8 @@ describe('freezing', function () {
   })
 })
 
-describe('custom interval', function () {
-  it('updates every two seconds if interval is set to 2000', function () {
+describe('custom interval', () => {
+  it('updates every two seconds if interval is set to 2000', () => {
     const component = renderTenSecondCounter({ interval: 2000 })
     jasmine.clock().tick(1000)
     expect(component).toDisplayDigits('10')
@@ -77,7 +77,7 @@ describe('custom interval', function () {
     expect(component).toDisplayDigits('08')
   })
 
-  it('updates every one second if interval is set to 500', function () {
+  it('updates every one second if interval is set to 500', () => {
     const component = renderTenSecondCounter({ interval: 500 })
     jasmine.clock().tick(500)
     expect(component).toDisplayDigits('09')
@@ -88,11 +88,11 @@ describe('custom interval', function () {
   })
 })
 
-describe('time synchronization', function () {
-  it('catches up with current time on each tick', function () {
+describe('time synchronization', () => {
+  it('catches up with current time on each tick', () => {
     const baseTime = new Date(2017, 1, 1).getTime()
     const to = baseTime + 10000
-    var dateSpy = spyOn(Date.prototype, 'getTime').and.returnValue(baseTime)
+    const dateSpy = spyOn(Date.prototype, 'getTime').and.returnValue(baseTime)
 
     const component = render(<Counter to={to} maxPeriod='seconds' syncTime />)
     jasmine.clock().tick(1000)
@@ -104,22 +104,22 @@ describe('time synchronization', function () {
   })
 })
 
-describe('digit map and digit wrapper', function () {
-  it('displays digits from the map', function () {
-    const digitMap = { '0': 'o', '1': 'i' }
-    const component = renderTenSecondCounter({ digitMap: digitMap })
+describe('digit map and digit wrapper', () => {
+  it('displays digits from the map', () => {
+    const digitMap = { 0: 'o', 1: 'i' }
+    const component = renderTenSecondCounter({ digitMap })
     expect(component).toDisplayDigits('io')
   })
 
-  it('processes digits according to digit wrapper', function () {
-    const digitWrapper = (digit) => <span>[{digit}]</span>
-    const component = renderTenSecondCounter({ digitWrapper: digitWrapper })
+  it('processes digits according to digit wrapper', () => {
+    const digitWrapper = digit => <span>[{digit}]</span>
+    const component = renderTenSecondCounter({ digitWrapper })
     expect(component).toDisplayDigits('[1][0]')
   })
 })
 
-describe('radix', function () {
-  it('displays numbers in given radix', function () {
+describe('radix', () => {
+  it('displays numbers in given radix', () => {
     const component = renderTenSecondCounter({ radix: 8 })
     expect(component).toDisplayDigits('12')
   })

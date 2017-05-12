@@ -8,10 +8,10 @@ import StaticCounterDigit from './StaticCounterDigit'
  * Maximum decimal values for available periods' numbers.
  */
 const PERIOD_LIMITS = {
-  'seconds': 59,
-  'minutes': 59,
-  'hours': 23,
-  'days': 0
+  seconds: 59,
+  minutes: 59,
+  hours: 23,
+  days: 0,
 }
 
 /**
@@ -34,7 +34,7 @@ CounterSegment.propTypes = {
   easingDuration: PropTypes.number.isRequired,
   digitMap: PropTypes.object.isRequired,
   digitWrapper: PropTypes.func.isRequired,
-  label: PropTypes.string
+  label: PropTypes.string,
 }
 
 /**
@@ -63,8 +63,8 @@ export default function CounterSegment (props) {
 
     const maxValueString = maxValue.toString(props.radix)
     const maxDigitPos = maxValueString.length
-    return (index === props.digits.length - maxDigitPos)
-      ? parseInt(maxValueString[0])
+    return index === props.digits.length - maxDigitPos
+      ? parseInt(maxValueString[0], 10)
       : props.radix - 1
   }
 
