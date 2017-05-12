@@ -1,6 +1,6 @@
 {
   "name": "rollex",
-  "version": "1.0.0-rc.5",
+  "version": "1.0.0-rc.6",
   "description": "A counter React component",
   "main": "lib/index.js",
   "repository": "umbrellio/rollex",
