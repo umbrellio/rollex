@@ -1,6 +1,3 @@
 {
-  "dictionary": [
-    "Rollex",
-    "TBD"
-  ]
+  "dictionary": ["Rollex", "timestamps", "truthy", "dozenal", "ms"]
 }
