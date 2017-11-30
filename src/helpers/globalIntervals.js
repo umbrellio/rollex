@@ -51,7 +51,7 @@ const GlobalIntervals = {
     const callbacks = interval.callbacks
 
     if (callbacks.length > 1) {
-      callbacks.splice(callbacks.indexOf(cb))
+      callbacks.splice(callbacks.indexOf(cb), 1)
     } else {
       this.removeIntervalWithDuration(duration)
     }
