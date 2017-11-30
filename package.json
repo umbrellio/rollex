@@ -29,8 +29,7 @@
     "esdoc": "esdoc",
     "lint": "eslint .",
     "lint-staged": "lint-staged",
-    "spellcheck": "yaspeller-ci *.md",
-    "test": "yarn run test:unit && yarn run test:acceptance && yarn run lint && yarn run spellcheck",
+    "test": "yarn run test:unit && yarn run test:acceptance && yarn run lint",
     "test:acceptance": "karma start",
     "test:acceptance:watch": "WATCH=true yarn run test:acceptance -- --no-single-run",
     "test:unit": "jest",
@@ -41,8 +40,7 @@
       "prettier --write --no-semi",
       "eslint --fix",
       "git add"
-    ],
-    "*.md": "yaspeller-ci"
+    ]
   },
   "pre-commit": [
     "lint-staged"
@@ -105,7 +103,6 @@
     "react-addons-test-utils": "^15.5.1",
     "react-dom": "^15.5.4",
     "rimraf": "^2.6.1",
-    "webpack": "^2.2.1",
-    "yaspeller-ci": "^0.1.0"
+    "webpack": "^2.2.1"
   }
 }
