@@ -86,6 +86,17 @@ describe('counting', () => {
     expect(component.state().numbers.seconds).toBe(10)
   })
 
+  it('update to prop', () => {
+    component = mount(<Counter from={0} to={10000} />)
+    jest.runTimersToTime(5000)
+    expect(component.state().timeDiff).toBe(5000)
+    expect(component.state().numbers.seconds).toBe(5)
+    component.setProps({ to: 15000 })
+    jest.runTimersToTime(3000)
+    expect(component.state().timeDiff).toBe(12000)
+    expect(component.state().numbers.seconds).toBe(12)
+  })
+
   describe('frozen prop', () => {
     it('does not count when "frozen" is true', () => {
       component = mount(<Counter seconds={10} frozen />)

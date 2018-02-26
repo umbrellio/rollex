@@ -112,6 +112,20 @@ export default class Counter extends React.Component {
         this.start()
       }
     }
+    if (
+      this.props.to !== nextProps.to ||
+      this.props.seconds !== nextProps.seconds
+    ) {
+      const startTime = new Date().getTime()
+      const from = nextProps.from === undefined ? startTime : nextProps.from
+
+      let timeDiff =
+        nextProps.seconds === undefined
+          ? nextProps.to - from
+          : nextProps.seconds * 1000
+      if (timeDiff < 0) timeDiff = 0
+      this.setState({ timeDiff })
+    }
   }
 
   componentWillUnmount () {
@@ -147,9 +161,10 @@ export default class Counter extends React.Component {
       return this.stop()
     }
 
-    const timestamp = this.props.direction === 'down'
-      ? newTimeDiff
-      : this.state.initialTimeDiff - newTimeDiff
+    const timestamp =
+      this.props.direction === 'down'
+        ? newTimeDiff
+        : this.state.initialTimeDiff - newTimeDiff
 
     /**
      * @type {object}
@@ -238,9 +253,10 @@ export default class Counter extends React.Component {
    */
   render () {
     const segments = this.state.periods.map((period, index) => {
-      const separator = index < this.state.periods.length - 1
-        ? <CounterSegmentSeparator content={this.props.separator} />
-        : null
+      const separator =
+        index < this.state.periods.length - 1 ? (
+          <CounterSegmentSeparator content={this.props.separator} />
+        ) : null
       return (
         <div key={index} className='rollex-segment-wrapper'>
           <CounterSegment
@@ -258,10 +274,6 @@ export default class Counter extends React.Component {
         </div>
       )
     })
-    return (
-      <div className={this.getCSSClasses()}>
-        {segments}
-      </div>
-    )
+    return <div className={this.getCSSClasses()}>{segments}</div>
   }
 }
