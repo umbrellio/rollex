@@ -114,7 +114,8 @@ export default class Counter extends React.Component {
     }
     if (
       this.props.to !== nextProps.to ||
-      this.props.seconds !== nextProps.seconds
+      this.props.seconds !== nextProps.seconds ||
+      this.props.from !== nextProps.from
     ) {
       const startTime = new Date().getTime()
       const from = nextProps.from === undefined ? startTime : nextProps.from
