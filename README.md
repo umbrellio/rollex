@@ -170,3 +170,13 @@ Segments can be separated by a separator symbol:
 // dd:hh:mm:ss
 <Counter seconds={2312413} separator=':' />
 ```
+
+## License
+Released under MIT License.
+
+## Authors
+Created by Alexander Komarov.
+
+<a href="https://github.com/umbrellio/">
+<img style="float: left;" src="https://umbrellio.github.io/Umbrellio/supported_by_umbrellio.svg" alt="Supported by Umbrellio" width="439" height="72">
+</a>
